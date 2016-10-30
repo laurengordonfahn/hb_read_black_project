@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} Sign-In {% endblock %}
+
+{% block content %}
+
+<h1> Read & Black </h1>
+<br>
+
+<h3> We search out great content so you can spend your time enjoying and reading. </h3>
+<br>
+
+<p> Log-In: </p>
+<form action='/login_catch' methods='POST'>
+    <input type='text' name='username' placebolder='username'>
+    <br>
+    <input type='text' name='password' type='password'>
+    <br>
+    <input type='submit' name='login_btn' value='Log-in'>
+</form>
+<br>
+
+<p> Sign-Up: </p>
+<br>
+<form action='/sign_up_catch' methods='POST'>
+    <input type='text' name ='pot_username' placeholder='username'>
+    <br>
+    <input type='text' name='pot_password' placeholder='password'>
+    <br>
+    <input type='number' name='age' placeholder='age'>
+    <br>
+    <p> Acedemic Level </p>
+    <select name='acedemic'>
+        <option value='highschool'> High School </option>
+        <option value='tradeschool'> Trade School </option>
+        <option value='ba'> B.A. </option>
+        <option value='bs'> B.S. </option>
+        <option value='higher'> Higher Degree </option>
+    </select>
+    <br>
+    <select name='gender'>
+        <option value='female'> Female </option>
+        <option value='male'> Male </option>
+        <option value='other'> Other </option>
+    </select>
+    <br>
+    <input type='submit' name='sign_up_btn' value="Sign-Up">
+</form>
+
+{% endblock %}
