@@ -89,29 +89,81 @@ def sign_up_catch():
 @app.route('/registar_catch/<username>', methods=['POST'])
 def profile_catch(username):
     """ Process the Profile form from Profile page """
-    
-    return redirect('/new_landing/{{username}}')
+    #pull password from sign-up form
+    pot_password = request.form.get('password')
+    # verify if password is adequate.
+    #pull second password from sign-up form
+    pot2_password = request.form.get('sec_password')
+    #pull age/academic/gender from registar form
+    age = request.form.get('age')
+    academic = request.form.get('academic')
+    gender = request.form.get('gender')
+
+    #pull information from signup from db
+    user = db.session.query(User.email, User.username, User.password).filter(User.username==session['current_user']).one()
+    email = user.email
+    username = user.username
+    password = user.password
+
+    #pull gendercode and academic code from db
+    gender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
+    academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).one()
+
+
+
+
+    if len(pot_password) < 6:
+        flash('Your password is not long enough try something with at least 6 characters.')
+        return redirect('/registar/{{ username }}')
+    elif pot_password !=pot2_password:
+        flash('Your second password does not match your first, please re-enter to verify.')
+        return redirect('/registar/{{ username }}')
+    elif age != r'^\d*$':
+        flash('Please type in a number for your age.')
+    else:
+        if academic and gender:
+            sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+            db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
+            db.session.commit()
+            flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on a new landing page!')
+            return redirect('/new_landing/{{username}}')
 
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
-    user = db.session.query(User.user_id, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).one()
+    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).one()
+    email= user.email
     username = user.username
     age = user.age
     academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).one()
     gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
-    return render_template('profile.html', username=username, age=age, academic_level=academic_level, gender=gender)
+    return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender)
 
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():
     """ Process the Profile form from Profile page """
+    #pull password from sign-up form
+    pot_password = request.form.get('password')
+    # verify if password is adequate.
+    #pull second password from sign-up form
+    pot2_password = request.form.get('sec_password')
+
+    if len(pot_password) < 6:
+        flash('Your password is not long enough try something with at least 6 characters.')
+        return redirect('/profile/{{ username }}')
+    elif pot_password !=pot2_password:
+        flash('Your second password does not match your first, please re-enter to verify.')
+        return redirect('/profile/{{ username }}')
     
     return redirect('/new_landing/{{username}}')
+    
+    
 
 @app.route('/new_landing/<username>')
 def new_landing(username):
     """ Render new landing page after sign-up and profile page """
-    return render_template('new_landing.html')
+    username = session['current_user']
+    return render_template('new_landing.html', username=username)
 
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
