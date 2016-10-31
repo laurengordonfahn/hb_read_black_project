@@ -47,6 +47,7 @@ class Saved_search(db.Model):
                         primary_key=True,
                         autoincrement=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    #URL to the article
     keyword=db.Column(db.String(70), nullable=False)
 
 class Keyword(db.Model):

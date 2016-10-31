@@ -84,12 +84,23 @@ def sign_up_catch():
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
         db.session.exectue(sql, {'email': email, 'username': pot_username, 'password': pot_password, 'age': 'awaiting', 'gender_code':'awaiting', 'academic_code':'awaiting'})
         db.session.commit()
-        return redirect('/profile/{{username}}', username=pot_username)
+        return redirect('/registar/{{username}}', username=pot_username)
+
+@app.route('/registar_catch/<username>', methods=['POST'])
+def profile_catch(username):
+    """ Process the Profile form from Profile page """
+    
+    return redirect('/new_landing/{{username}}')
 
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
-    return render_template('profile.html')
+    user = db.session.query(User.user_id, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).one()
+    username = user.username
+    age = user.age
+    academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).one()
+    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
+    return render_template('profile.html', username=username, age=age, academic_level=academic_level, gender=gender)
 
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():

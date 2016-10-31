@@ -8,8 +8,8 @@
 <!-- Add username to jina for this page -->
 <p> You are signed in as: {{ username }} </p>
 <br>
-<p> Your current emmail associated with this account: {{ email }}
-<form action='/profile_catch' method='POST'>
+
+<form action='/registar_catch' method='POST'>
     <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your email associated with your account: </legend>
@@ -21,7 +21,7 @@
     </feildset>
 </form>
 <br>
-<form action='/profile_catch' method='POST'>
+<form action='/registar_catch' method='POST'>
     <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your password: </legend>
@@ -33,12 +33,15 @@
     </feildset>
 </form>
 <br>
-<p> Your age: {{ age }} </p>
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
+<form action='/registar_catch' method='POST'>
+    <input type='number' name='age' placeholder='age'>
+    <br>
+    <input type='submit' name='age' value='Submit'>
+</form>
 <br>
 
-<p> Your registared Academic Level with us is: {{ academic_level }} </p>
-<form action='/profile_catch' method='POST'>
+<form action='/registar_catch' method='POST'>
     <p> Acedemic Level: </p>
     <select name='acedemic'>
         <option value='highschool'> High School </option>
@@ -51,8 +54,7 @@
 </form>
 <br>
 
-<p> Your gender on file is: {{ gender}} </p>
-<form action='/profile_catch' method='POST'>
+<form action='/registar_catch' method='POST'>
     <p>Gender:</p>
     <select name='gender'>
         <option value='female'> Female </option>
