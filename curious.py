@@ -7,6 +7,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 #Need to create and import Classes in Database model.py
 from model import  connect_to_db, db
 
+import re
+
 app = Flask(__name__)
 app.secret_key = "dry monday"
 
@@ -37,7 +39,10 @@ def login_catch():
 
     if (doesname[0] ==  pot_username) and (doesname[1] == pot_password):
         session.setdefault('current_user', pot_username)
-        #GET THE PRIMARY LANDING NAME TO THIS REDIRECT
+        #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
+        #NEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
+        user_id = db.session.query(User.user_id).filter(User.username=='pot_username').one()
+        landingname=db.session.query.(Landing.landing_name).filter(Landing.primary_landing=='True').one()
         return redirect('/landing/{{landingname}}')
     else:
         flash('Your login information did not match.')
@@ -49,6 +54,8 @@ def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
     #pull email from sign-up form
     email = request.form.get('email')
+    sec_email = request.form.get('sec_email')
+    regex_email = r"^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$"
     #pull username from sign-up form
     pot_username = request.form.get('username')
     # verifiy if username already exhists in our db
@@ -58,7 +65,11 @@ def sign_up_catch():
     # verify if password is adequate.
     #pull second password from sign-up form
     pot2_password = request.form.get('sec_password')
-    if email#DO REGEX HERE FOR EMAIL VERIFICATION
+    if email != regex_email:
+        flash('Your email cannot be verified, please retype your email.')
+        return redirect('/')
+    elif email != sec_email:
+        flash('Your second email does not match your first, please retype your email.')
     elif doesname:
         flash('The username ' + pot_username + ' is already taken, please try another one.')  
         return redirect('/') 
@@ -72,6 +83,7 @@ def sign_up_catch():
         session.setdefault('current_user', pot_username)
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
         db.session.exectue(sql, {'email': email, 'username': pot_username, 'password': pot_password, 'age': 'awaiting', 'gender_code':'awaiting', 'academic_code':'awaiting'})
+        db.session.commit()
         return redirect('/profile/{{username}}', username=pot_username)
 
 @app.route('/profile/<username>')
@@ -82,8 +94,7 @@ def profile(username):
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():
     """ Process the Profile form from Profile page """
-    #make if statement of which landing to send to
-    # return redirect('/landing/{{username}}')
+    
     return redirect('/new_landing/{{username}}')
 
 @app.route('/new_landing/<username>')

@@ -8,14 +8,25 @@
 <!-- Add username to jina for this page -->
 <p> You are signed in as: {{ username }} </p>
 <br>
-
+<form action='/profile_catch' method='POST'>
+    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
+   <feildset>
+        <legend> Change your email associated with your account: </legend>
+        <input type='email' name='email' placeholder='email'>
+        <br>
+        <input type='text' name='sec_email' placeholder='re-type email'>
+        <br>
+        <input type='submit' name='change_email_btn' value='Submit'>
+    </feildset>
+</form>
+<br>
 <form action='/profile_catch' method='POST'>
     <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your password: </legend>
-        <input type='text' name='pot_password' placeholder='password'>
+        <input type='text' name='password' placeholder='password'>
         <br>
-        <input type='text' name='pot_2_password' placeholder='re-type password'>
+        <input type='text' name='sec_password' placeholder='re-type password'>
         <br>
         <input type='submit' name='change_password_btn' value='Submit'>
     </feildset>
