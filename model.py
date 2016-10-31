@@ -24,18 +24,19 @@ class User(db.Model):
     user_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
+    email=db.Column(db.String(100), nullable=False, unique=True)
     username=db.Column(db.String(50), nullable=False, unique=True)
     password=db.Column(db.String(50), nullable=False, unique=True)
     age=db.Column(db.Integer)
-    gender_code=dbColumn(db.String(10), db.ForeignKey('genders.gender_code'))
-    academic_code=dbColumn(db.String(10), db.ForeignKey('academic_levels.academic_code'))
+    gender_code=db.Column(db.String(10), db.ForeignKey('genders.gender_code'))
+    academic_code=db.Column(db.String(10), db.ForeignKey('academic_levels.academic_code'))
 
 class Landing(db.Model):
     __tablename__ = "landings"
     landing_id=db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    user_id=db.Column(db.Integer, ForiegnKey('users.user_id'))
+    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     landing_name=db.Column(db.String(70), nullable=False)
     primary_landing=db.Column(db.Boolean, nullable=False)
 
@@ -45,7 +46,7 @@ class Saved_search(db.Model):
     saved_search_id=db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    user_id=db.Column(db.Integer, ForiegnKey('users.user_id'))
+    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     keyword=db.Column(db.String(70), nullable=False)
 
 class Keyword(db.Model):
@@ -53,7 +54,7 @@ class Keyword(db.Model):
     keyword_id=db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    user_id=db.Column(db.Integer, ForiegnKey('users.user_id'))
+    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     keyword=db.Column(db.String(70), nullable=False)
 
 # HOW DO I MAKE CODES HERE?
@@ -73,6 +74,6 @@ if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
 
-    from server import app
+    from curious import app
     connect_to_db(app)
     print "Connected to DB."

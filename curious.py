@@ -21,7 +21,7 @@ app.jinja_env.auto_reload = True
 def index():
     """ Render Sign-In page """
 
-    return render_template("index.html")
+    return render_template('index.html')
 
 
 @app.route('/login_catch', methods=['POST'])
@@ -31,7 +31,7 @@ def login_catch():
     #pull username typed in to login
     pot_username = request.form.get('username')
     #check the db for the typed in username
-    doesname = db.session.execute("SELECT username, password FROM users WHERE username == pot_username").fetchone()
+    doesname = db.session.execute('SELECT username, password FROM users WHERE username == pot_username').fetchone()
     #pull password typed in to login
     pot_password = request.form.get('password')
 
@@ -40,14 +40,39 @@ def login_catch():
         #GET THE PRIMARY LANDING NAME TO THIS REDIRECT
         return redirect('/landing/{{landingname}}')
     else:
-        flash('Your login information was not clear.')
+        flash('Your login information did not match.')
         return redirect('/')
 
-@app.route('/sign_up_catch')
+
+@app.route('/sign_up_catch', methods=['POST'])
 def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
-    #sign-up validation verification and add
-    return redirect('/profile/{{username}}')
+    #pull email from sign-up form
+    email = request.form.get('email')
+    #pull username from sign-up form
+    pot_username = request.form.get('username')
+    # verifiy if username already exhists in our db
+    doesname = db.session.execute('SELECT username FROM users WHERE username == username').fetchone()
+    #pull password from sign-up form
+    pot_password = request.form.get('password')
+    # verify if password is adequate.
+    #pull second password from sign-up form
+    pot2_password = request.form.get('sec_password')
+    if email#DO REGEX HERE FOR EMAIL VERIFICATION
+    elif doesname:
+        flash('The username ' + pot_username + ' is already taken, please try another one.')  
+        return redirect('/') 
+    elif len(pot_password) < 6:
+        flash('Your password is not long enough try something with at least 6 characters.')
+        return redirect('/')
+    elif pot_password !=pot2_password:
+        flash('Your second password does not match your first, please re-enter to verify.')
+        return redirect('/')
+    else:
+        session.setdefault('current_user', pot_username)
+        sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+        db.session.exectue(sql, {'email': email, 'username': pot_username, 'password': pot_password, 'age': 'awaiting', 'gender_code':'awaiting', 'academic_code':'awaiting'})
+        return redirect('/profile/{{username}}', username=pot_username)
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -66,7 +91,7 @@ def new_landing(username):
     """ Render new landing page after sign-up and profile page """
     return render_template('new_landing.html')
 
-@app.route('/new_landing_catch', method=['POST'])
+@app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
     """ Process the New Landing Construciton Page """
     return redirect('/landing')

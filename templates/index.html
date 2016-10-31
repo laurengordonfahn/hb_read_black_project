@@ -23,12 +23,14 @@
 <p> Sign-Up: </p>
 <br>
 <form action='/sign_up_catch' method='POST'>
-    <input type='text' name ='pot_username' placeholder='username'>
+    <input type='email' name='email' placeholder='email'>
+    <input type='text' name ='username' placeholder='username'>
     <br>
-    <input type='text' name='pot_password' placeholder='password'>
+    <input type='password' name='password' placeholder='password'>
+    <button id='explain_password' data-password="Passwords must contain at least 6 characters."> Password Requirements </button>
     <br>
-    <input type='text' name='pot_2_password' placeholder='re-type password'>
-    <input type='submit' name='sign_up_btn' value="Sign-Up">
+    <input type='password' name='sec_password' placeholder='re-type password'>
+    <input id='sign_up_ btn' type='submit' name='sign_up_btn' value="Sign-Up">
 </form>
 
 {% endblock %}
