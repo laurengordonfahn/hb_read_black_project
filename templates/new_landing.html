@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %} New Landing {% endblock %}
+{% block content %}
+    <form action='/new_landing_catch' method='POST'>
+        <p> Name this Landing Page </p>
+        <input type='text' name='new_landing' placeholder='add your new landing name'>
+        <input type='submit' name='new_landing_name_btn' value="Save Name">
+    </form>
+    <form action='/new_landing_catch' method='POST'>
+        <feildset>
+            <legend> Content Column <legend>
+                <p> Type in a keyword for us to search by: </p>
+                <input type='text' name='keyword' placeholder='keyword'>
+    <!-- Can these be part of the same form? -->
+    <!-- NEED TO CREATE A GENERAL LIST ? -->
+                <p> Or  Chose a suggested key word </p>
+                <select name='suggested_keyword'>
+                    <option value='us_news'> US News </option>
+                    <option value='tradeschool'> Trade School </option>
+                    <option value='ba'> B.A. </option>
+                    <option value='bs'> B.S. </option>
+                    <option value='higher'> Higher Degree </option>
+                </select>
+                <br>
+
+                <select name='media_type'>
+                    <option value='text'> Text </option>
+                    <option value='audio'> Audio </option>
+                    <option value='Video'> Video </option>
+                </select>
+
+                <input type='submit' name='keyword_txt_btn' value='Submit'>
+        </feildset>
+    </form>
+    <br>
+
+    <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
+    <form action='/new_landing_catch' method='POST'>
+        <feildset>
+            <legend>Add Another Landing</legend>
+                 <input type='submit' name='add_column' value='Add'>
+        </feildset>
+    </form>
+    
+
+{% endblock %}

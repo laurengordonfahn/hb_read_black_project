@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>{% block title %} {% endblock %}</title> 
+    <!-- created without being filled -->
+    <link rel='stylesheet' href="static/css/stylesheet.css">
+</head>
+<body>
+    {% if 'current_user' in session %}
+        <!-- ADD username to jinja -->
+        <!-- IS IT bootstrap that puts things in the hamburger? or is is it a form HOW DO I MAKE FORM A LINK THAT LOG OUTS-->
+        <a  href='/profile/{{ username }}'>Profile</a>
+        <a  href='/new_landing/{{ username }}'>Add New Landing</a>
+        <!--CREATE LOG OUT CATCH-->
+        <form action='/log_out_catch' method='DELETE'><input type='submit' name='log-out' value='Log-Out'></form>
+    {% endif %}
+
+    <ul>
+        {% for message in get_flashed_messages() %}
+            <li> {{ message }} </li>
+        {% endfor %}
+    </ul>
+   
+  
+    {% block content %}{% endblock%}
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- created without being filled -->
+    <script src ="static/javascript/general.js"></script>
+
+
+</body>
+</html>

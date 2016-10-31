@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+<!--NEED TO ADD landing_name to Jinja render-->
+{% block title %} {{ landing_name }} {% endblock %}
+
+{% block content %}
+<!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
+    <form action='/new_landing_catch' method='POST'>
+        <feildset>
+            <legend>Add Another Landing</legend>
+                 <input type='submit' name='add_column' value='Add'>
+        </feildset>
+    </form>
+
+{% endblock %}

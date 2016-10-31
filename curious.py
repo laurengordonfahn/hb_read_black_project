@@ -5,7 +5,7 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 from flask_debugtoolbar import DebugToolbarExtension
 
 #Need to create and import Classes in Database model.py
-#from model import  connect_to_db, db
+from model import  connect_to_db, db
 
 app = Flask(__name__)
 app.secret_key = "dry monday"
@@ -23,6 +23,7 @@ def index():
 
     return render_template("index.html")
 
+
 @app.route('/login_catch', methods=['POST'])
 def login_catch():
     """ Process the Log-In form from Sign-In page"""
@@ -35,14 +36,15 @@ def login_catch():
     pot_password = request.form.get('password')
 
     if (doesname[0] ==  pot_username) and (doesname[1] == pot_password):
-        session['current_user'].set
-        return redirect("/landing/<username>")
+        session.setdefault('current_user', pot_username)
+        #GET THE PRIMARY LANDING NAME TO THIS REDIRECT
+        return redirect('/landing/{{landingname}}')
     else:
         flash('Your login information was not clear.')
-        return redirect("sign_in.html")
+        return redirect('/')
 
 @app.route('/sign_up_catch')
-def profile(username):
+def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
     #sign-up validation verification and add
     return redirect('/profile/{{username}}')
@@ -60,14 +62,26 @@ def profile_catch():
     return redirect('/new_landing/{{username}}')
 
 @app.route('/new_landing/<username>')
-def profile(username):
+def new_landing(username):
     """ Render new landing page after sign-up and profile page """
     return render_template('new_landing.html')
 
-@app.route('/landing/<username>')
-def profile(username):
+@app.route('/new_landing_catch', method=['POST'])
+def new_landing_catch():
+    """ Process the New Landing Construciton Page """
+    return redirect('/landing')
+
+#NEED TO CHANGE landingname from username
+@app.route('/landing/<landingname>')
+def landing(landingname):
     """ Render landing page after Log-In """
     return render_template('landing.html')
+
+@app.route('/log_out_catch', methods=['DELETE'])
+def log_out_catch():
+    """ Delete 'current_user' from session and redirect homepage """
+    flash('You have logged out.')
+    return redirect('/')
 
 
 
@@ -76,11 +90,13 @@ if __name__ == "__main__":
     # point that we invoke the DebugToolbarExtension
     app.debug = True
 
-    connect_to_db(app)
+
+    # Once I have a db I must activate this
+    # connect_to_db(app)
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
 
     
-    app.run(port=5003)
+    app.run(host="0.0.0.0",port=5000)
