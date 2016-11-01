@@ -154,6 +154,10 @@ def profile_catch():
     # verify if password is adequate.
     #pull second password from profile form
     pot2_password = request.form.get('sec_password')
+    #pull academic from profile form
+    academic = request.form.get('academic')
+    #pull gender from profile form
+    gender = request.form.get('gender')
 
     user = db.session.query(User.email, User.username, User.password, User.age).filter(User.username==session['current_user']).one()
     dbage = user.age
@@ -189,16 +193,17 @@ def profile_catch():
         db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': pot_password, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }}')
-       
    
     if academic:
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
+        academic_code = db.session.query(Academic_level.academic_code).filter(Academic.name== academic).one()
+        db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': academic_code})
         db.session.commit()
         return redirect('/profile/{{ username }}')
     if gender:
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
+        gender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
+        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }}')
 
