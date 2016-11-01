@@ -70,6 +70,7 @@ def sign_up_catch():
         return redirect('/')
     elif email != sec_email:
         flash('Your second email does not match your first, please retype your email.')
+        return redirect('/')
     elif doesname:
         flash('The username ' + pot_username + ' is already taken, please try another one.')  
         return redirect('/') 
@@ -142,20 +143,57 @@ def profile(username):
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():
     """ Process the Profile form from Profile page """
-    #pull password from sign-up form
+    #pull email from profile form
+    email = request.form.get('email')
+    #pull second email from profile form
+    sec_email = request.form.get('sec_email')
+
+    regex_email = r"^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$"
+    #pull password from profile form
     pot_password = request.form.get('password')
     # verify if password is adequate.
-    #pull second password from sign-up form
+    #pull second password from profile form
     pot2_password = request.form.get('sec_password')
 
+    
+    if email != regex_email:
+        flash('Your email cannot be verified, please retype your email.')
+        return redirect('/profile/{{ username }}')
+    elif email != sec_email:
+        flash('Your second email does not match your first, please retype your email.')
+        return redirect('/profile/{{ username }}')
+    else:
+        sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code': gender_code, 'academic_code': academic_code})
+        db.session.commit()
+        return redirect('/profile/{{ username }')
     if len(pot_password) < 6:
         flash('Your password is not long enough try something with at least 6 characters.')
         return redirect('/profile/{{ username }}')
-    elif pot_password !=pot2_password:
+    elif pot_password != pot2_password:
         flash('Your second password does not match your first, please re-enter to verify.')
         return redirect('/profile/{{ username }}')
+    else:
+        sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code': gender_code, 'academic_code': academic_code})
+        db.session.commit()
+        return redirect('/profile/{{ username }}')
+       
+   
+    if academic:
+        sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
+        db.session.commit()
+        return redirect('/profile/{{ username }}')
+    if gender:
+        sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
+        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
+        db.session.commit()
+        return redirect('/profile/{{ username }}')
+
+
     
-    return redirect('/new_landing/{{username}}')
+   
     
     
 
