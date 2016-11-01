@@ -155,6 +155,16 @@ def profile_catch():
     #pull second password from profile form
     pot2_password = request.form.get('sec_password')
 
+    user = db.session.query(User.email, User.username, User.password, User.age).filter(User.username==session['current_user']).one()
+    dbage = user.age
+    dbemail = user.email
+    dbusername = user.username
+    dbpassword = user.password
+
+    #pull gendercode and academic code from db
+    dbgender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
+    dbacademic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).one()
+
     
     if email != regex_email:
         flash('Your email cannot be verified, please retype your email.')
@@ -164,9 +174,10 @@ def profile_catch():
         return redirect('/profile/{{ username }}')
     else:
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code': gender_code, 'academic_code': academic_code})
+        db.session.exectue(sql, {'email': email, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }')
+        
     if len(pot_password) < 6:
         flash('Your password is not long enough try something with at least 6 characters.')
         return redirect('/profile/{{ username }}')
