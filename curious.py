@@ -111,8 +111,6 @@ def profile_catch(username):
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).one()
 
 
-
-
     if len(pot_password) < 6:
         flash('Your password is not long enough try something with at least 6 characters.')
         return redirect('/registar/{{ username }}')
