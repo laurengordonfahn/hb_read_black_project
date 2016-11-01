@@ -177,7 +177,7 @@ def profile_catch():
         db.session.exectue(sql, {'email': email, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }')
-        
+
     if len(pot_password) < 6:
         flash('Your password is not long enough try something with at least 6 characters.')
         return redirect('/profile/{{ username }}')
@@ -186,7 +186,7 @@ def profile_catch():
         return redirect('/profile/{{ username }}')
     else:
         sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code': gender_code, 'academic_code': academic_code})
+        db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': pot_password, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }}')
        
