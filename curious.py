@@ -206,11 +206,6 @@ def profile_catch():
         db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': dbacademic_code})
         db.session.commit()
         return redirect('/profile/{{ username }}')
-
-
-    
-   
-    
     
 
 @app.route('/new_landing/<username>')
