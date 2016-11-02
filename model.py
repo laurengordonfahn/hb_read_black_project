@@ -14,6 +14,7 @@ def connect_to_db(app):
 
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///readandblack'
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)
     app.config['SQLALCHEMY_ECHO'] = True
@@ -39,6 +40,13 @@ class Landing(db.Model):
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     landing_name=db.Column(db.String(70), nullable=False)
     primary_landing=db.Column(db.Boolean, nullable=False)
+    keyword=db.Column(db.String(70), nullable=False)
+    type_code=db.Column(db.String(5), db.ForeignKey('types.type_code'))
+
+class Type(db.Model):
+    __tablename__="types"
+    type_code=db.Column(db.String(5), primary_key=True)
+    type_name=db.Column(db.String(5), nullable=False)
 
 #HOW DO I MAKE THIS TABLE? Different number of stories the content???
 class Saved_search(db.Model):
@@ -77,4 +85,5 @@ if __name__ == "__main__":
 
     from curious import app
     connect_to_db(app)
+    db.create_all()
     print "Connected to DB."
