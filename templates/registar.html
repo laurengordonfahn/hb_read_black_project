@@ -9,7 +9,7 @@
 <p> You are signed in as: {{ username }} </p>
 <br>
 
-<form action='/registar_catch' method='POST'>
+<form action='/registar_catch/<username>' method='POST'>
     <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your email associated with your account: </legend>
@@ -21,7 +21,7 @@
     </feildset>
 </form>
 <br>
-<form action='/registar_catch' method='POST'>
+<form action='/registar_catch/<username>' method='POST'>
     <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your password: </legend>
@@ -34,14 +34,14 @@
 </form>
 <br>
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
-<form action='/registar_catch' method='POST'>
+<form action='/registar_catch/<username>' method='POST'>
     <input type='number' name='age' placeholder='age'>
     <br>
     <input type='submit' name='age' value='Submit'>
 </form>
 <br>
 
-<form action='/registar_catch' method='POST'>
+<form action='/registar_catch/<username>' method='POST'>
     <p> Acedemic Level: </p>
     <select name='academic'>
         <option value='highschool'> High School </option>
@@ -54,7 +54,7 @@
 </form>
 <br>
 
-<form action='/registar_catch' method='POST'>
+<form action='/registar_catch/<username>' method='POST'>
     <p>Gender:</p>
     <select name='gender'>
         <option value='female'> Female </option>
@@ -65,12 +65,5 @@
 </form>
 <br>
 
-<!-- create a list of the landing names this person has  AND DO radio buttons need submit?-->
-<ul>
-    <p>Your Landing Pages: </p>
-    {% for landing in landings %}
-        <li> <form action='/profile_catch' method='POST'><input type='radio' name='primary_landing' value='{{ landing }}'> {{ landing }} </form> </li>
-    {% endfor %}
-</ul>
 
 {% endblock %}

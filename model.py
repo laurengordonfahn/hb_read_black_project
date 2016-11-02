@@ -78,14 +78,14 @@ class Academic_level(db.Model):
     academic_code=db.Column(db.String(10), primary_key=True)
     academic_name=db.Column(db.String(70), nullable=False, unique=True)
 
-class News_api_source(db.Model):
-    __tablename__ = "newssources"
-    row_id=
-    source_id=
-    sort_by_code=
-    category=
-    language_id=
-    country_id=
+# class News_api_source(db.Model):
+#     __tablename__ = "newssources"
+#     row_id=
+#     source_id=
+#     sort_by_code=
+#     category=
+#     language_id=
+#     country_id=
 
 class News_api_sortby(db.Model):
     __tablename__ = "newssortby"

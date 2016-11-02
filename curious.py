@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 #Need to create and import Classes in Database model.py
 #ADD ALL CLASSES FROM MODELS!
-from model import  connect_to_db, db, User
+from model import  *
 
 import requests
 
@@ -89,7 +89,7 @@ def sign_up_catch():
         return redirect('/')
     else:
         session.setdefault('current_user', pot_username)
-        user = User(email='email',username='pot_username', password='pot_password', age=1, gender_code='awa',academic_code="ddd") 
+        user = User(email=email,username=pot_username, password=pot_password, age=1, gender_code='f',academic_code="hs") 
         # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting') 
         db.session.add(user)
         db.session.commit()
@@ -99,13 +99,14 @@ def sign_up_catch():
 def registar(username):
     #RE WRITE THIS ITS STOLLEN FROM PROFILE
     """ Render Profile page after Sign-Up """
-    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).one()
+    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.age, User.gender_code).filter(User.username==session['current_user']).first()
     email= user.email
     username = user.username
     age = user.age
-    academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).one()
     gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
-    return render_template('registar.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender)
+    academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
+    
+    return render_template('registar.html', username=username, email=email, age=age, academic_code=academic_code, gender=gender)
 
 @app.route('/registar_catch/<username>', methods=['POST'])
 def registar_catch(username):
@@ -149,7 +150,7 @@ def registar_catch(username):
             user.academic_code=academic_code
             db.session.commit()
             flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on a new landing page!')
-            return redirect('/new_landing/{{username}}')
+            return redirect('/new_landing/%s' % session['current_user'])
 
 @app.route('/profile/<username>')
 def profile(username):
