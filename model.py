@@ -78,6 +78,39 @@ class Academic_level(db.Model):
     academic_code=db.Column(db.String(10), primary_key=True)
     academic_name=db.Column(db.String(70), nullable=False, unique=True)
 
+class News_api_source(db.Model):
+    __tablename__ = "newssources"
+    row_id=
+    source_id=
+    sort_by_code=
+    category=
+    language_id=
+    country_id=
+
+class News_api_sortby(db.Model):
+    __tablename__ = "newssortby"
+    sortby_code=db.Column(db.String(3), primary_key=True)
+    sortby_name=db.Column(db.String(7), nullable=False, unique=True)
+
+class News_api_country(db.Model):
+    __tablename__ = "newscountries"
+    country_code=db.Column(db.String(2), primary_key=True)
+    country_name=db.Column(db.String(10), nullable=False, unique=True)
+
+
+class News_api_category(db.Model):
+    __tablename__ = "newscategories"
+    category_code=db.Column(db.String(4), primary_key=True)
+    category_name=db.Column(db.String(35), nullable=False, unique=True)
+
+class News_api_language(db.Model):
+    __tablename__= "languages"
+    language_code=db.Column(db.String(2), primary_key=True)
+    language_name=db.Column(db.String(12), primary_key=True)
+
+
+
+
 
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
