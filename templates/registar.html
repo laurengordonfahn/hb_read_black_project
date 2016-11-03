@@ -6,43 +6,19 @@
 <p> Your Profile </p>
 <br>
 <!-- Add username to jina for this page -->
-<p> You are signed in as: {{ username }} </p>
+<p> You are signed in as: {{ username }}. <br> 
+    Your email is {{ email }}. <br>
+    The following information is needed to complete your profile with us.  </p>
 <br>
 
-<form action='/registar_catch/<username>' method='POST'>
-    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
-   <feildset>
-        <legend> Change your email associated with your account: </legend>
-        <input type='email' name='email' placeholder='email'>
-        <br>
-        <input type='text' name='sec_email' placeholder='re-type email'>
-        <br>
-        <input type='submit' name='change_email_btn' value='Submit'>
-    </feildset>
-</form>
-<br>
-<form action='/registar_catch/<username>' method='POST'>
-    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
-   <feildset>
-        <legend> Change your password: </legend>
-        <input type='text' name='password' placeholder='password'>
-        <br>
-        <input type='text' name='sec_password' placeholder='re-type password'>
-        <br>
-        <input type='submit' name='change_password_btn' value='Submit'>
-    </feildset>
-</form>
-<br>
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
 <form action='/registar_catch/<username>' method='POST'>
-    <input type='number' name='age' placeholder='age'>
+    <input type='number' min= 0 max= 113 name='age' placeholder='age'>
     <br>
-    <input type='submit' name='age' value='Submit'>
-</form>
-<br>
+   
 
-<form action='/registar_catch/<username>' method='POST'>
-    <p> Acedemic Level: </p>
+
+    <p> Academic Level: </p>
     <select name='academic'>
         <option value='highschool'> High School </option>
         <option value='tradeschool'> Trade School </option>
@@ -50,18 +26,16 @@
         <option value='bs'> B.S. </option>
         <option value='higher'> Higher Degree </option>
     </select>
-    <input type='submit' name='academic_btn' value='Submit'>
-</form>
-<br>
+    
 
-<form action='/registar_catch/<username>' method='POST'>
+
     <p>Gender:</p>
     <select name='gender'>
         <option value='female'> Female </option>
         <option value='male'> Male </option>
         <option value='other'> Other </option>
     </select>
-    <input type='submit' name='gender_btn' value='Submit'>
+    <input type='submit' name='registar_btn' value='Submit'>
 </form>
 <br>
 

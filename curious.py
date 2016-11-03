@@ -103,7 +103,7 @@ def registar(username):
     email= user.email
     username = user.username
     age = user.age
-    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
+    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
     academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     
     return render_template('registar.html', username=username, email=email, age=age, academic_code=academic_code, gender=gender)
@@ -111,46 +111,42 @@ def registar(username):
 @app.route('/registar_catch/<username>', methods=['POST'])
 def registar_catch(username):
     """ Process the Profile form from Profile page """
-    #pull password from sign-up form
-    pot_password = request.form.get('password')
-    # verify if password is adequate.
-    #pull second password from sign-up form
-    pot2_password = request.form.get('sec_password')
-    #pull age/academic/gender from registar form
-    age = request.form.get('age')
+    
+    age = int(request.form.get('age'))
+    print "*******************", type(age)
     academic = request.form.get('academic')
     gender = request.form.get('gender')
 
     #pull information from signup from db
-    user = db.session.query(User.email, User.username, User.password).filter(User.username==session['current_user']).one()
+    user = db.session.query(User.email, User.username, User.password, User.age, User.gender_code, User.academic_code).filter(User.username==session['current_user']).first()
     email = user.email
     username = user.username
     password = user.password
 
     #pull gendercode and academic code from db
-    gender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
-    academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).one()
-
-
-    if len(pot_password) < 6:
-        flash('Your password is not long enough try something with at least 6 characters.')
-        return redirect('/registar/{{ username }}')
-    elif pot_password !=pot2_password:
-        flash('Your second password does not match your first, please re-enter to verify.')
-        return redirect('/registar/{{ username }}')
-    elif age != r'^\d*$':
+    gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
+    academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
+    if age < 1 and age > 113:
+    # if not re.search(^\d{2,3}$, age):
         flash('Please type in a number for your age.')
+        return redirect('/registar/%s' % session['current_user'])
+    elif not academic:
+        flash('Please select an academic level that most closely matches for you.')
+        return redirect('/registar/%s' % session['current_user'])
+    elif not gender:
+        flash('Please select a gender descriptor that most closely matches for you.')
+        return redirect('/registar/%s' % session['current_user'])
     else:
-        if academic and gender:
-            # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
-            # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-            # db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': academic_code})
-            user.age = age
-            user.gender_code=gender_code
-            user.academic_code=academic_code
-            db.session.commit()
-            flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on a new landing page!')
-            return redirect('/new_landing/%s' % session['current_user'])
+        # user.gender_code = gender_code fix with the stuff below
+        # stmt = users.update().\
+        #     where(users.c.id==5).\
+        #     values(name='user #5')
+
+        user.age = age
+        user.academic_code = academic_code
+        db.session.commit()
+        flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, stcreating your newspaper here on a new landing page!')
+        return redirect('/new_landing/%s' % session['current_user'])
 
 @app.route('/profile/<username>')
 def profile(username):

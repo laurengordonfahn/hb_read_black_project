@@ -25,9 +25,10 @@ class User(db.Model):
     user_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
+    #maybe add email check unique in server code because of the unique requirement here
     email=db.Column(db.String(100), nullable=False, unique=True)
     username=db.Column(db.String(50), nullable=False, unique=True)
-    password=db.Column(db.String(50), nullable=False, unique=True)
+    password=db.Column(db.String(50), nullable=False, unique=False)
     age=db.Column(db.Integer)
     gender_code=db.Column(db.String(10), db.ForeignKey('genders.gender_code'))
     academic_code=db.Column(db.String(10), db.ForeignKey('academic_levels.academic_code'))
