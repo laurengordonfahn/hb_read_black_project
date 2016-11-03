@@ -251,16 +251,12 @@ def new_landing_catch():
     media_type = request.form.get('type')
     sortby = request.form.get('sortby')
     category = request.form.get('category')
+    language = request.form.get('language')
+    country = request.form.get('country')
 
-    if media_type == 'text':
-        #query the News API
-        source_fill = []
-        #gather all the possible sources for the category chosen hardcoding for english only at first as not an option
-        source_query = db.session.query(News_api_source.name, source_code).filter(News_api_source.category_name==category, language_code=='en').first()
-        for row in source_query:
-            fill.append(row.source_name)
 
-        random.shuffle(source_fill)
+
+        
 
 
 
@@ -287,6 +283,46 @@ def new_landing_catch():
 @app.route('/landing/<landingname>')
 def landing(landingname):
     """ Render landing page after Log-In """
+    if media_type == 'text':
+        #query the News API
+        source_fill = []
+        #get a json response of possible sources for this search
+        source_query_response = news.newssourcesrequest(category, language, country)
+        #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
+        
+        if source_query_response[status] == "ok":
+        
+            for source in source_query_response[source]:
+                fill.append((source[id], source[urlsToLogos][small]))
+                random.shuffle(source_fill)
+
+        #This will need to be able to be called again but for now just 1 call
+            source_chosen = source_fill[0][0]
+            logo_url = source_fill[0][1]
+        else:
+            pass # need to make a thing if the status is not good!!!!
+        #this is calling the function in news.py that creates a request for a json object from NEWS API
+        #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
+        story_headlines = news.newstextrequest(source, sortby)
+        
+        if story_headlines[status] == "ok":
+            count = 0
+            while count < len(s)
+
+                story_headlines_url= story_headlines['articles'][count]['url']
+                story_headlines_author = story_headlines['articles'][count]['author']
+                story_headlines_title = story_headlines['articles'][count]['title']
+                story_headlines_description = story_headlines['articles'][count]['description']
+                story_headlines_description = story_headlines['articles'][count]['publishedAt']
+
+                # if #user clicks next story:
+                # else:
+                #     break
+                break
+        else:
+            pass # need to make something if the status is not ok
+
+
     return render_template('landing.html')
 
 @app.route('/log_out_catch', methods=['DELETE'])
