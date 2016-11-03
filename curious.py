@@ -7,13 +7,16 @@ from flask_debugtoolbar import DebugToolbarExtension
 #Need to create and import Classes in Database model.py
 #ADD ALL CLASSES FROM MODELS!
 from model import  *
-
+# needed for communicating with API servers
 import requests
-
+# to access regex for pattern matching for verifcation of email etc
 import re
 
-#document containing api requests called request.py
+#document containing api requests 
 import npr
+import news
+#import Random libary from python for new_landing_catch process 
+from random import shuffle
 
 app = Flask(__name__)
 app.secret_key = "dry monday"
@@ -151,11 +154,11 @@ def registar_catch(username):
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
-    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).one()
+    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).first()
     email= user.email
     username = user.username
     age = user.age
-    academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).one()
+    academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender)
 
@@ -178,15 +181,15 @@ def profile_catch():
     #pull gender from profile form
     gender = request.form.get('gender')
 
-    user = db.session.query(User.email, User.username, User.password, User.age).filter(User.username==session['current_user']).one()
+    user = db.session.query(User.email, User.username, User.password, User.age).filter(User.username==session['current_user']).first()
     dbage = user.age
     dbemail = user.email
     dbusername = user.username
     dbpassword = user.password
 
     #pull gendercode and academic code from db
-    dbgender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
-    dbacademic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).one()
+    dbgender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).first()
+    dbacademic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).first()
 
     
     if email != regex_email:
@@ -244,16 +247,41 @@ def new_landing(username):
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
     """ Process the New Landing Construciton Page """
-    keyword = request.form.get('keyword')
-    result = requests.nprtextrequest(keyword)
     landing_name = request.form.get('new_landing_name')
-    keyword = request.form.get('keyword')
-    # WARNING  primary_landing and type_code are hard coded in at this moment to test NPR text results only!
-    sql = 'INSERT INTO landings(landing_name, primary_landing, keyword, type_code) VALUES(:landing_name, :primary_landing, :keyword, :type_code)'
-    db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
-    db.session.commit()
-    print result
-    return redirect('/landing')
+    media_type = request.form.get('type')
+    sortby = request.form.get('sortby')
+    category = request.form.get('category')
+
+    if media_type == 'text':
+        #query the News API
+        source_fill = []
+        #gather all the possible sources for the category chosen hardcoding for english only at first as not an option
+        source_query = db.session.query(News_api_source.name, source_code).filter(News_api_source.category_name==category, language_code=='en').first()
+        for row in source_query:
+            fill.append(row.source_name)
+
+        random.shuffle(source_fill)
+
+
+
+    # elif media_type == 'audio':
+        #query the NPR API
+
+    # elif media_type == 'video' :
+        #query the YouTube API
+
+
+    # unfinished npr stuff below 
+    # keyword = request.form.get('keyword')
+    # result = requests.nprtextrequest(keyword)
+    # landing_name = request.form.get('new_landing_name')
+    # keyword = request.form.get('keyword')
+    # # WARNING  primary_landing and type_code are hard coded in at this moment to test NPR text results only!
+    # sql = 'INSERT INTO landings(landing_name, primary_landing, keyword, type_code) VALUES(:landing_name, :primary_landing, :keyword, :type_code)'
+    # db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
+    # db.session.commit()
+    # print result
+    # return redirect('/landing')
 
 #NEED TO CHANGE landingname from username
 @app.route('/landing/<landingname>')
