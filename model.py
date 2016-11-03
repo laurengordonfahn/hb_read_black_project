@@ -59,13 +59,13 @@ class Saved_search(db.Model):
     #URL to the article
     keyword=db.Column(db.String(70), nullable=False)
 
-class Keyword(db.Model):
-    __tablename__ = "keywords"
-    keyword_id=db.Column(db.Integer,
-                        primary_key=True,
-                        autoincrement=True)
-    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    keyword=db.Column(db.String(70), nullable=False)
+# class Keyword(db.Model):
+#     __tablename__ = "keywords"
+#     keyword_id=db.Column(db.Integer,
+#                         primary_key=True,
+#                         autoincrement=True)
+#     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
+#     keyword=db.Column(db.String(70), nullable=False)
 
 # HOW DO I MAKE CODES HERE?
 class Gender(db.Model):
@@ -79,14 +79,13 @@ class Academic_level(db.Model):
     academic_code=db.Column(db.String(10), primary_key=True)
     academic_name=db.Column(db.String(70), nullable=False, unique=True)
 
-# class News_api_source(db.Model):
-#     __tablename__ = "newssources"
-#     row_id=
-#     source_id=
-#     sort_by_code=
-#     category=
-#     language_id=
-#     country_id=
+class News_api_source(db.Model):
+    __tablename__ = "newssources"
+    row_id= db.Column(db.Integer, primary_key=True, autoincrement=True)
+    source_name=db.Column(db.String(75), nullable=False)
+    source_code=db.Column(db.String(35), nullable=False)
+    category_name=db.Column(db.String(20), db.ForeignKey('newscategories.category_name'))
+    language_code=db.Column(db.String(2), db.ForeignKey('languages.language_code'))
 
 class News_api_sortby(db.Model):
     __tablename__ = "newssortby"
@@ -96,7 +95,7 @@ class News_api_sortby(db.Model):
 class News_api_country(db.Model):
     __tablename__ = "newscountries"
     country_code=db.Column(db.String(2), primary_key=True)
-    country_name=db.Column(db.String(10), nullable=False, unique=True)
+    country_name=db.Column(db.String(25), nullable=False, unique=True)
 
 
 class News_api_category(db.Model):
@@ -107,7 +106,7 @@ class News_api_category(db.Model):
 class News_api_language(db.Model):
     __tablename__= "languages"
     language_code=db.Column(db.String(2), primary_key=True)
-    language_name=db.Column(db.String(12), primary_key=True)
+    language_name=db.Column(db.String(12), nullable=False, unique=True)
 
 
 

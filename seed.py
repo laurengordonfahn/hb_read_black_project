@@ -2,6 +2,12 @@
 from sqlalchemy import func
 from model import Gender
 from model import Academic_level
+from model import News_api_source
+from model import News_api_sortby
+from model import News_api_country
+from model import News_api_category
+from model import News_api_language
+from model import Type
 
 
 from model import connect_to_db, db
@@ -118,14 +124,14 @@ def load_categrories():
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
     News_api_category.query.delete()
 
-    bsns= News_api_categroy(category_code= 'bsns', category_name= 'Business')
-    entr= News_api_categroy(category_code= 'entr', category_name= 'Entertainment')
-    game= News_api_categroy(category_code= 'game', category_name= 'Gaming')
-    gnrl= News_api_categroy(category_code= 'gnrl', category_name= 'General')
-    msc= News_api_categroy(category_code= 'msc', category_name= 'Music')
-    scnt= News_api_categroy(category_code= 'scnt', category_name= 'Science-and-Nature')
-    sprt= News_api_categroy(category_code= 'sprt', category_name= 'Sport')
-    tech= News_api_categroy(category_code= 'tech', category_name= 'Technology')
+    bsns= News_api_category(category_code= 'bsns', category_name= 'business')
+    entr= News_api_category(category_code= 'entr', category_name= 'entertainment')
+    game= News_api_category(category_code= 'game', category_name= 'gaming')
+    gnrl= News_api_category(category_code= 'gnrl', category_name= 'general')
+    msc= News_api_category(category_code= 'msc', category_name= 'music')
+    scnt= News_api_category(category_code= 'scnt', category_name= 'science-and-nature')
+    sprt= News_api_category(category_code= 'sprt', category_name= 'sport')
+    tech= News_api_category(category_code= 'tech', category_name= 'technology')
 
 # We need to add to the session or it won't ever be stored
     db.session.add(bsns)
@@ -147,16 +153,49 @@ def load_languages():
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
-    News_api_languages.query.delete()
+    News_api_language.query.delete()
 
-    en=News_api_languages(language_code= 'en', language_name= 'English')
-    de=News_api_languages(language_code= 'de', language_name= 'German')
-    fr=News_api_languages(language_code= 'fr', language_name= 'French')
+    en=News_api_language(language_code= 'en', language_name= 'English')
+    de=News_api_language(language_code= 'de', language_name= 'German')
+    fr=News_api_language(language_code= 'fr', language_name= 'French')
 
 
     db.session.add(en)
     db.session.add(de)
     db.session.add(fr)
+
+
+def load_news_api_sources():
+    """ Load the News API source data from the readandblack_newsapi.csv file """
+    # always delete the table content so no duplicaiton when running this file again
+    News_api_source.query.delete()
+
+    for row in open("readandblack_newsapi.csv"):
+        row = row.rstrip()
+        source_name, source_code, category_name, language_code= row.split(",")
+        category_name= category_name.rstrip()
+
+        source = News_api_source(source_name=source_name, source_code=source_code, category_name=category_name, language_code=language_code)
+        #We need to add to the session or it won't ever be stored
+        db.session.add(source)
+    #Once we're done, we should commit our work
+    db.session.commit()
+
+def load_type():
+    """ Loads the types of media available to chose from"""
+
+    Type.query.delete()
+    text=Type(type_code= 'tx', type_name= 'Text')
+    audio=Type(type_code= 'au', type_name= 'Audio')
+    video=Type(type_code= 'vd', type_name= 'Video')
+
+    db.session.add(text)
+    db.session.add(audio)
+    db.session.add(video)
+
+    db.session.commit()
+
+
 
 # gendersql = """INSERT INTO genders(gender_code, gender_name)
 #         VALUES(:gender_code, :gender_name)"""
@@ -188,6 +227,11 @@ if __name__ == "__main__":
     # Import different types of data
     load_gender()
     load_academic()
-    
+    load_sortby()
+    load_countries()
+    load_categrories()
+    load_languages()
+    load_news_api_sources()
+    load_type()
 
 
