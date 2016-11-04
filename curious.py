@@ -274,7 +274,13 @@ def new_landing(username):
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
     """ Process the New Landing Construciton Page """
+    has_landing_name = db.session.query(Landing.landing_name).filter(User.user_id==session['current_user']).first()
+
     landing_name = request.form.get('new_landing_name')
+        if has_landing_name:
+            flash("Your landing name must be unique please lable this something other than %s" % landing_name)
+            redirect
+
     media_type = request.form.get('type')
     sortby = request.form.get('sortby')
     category = request.form.get('category')
