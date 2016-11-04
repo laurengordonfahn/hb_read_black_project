@@ -39,10 +39,11 @@ class Landing(db.Model):
                         primary_key=True,
                         autoincrement=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    landing_name=db.Column(db.String(70), nullable=False)
+    landing_name=db.Column(db.String(70), unique=True, nullable=False)
     primary_landing=db.Column(db.Boolean, nullable=False)
-    keyword=db.Column(db.String(70), nullable=False)
-    type_code=db.Column(db.String(5), db.ForeignKey('types.type_code'))
+    #TODO DELETE IS NOT NEEDED
+    # keyword=db.Column(db.String(70), nullable=False)
+    # type_code=db.Column(db.String(5), db.ForeignKey('types.type_code'))
 
 class Type(db.Model):
     __tablename__="types"
@@ -82,6 +83,7 @@ class Academic_level(db.Model):
 class News_api_user_topics(db.Model):
     __tablename__="user_topics"
     topic_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     #TODO find out IF it has to be unique does it hae to be nullable?
     landing_name=db.Column(db.String(85), unique=True)
     media_type=db.Column(db.String(7), nullable=False)

@@ -15,6 +15,7 @@ import re
 #document containing api requests 
 import npr
 import news
+from server_functions import * #current_user()
 #import Random libary from python for new_landing_catch process 
 from random import shuffle
 
@@ -28,14 +29,23 @@ app.jinja_env.undefined = StrictUndefined
 #Fix server-side caching issues
 app.jinja_env.auto_reload = True
 
+#TODO DELETE THIS JUST HERE AS REMINDER TO USER IT!
+# def current_user():
+#     if 'current_user' in session:
+#         return User.query.get(session['current_user'])
+#     else:
+#         return None
+
+
 @app.route('/')
 def index():
     """ Render Sign-In page """
 
-    return render_template('index.html')
+    return render_template('index.html', current_user=current_user())
 
 
-@app.route('/login_catch', methods=['POST'])
+
+@app.route('/login', methods=['POST'])
 def login_catch():
     """ Process the Log-In form from Sign-In page"""
 
@@ -54,13 +64,14 @@ def login_catch():
         landingname=db.session.query(Landing.landing_name).filter(Landing.primary_landing=='True').first()
         #session will be instantiated with current_user set equal to the user_id
         session.setdefault('current_user', user_id)
-        return redirect('/landing/{{ landingname }}')
+        #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
+        return render_template('/landing/{{ landingname }}')
     else:
         flash('Your login information did not match.')
         return redirect('/')
 
 
-@app.route('/sign_up_catch', methods=['POST'])
+@app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
     #pull email from sign-up form
@@ -98,13 +109,28 @@ def sign_up_catch():
         db.session.commit()
         #session will be instantiated with current_user set equal to the user_id
         session.setdefault('current_user', user.user_id)
-        return redirect('/registar/%s' % pot_username)
+        # return redirect('/registar/%s' % pot_username)
+        return render_template('registar.html', current_user=current_user())
+        #TODO DELETE CODE BELOW BUT WAS IN LINE ABOVE IF CURENT USER FUN FAILS
+        # username=user.username, email=user.email,
+    
 
 @app.route('/registar/<username>')
 def registar(username):
     """ Render Registar page after Sign-Up """
     # user = User.query.get(session['current_user']).first()
-    user = User.query.get(session['current_user'])
+    #user = User.query.get(session['current_user'])
+
+    # TODO: always use the current_user variable in templates to get username, email
+    #MAY NEED TO FIX THIS
+    # user = current_user()
+    # if user:
+    #     username = user.username
+    #     email = user.email
+    # else:
+    #     username = None
+    #     email = None
+
     #TODO DELETE IF WORKS
     # email= user.email
     # username = user.username
@@ -112,14 +138,20 @@ def registar(username):
     # gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
     # academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     
-    return render_template('registar.html', username=user.username, 
-                                            email=user.email,)
+    return render_template('registar.html', current_user= current_user())
+    
                                             
 
 @app.route('/registar_catch', methods=['POST'])
 def registar_catch():
     """ Process the Profile form from Profile page """
-    
+    #TODO ON PAGES WHERE USER IS TO BE LOGGED IN
+    # user = current_user()
+
+    # if user is None:
+    #     return redirect("/")
+
+
     age = int(request.form.get('age'))
     academic = request.form.get('academic')
     gender = request.form.get('gender')
@@ -144,7 +176,7 @@ def registar_catch():
         user.academic_code = academic_code
         db.session.commit()
         flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on our new landing page!')
-        return redirect('/new_landing/<username')
+        return render_template('new_landing.html', username=user.username, current_user=current_user())
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -232,7 +264,7 @@ def profile_catch():
         db.session.commit()
         return redirect('/profile/%s' % user.username)
     
-
+#TODO WHERE DOES THE USERNAME COME FROM!!!
 @app.route('/new_landing/<username>')
 def new_landing(username):
     """ Render new landing page after sign-up and profile page """
@@ -256,8 +288,11 @@ def new_landing_catch():
     language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
     country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
 
+    # ADD to database
     topic = News_api_user_topics(landing_name=landing_name, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
-        
+    #TODO HARD CODING primary landing as true need to figure out how to when to change
+    landing_add = Landing(user_id=session['current_user'], landing_name=landing_name, primary_landing=True)
+    db.session.add(landing_add)
     db.session.add(topic)
     db.session.commit()
 
@@ -270,10 +305,10 @@ def new_landing_catch():
         source_query_response = news.newssourcesrequest(category, language, country)
         #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
         
-        if source_query_response[status] == "ok":
+        if source_query_response['status'] == "ok":
         
-            for source in source_query_response[source]:
-                fill.append((source[id], source[urlsToLogos][small]))
+            for source in source_query_response['source']:
+                fill.append((source[id], source['urlsToLogos']['small']))
                 random.shuffle(source_fill)
 
         #This will need to be able to be called again but for now just 1 call
@@ -285,7 +320,7 @@ def new_landing_catch():
         #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
         story_headlines = news.newstextrequest(source, sortby)
         
-        if story_headlines[status] == "ok":
+        if story_headlines['status'] == "ok":
             count = 0
             # while count < len(s)
 
@@ -293,7 +328,15 @@ def new_landing_catch():
             story_headlines_author = story_headlines['articles'][count]['author']
             story_headlines_title = story_headlines['articles'][count]['title']
             story_headlines_description = story_headlines['articles'][count]['description']
-            story_headlines_description = story_headlines['articles'][count]['publishedAt']
+            story_headlines_timestamp = story_headlines['articles'][count]['publishedAt']
+        #TODO this has to be saved in the session only as story 1
+            session['story_1']= {
+                story_headlines_url : story_headlines['articles'][count]['url'],
+                story_headlines_author : story_headlines['articles'][count]['author'],
+                story_headlines_title : story_headlines['articles'][count]['title'],
+                story_headlines_description : story_headlines['articles'][count]['description'],
+                story_headlines_timestamp : story_headlines['articles'][count]['publishedAt']
+            }
 
                 # if #user clicks next story:
                 # else:
@@ -316,12 +359,13 @@ def new_landing_catch():
     # db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
     # db.session.commit()
     # print result
-    return redirect('/landing/%s' % landing_name, link_to_story=story_headlines_url, title=story_headliens_title)
+    
+    return redirect('/landing/%s' % landing_name)
 
 # NEED TO CHANGE landingname from username
 @app.route('/landing/<landingname>')
 def landing(landingname):
-    """ Render landing page after Log-In """
+    """ Render landing page after Log-In or after creation of new_landing """
     # if media_type == 'text':
     #     #query the News API
     #     source_fill = []
@@ -365,8 +409,25 @@ def landing(landingname):
 
     # # elif media_type == 'video' :
     # #     query the YouTube API
-
-    return render_template('landing.html')
+    #ALL THIS IS IN THE SESSION FROM new_landing
+    # story_headlines_url= story_headlines['articles'][count]['url']
+    #         story_headlines_author = story_headlines['articles'][count]['author']
+    #         story_headlines_title = story_headlines['articles'][count]['title']
+    #         story_headlines_description = story_headlines['articles'][count]['description']
+    #         story_headlines_timestamp = story_headlines['articles'][count]['publishedAt']
+    # landing_name = session['current_landing']
+    #TODO THIS IS JUST FOR ONE STORY HAVE TO NOT HARD CODE IT LATER
+    story_headlines_url = session[story_1][story_headlines_url]
+    story_headlines_author = session[story_1][story_headlines_author]
+    story_headlines_title = session[story_1][ story_headlines_title]
+    story_headlines_description = session[story_1][story_headlines_description]
+    story_headlines_timestamp = session[story_1][tory_headlines_timestamp]
+    return render_template('landing.html', landing_name=landing_name, 
+                                            story_url = story_headlines_url, 
+                                            story_author=story_headlines_author, 
+                                            story_title=story_headlines_title, 
+                                            story_description=story_headlines_description,
+                                            story_timestamp=story_headlines_timestamp )
 
 @app.route('/log_out_catch', methods=['DELETE'])
 def log_out_catch():

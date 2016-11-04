@@ -4,7 +4,10 @@
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    <a href= "{{ link_to_story }}" >  {{ title }} </a>
+    <a href= "{{ story_url }}" >  {{ story_title }} </a>
+    <p> {{ story_author }} </p>
+    <p> {{ story_description }} </p>
+    <p> {{ story_timestamp }} </p>
     <form action='/new_landing_catch' method='POST'>
         <feildset>
             <legend>Add Another Landing</legend>
