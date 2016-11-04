@@ -79,6 +79,17 @@ class Academic_level(db.Model):
     academic_code=db.Column(db.String(10), primary_key=True)
     academic_name=db.Column(db.String(70), nullable=False, unique=True)
 
+class News_api_user_topics(db.Model):
+    __tablename__="user_topics"
+    topic_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
+    #TODO find out IF it has to be unique does it hae to be nullable?
+    landing_name=db.Column(db.String(85), unique=True)
+    media_type=db.Column(db.String(7), nullable=False)
+    sortby_code=db.Column(db.String(3), db.ForeignKey('newssortby.sortby_code'))
+    category_code=db.Column(db.String(4), db.ForeignKey('newscategories.category_code'))
+    language_code=db.Column(db.String(2), db.ForeignKey('languages.language_code'))
+    country_code=db.Column(db.String(2), db.ForeignKey('newscountries.country_code'))
+
 class News_api_source(db.Model):
     __tablename__ = "newssources"
     row_id= db.Column(db.Integer, primary_key=True, autoincrement=True)

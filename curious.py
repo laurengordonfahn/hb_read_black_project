@@ -48,11 +48,12 @@ def login_catch():
     pot_password = request.form.get('password')
 
     if (doesname.username ==  pot_username) and (doesname.password == pot_password):
-        session.setdefault('current_user', pot_username)
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #NEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
         user_id = db.session.query(User.user_id).filter(User.username=='pot_username').first()
         landingname=db.session.query(Landing.landing_name).filter(Landing.primary_landing=='True').first()
+        #session will be instantiated with current_user set equal to the user_id
+        session.setdefault('current_user', user_id)
         return redirect('/landing/{{ landingname }}')
     else:
         flash('Your login information did not match.')
@@ -91,65 +92,59 @@ def sign_up_catch():
         flash('Your second password does not match your first, please re-enter to verify.')
         return redirect('/')
     else:
-        session.setdefault('current_user', pot_username)
-        user = User(email=email,username=pot_username, password=pot_password, age=1, gender_code='f',academic_code="hs") 
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting') 
+        user = User(email=email,username=pot_username, password=pot_password,) 
+        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting'
         db.session.add(user)
         db.session.commit()
+        #session will be instantiated with current_user set equal to the user_id
+        session.setdefault('current_user', user.user_id)
         return redirect('/registar/%s' % pot_username)
 
 @app.route('/registar/<username>')
 def registar(username):
-    #RE WRITE THIS ITS STOLLEN FROM PROFILE
-    """ Render Profile page after Sign-Up """
-    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.age, User.gender_code).filter(User.username==session['current_user']).first()
-    email= user.email
-    username = user.username
-    age = user.age
-    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
-    academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
+    """ Render Registar page after Sign-Up """
+    # user = User.query.get(session['current_user']).first()
+    user = User.query.get(session['current_user'])
+    #TODO DELETE IF WORKS
+    # email= user.email
+    # username = user.username
+    # age = user.age
+    # gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
+    # academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     
-    return render_template('registar.html', username=username, email=email, age=age, academic_code=academic_code, gender=gender)
+    return render_template('registar.html', username=user.username, 
+                                            email=user.email,)
+                                            
 
-@app.route('/registar_catch/<username>', methods=['POST'])
-def registar_catch(username):
+@app.route('/registar_catch', methods=['POST'])
+def registar_catch():
     """ Process the Profile form from Profile page """
     
     age = int(request.form.get('age'))
-    print "*******************", type(age)
     academic = request.form.get('academic')
     gender = request.form.get('gender')
 
     #pull information from signup from db
-    user = db.session.query(User.email, User.username, User.password, User.age, User.gender_code, User.academic_code).filter(User.username==session['current_user']).first()
-    email = user.email
-    username = user.username
-    password = user.password
-
-    #pull gendercode and academic code from db
+    user = User.query.get(session['current_user'])
+    
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
     if age < 1 and age > 113:
     # if not re.search(^\d{2,3}$, age):
         flash('Please type in a number for your age.')
-        return redirect('/registar/%s' % session['current_user'])
+        return redirect('/registar/%s' % user.username)
     elif not academic:
         flash('Please select an academic level that most closely matches for you.')
-        return redirect('/registar/%s' % session['current_user'])
+        return redirect('/registar/%s' % user.username)
     elif not gender:
         flash('Please select a gender descriptor that most closely matches for you.')
-        return redirect('/registar/%s' % session['current_user'])
+        return redirect('/registar/%s' % user.username)
     else:
-        # user.gender_code = gender_code fix with the stuff below
-        # stmt = users.update().\
-        #     where(users.c.id==5).\
-        #     values(name='user #5')
-
         user.age = age
         user.academic_code = academic_code
         db.session.commit()
-        flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, stcreating your newspaper here on a new landing page!')
-        return redirect('/new_landing/%s' % session['current_user'])
+        flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on our new landing page!')
+        return redirect('/new_landing/<username')
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -181,7 +176,7 @@ def profile_catch():
     #pull gender from profile form
     gender = request.form.get('gender')
 
-    user = db.session.query(User.email, User.username, User.password, User.age).filter(User.username==session['current_user']).first()
+    user = User.query.get(session['current_user'])
     dbage = user.age
     dbemail = user.email
     dbusername = user.username
@@ -194,31 +189,31 @@ def profile_catch():
     
     if email != regex_email:
         flash('Your email cannot be verified, please retype your email.')
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
     elif email != sec_email:
         flash('Your second email does not match your first, please retype your email.')
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
     else:
         # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
         user.email  = email
         # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
         # db.session.exectue(sql, {'email': email, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
-        return redirect('/profile/{{ username }')
+        return redirect('/profile/%s' % user.username)
 
     if len(pot_password) < 6:
         flash('Your password is not long enough try something with at least 6 characters.')
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
     elif pot_password != pot2_password:
         flash('Your second password does not match your first, please re-enter to verify.')
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
     else:
         # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
         user.password=pot_password
         # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
         # db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': pot_password, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
         db.session.commit()
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
    
     if academic:
         # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
@@ -227,7 +222,7 @@ def profile_catch():
         # academic_code = db.session.query(Academic_level.academic_code).filter(Academic.name== academic).one()
         # db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': academic_code})
         db.session.commit()
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s'  % user.username)
     if gender:
         # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
         user.gender_code=gender_code
@@ -235,14 +230,14 @@ def profile_catch():
         # gender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
         # db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': dbacademic_code})
         db.session.commit()
-        return redirect('/profile/{{ username }}')
+        return redirect('/profile/%s' % user.username)
     
 
 @app.route('/new_landing/<username>')
 def new_landing(username):
     """ Render new landing page after sign-up and profile page """
-    username = session['current_user']
-    return render_template('new_landing.html', username=username)
+    user = User.query.get(session['current_user'])
+    return render_template('new_landing.html', username=user.username)
 
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
@@ -253,36 +248,21 @@ def new_landing_catch():
     category = request.form.get('category')
     language = request.form.get('language')
     country = request.form.get('country')
+#TODO ask if i had put in a bkref if i could have just doted all of this and how?
+ 
+    #translate user input above to codes to be saved in table
+    sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
+    category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+    language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
+    country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
 
-
-
+    topic = News_api_user_topics(landing_name=landing_name, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
         
+    db.session.add(topic)
+    db.session.commit()
 
+    session['current_landing'] = landing_name
 
-
-    # elif media_type == 'audio':
-        #query the NPR API
-
-    # elif media_type == 'video' :
-        #query the YouTube API
-
-
-    # unfinished npr stuff below 
-    # keyword = request.form.get('keyword')
-    # result = requests.nprtextrequest(keyword)
-    # landing_name = request.form.get('new_landing_name')
-    # keyword = request.form.get('keyword')
-    # # WARNING  primary_landing and type_code are hard coded in at this moment to test NPR text results only!
-    # sql = 'INSERT INTO landings(landing_name, primary_landing, keyword, type_code) VALUES(:landing_name, :primary_landing, :keyword, :type_code)'
-    # db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
-    # db.session.commit()
-    # print result
-    # return redirect('/landing')
-
-#NEED TO CHANGE landingname from username
-@app.route('/landing/<landingname>')
-def landing(landingname):
-    """ Render landing page after Log-In """
     if media_type == 'text':
         #query the News API
         source_fill = []
@@ -307,27 +287,91 @@ def landing(landingname):
         
         if story_headlines[status] == "ok":
             count = 0
-            while count < len(s)
+            # while count < len(s)
 
-                story_headlines_url= story_headlines['articles'][count]['url']
-                story_headlines_author = story_headlines['articles'][count]['author']
-                story_headlines_title = story_headlines['articles'][count]['title']
-                story_headlines_description = story_headlines['articles'][count]['description']
-                story_headlines_description = story_headlines['articles'][count]['publishedAt']
+            story_headlines_url= story_headlines['articles'][count]['url']
+            story_headlines_author = story_headlines['articles'][count]['author']
+            story_headlines_title = story_headlines['articles'][count]['title']
+            story_headlines_description = story_headlines['articles'][count]['description']
+            story_headlines_description = story_headlines['articles'][count]['publishedAt']
 
                 # if #user clicks next story:
                 # else:
                 #     break
-                break
+                
         else:
             pass # need to make something if the status is not ok
+    # elif media_type == 'audio':
+    #     query the NPR API
 
+    # elif media_type == 'video' :
+    #     query the YouTube API
+    # unfinished npr stuff below 
+    # keyword = request.form.get('keyword')
+    # result = requests.nprtextrequest(keyword)
+    # landing_name = request.form.get('new_landing_name')
+    # keyword = request.form.get('keyword')
+    # # WARNING  primary_landing and type_code are hard coded in at this moment to test NPR text results only!
+    # sql = 'INSERT INTO landings(landing_name, primary_landing, keyword, type_code) VALUES(:landing_name, :primary_landing, :keyword, :type_code)'
+    # db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
+    # db.session.commit()
+    # print result
+    return redirect('/landing/%s' % landing_name, link_to_story=story_headlines_url, title=story_headliens_title)
+
+# NEED TO CHANGE landingname from username
+@app.route('/landing/<landingname>')
+def landing(landingname):
+    """ Render landing page after Log-In """
+    # if media_type == 'text':
+    #     #query the News API
+    #     source_fill = []
+    #     #get a json response of possible sources for this search
+    #     source_query_response = news.newssourcesrequest(category, language, country)
+    #     #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
+        
+    #     if source_query_response[status] == "ok":
+        
+    #         for source in source_query_response[source]:
+    #             fill.append((source[id], source[urlsToLogos][small]))
+    #             random.shuffle(source_fill)
+
+    #     #This will need to be able to be called again but for now just 1 call
+    #         source_chosen = source_fill[0][0]
+    #         logo_url = source_fill[0][1]
+    #     else:
+    #         pass # need to make a thing if the status is not good!!!!
+    #     #this is calling the function in news.py that creates a request for a json object from NEWS API
+    #     #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
+    #     story_headlines = news.newstextrequest(source, sortby)
+        
+    #     if story_headlines[status] == "ok":
+    #         count = 0
+    #         while count < len(s)
+
+    #             story_headlines_url= story_headlines['articles'][count]['url']
+    #             story_headlines_author = story_headlines['articles'][count]['author']
+    #             story_headlines_title = story_headlines['articles'][count]['title']
+    #             story_headlines_description = story_headlines['articles'][count]['description']
+    #             story_headlines_description = story_headlines['articles'][count]['publishedAt']
+
+    #             # if #user clicks next story:
+    #             # else:
+    #             #     break
+    #             break
+    #     else:
+    #         pass # need to make something if the status is not ok
+    # # elif media_type == 'audio':
+    # #     query the NPR API
+
+    # # elif media_type == 'video' :
+    # #     query the YouTube API
 
     return render_template('landing.html')
 
 @app.route('/log_out_catch', methods=['DELETE'])
 def log_out_catch():
     """ Delete 'current_user' from session and redirect homepage """
+    session.clear()
     flash('You have logged out.')
     return redirect('/')
 
