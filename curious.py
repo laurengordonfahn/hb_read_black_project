@@ -37,12 +37,13 @@ app.jinja_env.auto_reload = True
 #         return None
 
 
+def die(message):
+    raise Exception, message
+
 @app.route('/')
 def index():
     """ Render Sign-In page """
-
     return render_template('index.html', current_user=current_user())
-
 
 
 @app.route('/login', methods=['POST'])
@@ -175,7 +176,7 @@ def registar_catch():
         user.age = age
         user.academic_code = academic_code
         db.session.commit()
-        flash('Welcome, you have successfully signed in to Read&Black with the username {{ username }}, start creating your newspaper here on our new landing page!')
+        flash('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
         return render_template('new_landing.html', username=user.username, current_user=current_user())
 
 @app.route('/profile/<username>')
@@ -298,11 +299,18 @@ def new_landing_catch():
     country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
 
     # ADD to database
-    topic = News_api_user_topics(landing_name=landing_name, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
+    topic = News_api_user_topics(user_id=session['current_user'], landing_name=landing_name, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
     #TODO HARD CODING primary landing as true need to figure out how to when to change
-    landing_add = Landing(user_id=session['current_user'], landing_name=landing_name, primary_landing=True)
-    db.session.add(landing_add)
+    #TODO CREATE RELATIONSHIP HERE TO GET TOPIC_ID LANDING NAME
+    
     db.session.add(topic)
+    db.session.commit()
+
+
+    topic_id_get= db.session.query(News_api_user_topics.topic_id).filter((News_api_user_topics.user_id==session['current_user']) and (News_api_user_topics.landing_name==landing_name)).first()
+    topic_object = News_api_user_topics.query.get(topic_id_get)
+    landing_add = Landing(user_id=session['current_user'], topic_id=topic_object.topic_id, primary_landing=True)
+    db.session.add(landing_add)
     db.session.commit()
 
     session['current_landing'] = landing_name
@@ -314,6 +322,8 @@ def new_landing_catch():
         source_query_response = news.newssourcesrequest(category, language, country)
         #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
         
+        print source_query_response
+
         if source_query_response['status'] == "ok":
         
             for source in source_query_response['source']:
@@ -323,12 +333,15 @@ def new_landing_catch():
         #This will need to be able to be called again but for now just 1 call
             source_chosen = source_fill[0][0]
             logo_url = source_fill[0][1]
+            story_headlines = news.newstextrequest(source_chosen, sortby)
+            print story_headlines
         else:
-            pass # need to make a thing if the status is not good!!!!
-        #this is calling the function in news.py that creates a request for a json object from NEWS API
-        #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
-        story_headlines = news.newstextrequest(source, sortby)
+            die(source_query_response)
+        # need to make a thing if the status is not good!!!!
+        # #this is calling the function in news.py that creates a request for a json object from NEWS API
+        # #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
         
+
         if story_headlines['status'] == "ok":
             count = 0
             # while count < len(s)
@@ -352,6 +365,7 @@ def new_landing_catch():
                 #     break
                 
         else:
+            die(story_headlines)
             pass # need to make something if the status is not ok
     # elif media_type == 'audio':
     #     query the NPR API

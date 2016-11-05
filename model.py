@@ -39,9 +39,10 @@ class Landing(db.Model):
                         primary_key=True,
                         autoincrement=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    landing_name=db.Column(db.String(85), db.ForeignKey('user_topics.landing_name'))
+    topic_id=db.Column(db.Integer, db.ForeignKey('user_topics.topic_id'))
     primary_landing=db.Column(db.Boolean, nullable=False)
     #TODO DELETE IS NOT NEEDED
+    # 
     # keyword=db.Column(db.String(70), nullable=False)
     # type_code=db.Column(db.String(5), db.ForeignKey('types.type_code'))
 
