@@ -4,10 +4,29 @@
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    <a href= "{{ story_url }}" >  {{ story_title }} </a>
-    <p> {{ story_author }} </p>
-    <p> {{ story_description }} </p>
-    <p> {{ story_timestamp }} </p>
+    
+    
+    <form>
+        <fieldset>
+            <legend>Choose your source for {{ category }} news from {{ country }} in {{ language }}:</legend>
+            {% for source in all_sources_available %}   
+                <select class='source_name' name='sources'> {{ source }} </select>         
+            {% endfor %}
+            <input id='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'> 
+        </fieldset
+    </form>
+
+
+    <!--need to figure out how to dom manipulate so come up when needed only-->
+    <div id='hide stories until made'>
+        {% for story in all_stories_avaliable %}
+            <a href= "{{ story_url }}" >  {{ story_title }} </a>
+            <p> {{ story_author }} </p>
+            <p> {{ story_description }} </p>
+            <p> {{ story_timestamp }} </p>
+        {% endfor %}
+    </div>
+
     <form action='/new_landing_catch' method='POST'>
         <feildset>
             <legend>Add Another Landing</legend>
