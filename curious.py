@@ -359,11 +359,22 @@ def landing(landingname):
     if len(response['sources']) == 0:
         die("need more sources")
 
-    # only show the first source
-    # TODO: show all sources
-    source = response['sources'][0]
-    source_id = source['id']
-    source_image_url = source['urlsToLogos']['small']
+    #create a list to hold all the sources from this query
+    all_sources_available = []
+    #sources is a list of dictionaries
+    for source_index in len(response['sources']):
+        #take the dictionary at that index in the list of sources
+        source = response['sources'][source_index]
+
+        all_sources_available.append(source)
+        #JQUERY/ajax this on to the landing itself???? Let them click and chose?
+
+
+
+        source_id = source['id']
+        source_image_url = source['urlsToLogos']['small']
+        #sortby available is a list of three max options
+        source_sortByAvailable = source['sortBysAvailable']
 
     sortby = News_api_sortby.query.get(topic.sortby_code)
     if sortby is None:
@@ -389,7 +400,8 @@ def landing(landingname):
                                             story_title=article['title'], 
                                             story_description=article['description'],
                                             story_timestamp=article['publishedAt'] ,
-                                            current_user = current_user())
+                                            current_user = current_user()
+                                            all_sources_available=all_sources_available)
 
 
 @app.route('/log_out_catch', methods=['DELETE'])
