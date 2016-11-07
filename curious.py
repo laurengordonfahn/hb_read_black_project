@@ -29,16 +29,6 @@ app.jinja_env.undefined = StrictUndefined
 #Fix server-side caching issues
 app.jinja_env.auto_reload = True
 
-#TODO DELETE THIS JUST HERE AS REMINDER TO USER IT!
-# def current_user():
-#     if 'current_user' in session:
-#         return User.query.get(session['current_user'])
-#     else:
-#         return None
-
-
-def die(message):
-    raise Exception, message
 
 @app.route('/')
 def index():
@@ -54,19 +44,18 @@ def login_catch():
     pot_username = request.form.get('username')
     #check the db for the typed in username
     doesname = User.query.filter(User.username == pot_username).first()
-    # doesname = db.session.execute('SELECT username, password FROM users WHERE username == pot_username').fetchone()
     #pull password typed in to login
     pot_password = request.form.get('password')
 
     if (doesname.username ==  pot_username) and (doesname.password == pot_password):
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
-        #NEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
+        #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
         user_id = db.session.query(User.user_id).filter(User.username=='pot_username').first()
-        landingname=db.session.query(Landing.landing_name).filter(Landing.primary_landing=='True').first()
+        landingname=db.session.query(Landing.landing_name).filter(Landing.primary_landing==True).first()
         #session will be instantiated with current_user set equal to the user_id
         session.setdefault('current_user', user_id)
         #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
-        return render_template('/landing/{{ landingname }}')
+        return redirect("/landing/%s" % landingname)
     else:
         flash('Your login information did not match.')
         return redirect('/')
@@ -104,18 +93,19 @@ def sign_up_catch():
         flash('Your second password does not match your first, please re-enter to verify.')
         return redirect('/')
     else:
-        user = User(email=email,username=pot_username, password=pot_password,) 
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting'
+        user = User(email=email,username=pot_username, password=pot_password) 
         db.session.add(user)
         db.session.commit()
         #session will be instantiated with current_user set equal to the user_id
+        
         session.setdefault('current_user', user.user_id)
+
         # return redirect('/registar/%s' % pot_username)
-        return render_template('registar.html', current_user=current_user())
+        return render_template('registar.html', current_user=user)
         #TODO DELETE CODE BELOW BUT WAS IN LINE ABOVE IF CURENT USER FUN FAILS
         # username=user.username, email=user.email,
     
-
+#TODO DELETE THIS ROUTE IT MAY BE UNNECESSARY
 @app.route('/registar/<username>')
 def registar(username):
     """ Render Registar page after Sign-Up """
@@ -179,6 +169,7 @@ def registar_catch():
         flash('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
         return render_template('new_landing.html', username=user.username, current_user=current_user())
 
+#TODO CHECK IF PROFILE WORKS AFTER THE LANDING CAN BE RENDERED
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
@@ -269,6 +260,10 @@ def profile_catch():
 @app.route('/new_landing/<username>')
 def new_landing(username):
     """ Render new landing page after sign-up and profile page """
+
+    if not is_logged_in():
+        return redirect("/")
+
     user = User.query.get(session['current_user'])
     return render_template('new_landing.html', username=user.username)
 
@@ -276,181 +271,126 @@ def new_landing(username):
 def new_landing_catch():
     """ Process the New Landing Construciton Page """
 
+    if not is_logged_in():
+        return redirect("/")
+
     #TODO COME BACK TO THIS LOGIC MAY BE NECESSARY BUT MAY STORE IT SOME WHERE ELSE
     # has_landing_name = db.session.query(Landing.landing_name).filter(User.user_id==session['current_user']).first()
 
     landing_name = request.form.get('new_landing_name')
-    # if has_landing_name:
-    #     flash("Your landing name must be unique please lable this something other than %s"a
-    #         landing_name)
-    #         redirect
+    #check if this landing name has already been used for this user
+    check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.session['current_user']).first()
+    #if this landing name is taken tell them to change it otherwise save it
+    if check_landing_name:
+        flash("Your landing name must be unique please lable this something other than %s" % landing_name)
+    
+        return redirect('/new_landing')
+    else:
 
-    media_type = request.form.get('type')
-    sortby = request.form.get('sortby')
-    category = request.form.get('category')
-    language = request.form.get('language')
-    country = request.form.get('country')
-#TODO ask if i had put in a bkref if i could have just doted all of this and how?
+        landing_add = Landing(user_id=session['current_user'], landing_name=landing_name, primary_landing=True)
+
+        db.session.add(landing_add)
+        db.session.commit()
+
+        landing_id = landing_add.landing_id
+
+
+        print "you created landing_id %d" % landing_id
+        
+        #get landing id 
+        #landing_id= db.session.query(Landing.landing_id).filter(Landing.session['current_user'] and Landing.landing_name==landing_name).first()
+    
+        media_type = request.form.get('type')
+        sortby = request.form.get('sortby')
+        category = request.form.get('category')
+        language = request.form.get('language')
+        country = request.form.get('country')
  
-    #translate user input above to codes to be saved in table
-    sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
-    category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
-    language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
-    country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
 
-    # ADD to database
-    topic = News_api_user_topics(user_id=session['current_user'], landing_name=landing_name, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
-    #TODO HARD CODING primary landing as true need to figure out how to when to change
-    #TODO CREATE RELATIONSHIP HERE TO GET TOPIC_ID LANDING NAME
+        #translate user input above to codes to be saved in table
+        sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
+        category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+        language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
+        country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
+
+
+        # add to database
+        topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
     
-    db.session.add(topic)
-    db.session.commit()
+        db.session.add(topic)
+        db.session.commit()
 
-
-    topic_id_get= db.session.query(News_api_user_topics.topic_id).filter((News_api_user_topics.user_id==session['current_user']) and (News_api_user_topics.landing_name==landing_name)).first()
-    topic_object = News_api_user_topics.query.get(topic_id_get)
-    landing_add = Landing(user_id=session['current_user'], topic_id=topic_object.topic_id, primary_landing=True)
-    db.session.add(landing_add)
-    db.session.commit()
-
-    session['current_landing'] = landing_name
-
-    if media_type == 'text':
-        #query the News API
-        source_fill = []
-        #get a json response of possible sources for this search
-        source_query_response = news.newssourcesrequest(category, language, country)
-        #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
-        
-        print source_query_response
-
-        if source_query_response['status'] == "ok":
-        
-            for source in source_query_response['source']:
-                fill.append((source[id], source['urlsToLogos']['small']))
-                random.shuffle(source_fill)
-
-        #This will need to be able to be called again but for now just 1 call
-            source_chosen = source_fill[0][0]
-            logo_url = source_fill[0][1]
-            story_headlines = news.newstextrequest(source_chosen, sortby)
-            print story_headlines
-        else:
-            die(source_query_response)
-        # need to make a thing if the status is not good!!!!
-        # #this is calling the function in news.py that creates a request for a json object from NEWS API
-        # #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
-        
-
-        if story_headlines['status'] == "ok":
-            count = 0
-            # while count < len(s)
-
-            story_headlines_url= story_headlines['articles'][count]['url']
-            story_headlines_author = story_headlines['articles'][count]['author']
-            story_headlines_title = story_headlines['articles'][count]['title']
-            story_headlines_description = story_headlines['articles'][count]['description']
-            story_headlines_timestamp = story_headlines['articles'][count]['publishedAt']
-        #TODO this has to be saved in the session only as story 1
-            session['story_1']= {
-                story_headlines_url : story_headlines['articles'][count]['url'],
-                story_headlines_author : story_headlines['articles'][count]['author'],
-                story_headlines_title : story_headlines['articles'][count]['title'],
-                story_headlines_description : story_headlines['articles'][count]['description'],
-                story_headlines_timestamp : story_headlines['articles'][count]['publishedAt']
-            }
-
-                # if #user clicks next story:
-                # else:
-                #     break
-                
-        else:
-            die(story_headlines)
-            pass # need to make something if the status is not ok
-    # elif media_type == 'audio':
-    #     query the NPR API
-
-    # elif media_type == 'video' :
-    #     query the YouTube API
-    # unfinished npr stuff below 
-    # keyword = request.form.get('keyword')
-    # result = requests.nprtextrequest(keyword)
-    # landing_name = request.form.get('new_landing_name')
-    # keyword = request.form.get('keyword')
-    # # WARNING  primary_landing and type_code are hard coded in at this moment to test NPR text results only!
-    # sql = 'INSERT INTO landings(landing_name, primary_landing, keyword, type_code) VALUES(:landing_name, :primary_landing, :keyword, :type_code)'
-    # db.session.exectue(sql, {'landing_name': landing_name, 'primary_landing' : 'TRUE', 'keyword': keyword, 'type_code': 'text'})
-    # db.session.commit()
-    # print result
+        return redirect('/landing/%s' % landing_add.landing_name)        
     
-    return redirect('/landing/%s' % landing_name)
 
 # NEED TO CHANGE landingname from username
 @app.route('/landing/<landingname>')
 def landing(landingname):
     """ Render landing page after Log-In or after creation of new_landing """
-    # if media_type == 'text':
-    #     #query the News API
-    #     source_fill = []
-    #     #get a json response of possible sources for this search
-    #     source_query_response = news.newssourcesrequest(category, language, country)
-    #     #gather all the possible sources for the category from the json above in source_query_response status = source_query_response[status] (can be 'ok' or 'error')  get a list of all possible soucres dictionaries source_query_response[sources] = [{source goodies},{source goodies}] so for source in source_query_response[sources]      print source_code = source[id] source_name= source[name] source_descripiton = source[description]source_url = source[url] source_logo_small = source[urlsToLogos][small]
-        
-    #     if source_query_response[status] == "ok":
-        
-    #         for source in source_query_response[source]:
-    #             fill.append((source[id], source[urlsToLogos][small]))
-    #             random.shuffle(source_fill)
 
-    #     #This will need to be able to be called again but for now just 1 call
-    #         source_chosen = source_fill[0][0]
-    #         logo_url = source_fill[0][1]
-    #     else:
-    #         pass # need to make a thing if the status is not good!!!!
-    #     #this is calling the function in news.py that creates a request for a json object from NEWS API
-    #     #creates a dictionary  a list of artilces = story_headlines['articles'] within the list author =['author'][i] title= ['title'][i] description = ['description'][i] url = ['url'][i] pubtimestamp = ['publishedAt'][i]
-    #     story_headlines = news.newstextrequest(source, sortby)
-        
-    #     if story_headlines[status] == "ok":
-    #         count = 0
-    #         while count < len(s)
+    if not is_logged_in():
+        return redirect("/")
 
-    #             story_headlines_url= story_headlines['articles'][count]['url']
-    #             story_headlines_author = story_headlines['articles'][count]['author']
-    #             story_headlines_title = story_headlines['articles'][count]['title']
-    #             story_headlines_description = story_headlines['articles'][count]['description']
-    #             story_headlines_description = story_headlines['articles'][count]['publishedAt']
+    user_id = session['current_user']
+    landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
 
-    #             # if #user clicks next story:
-    #             # else:
-    #             #     break
-    #             break
-    #     else:
-    #         pass # need to make something if the status is not ok
-    # # elif media_type == 'audio':
-    # #     query the NPR API
+    if landing is None:
+        die("can't find landing with name %s" % landingname)
 
-    # # elif media_type == 'video' :
-    # #     query the YouTube API
-    #ALL THIS IS IN THE SESSION FROM new_landing
-    # story_headlines_url= story_headlines['articles'][count]['url']
-    #         story_headlines_author = story_headlines['articles'][count]['author']
-    #         story_headlines_title = story_headlines['articles'][count]['title']
-    #         story_headlines_description = story_headlines['articles'][count]['description']
-    #         story_headlines_timestamp = story_headlines['articles'][count]['publishedAt']
-    # landing_name = session['current_landing']
-    #TODO THIS IS JUST FOR ONE STORY HAVE TO NOT HARD CODE IT LATER
-    story_headlines_url = session[story_1][story_headlines_url]
-    story_headlines_author = session[story_1][story_headlines_author]
-    story_headlines_title = session[story_1][ story_headlines_title]
-    story_headlines_description = session[story_1][story_headlines_description]
-    story_headlines_timestamp = session[story_1][tory_headlines_timestamp]
-    return render_template('landing.html', landing_name=landing_name, 
-                                            story_url = story_headlines_url, 
-                                            story_author=story_headlines_author, 
-                                            story_title=story_headlines_title, 
-                                            story_description=story_headlines_description,
-                                            story_timestamp=story_headlines_timestamp )
+    topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
+
+    if topic is None:
+        die("can't find topic with landing_id %d" % landing.landing_id)
+
+
+    if topic.media_type != "text":
+        die("landing type %s not supported (!= text)" % topic.media_type)
+
+    # fetch the category row for this landing
+    category = News_api_category.query.get(topic.category_code)
+
+    # make the api call
+    response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
+
+    # show exception if api returns error
+    if response['status'] != "ok":
+        die(response)
+
+    if len(response['sources']) == 0:
+        die("need more sources")
+
+    # only show the first source
+    # TODO: show all sources
+    source = response['sources'][0]
+    source_id = source['id']
+    source_image_url = source['urlsToLogos']['small']
+
+    sortby = News_api_sortby.query.get(topic.sortby_code)
+    if sortby is None:
+        sortby_name = "top"
+    else:
+        sortby_name = sortby.sortby_name
+
+    headlines_response = news.newstextrequest(source_id, sortby_name)
+
+    if headlines_response['status'] != "ok":
+        die(headlines_response)
+
+    if len(headlines_response['articles']) == 0:
+        die("must have articles in the response")
+
+    # only show the first article
+    # TODO: show all articles for each source
+    article = headlines_response['articles'][0]
+
+    return render_template('landing.html', landing_name=landing.landing_name, 
+                                            story_url = article['url'], 
+                                            story_author=article['author'], 
+                                            story_title=article['title'], 
+                                            story_description=article['description'],
+                                            story_timestamp=article['publishedAt'] ,
+                                            current_user = current_user())
+
 
 @app.route('/log_out_catch', methods=['DELETE'])
 def log_out_catch():

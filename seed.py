@@ -9,7 +9,6 @@ from model import News_api_category
 from model import News_api_language
 from model import Type
 
-
 from model import connect_to_db, db
 from curious import app
 
@@ -35,11 +34,8 @@ def load_gender():
     db.session.add(mgender)
     db.session.add(ogender)
 
-
-
     # Once we're done, we should commit our work
     db.session.commit()
-
 
 def load_academic():
     """Load academic from code below."""
@@ -67,7 +63,6 @@ def load_academic():
 
     # Once we're done, we should commit our work
     db.session.commit()
-
 
 def load_sortby():
     """ Load newssortby table from code below."""

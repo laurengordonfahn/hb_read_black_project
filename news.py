@@ -1,6 +1,7 @@
 import requests
 import os
 
+
 def newstextrequest(source, sortby):
     # read the apikey held in this file into this code
     apikey=os.environ["NEWSAPIKEY"]
@@ -11,7 +12,7 @@ def newstextrequest(source, sortby):
                }
     
     r = requests.get(
-        'http://newsapi.org/v1/articles?', params=payload)
+        'http://newsapi.org/v1/articles', params=payload)
     output = r.json()
 
     return output
@@ -19,13 +20,15 @@ def newstextrequest(source, sortby):
 def newssourcesrequest(category, language, country):
     apikey=os.environ["NEWSAPIKEY"]
 
+
     payload = { 'category': category,
                 'language': language,
                 'country' : country,
                 'apiKey': apikey}
 
     r = requests.get(
-        'http://newsapi.org/v1/articles?', params=payload)
+        'http://newsapi.org/v1/sources', params=payload)
+    print(r.url)
     output = r.json()
 
     return output
