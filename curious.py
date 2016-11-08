@@ -370,7 +370,7 @@ def landing(landingname):
         source_name = response['sources'][source_index]['name']
         source_id = response['sources'][source_index]['id']
 
-        all_sources_available['source_id'] = source_name
+        all_sources_available[source_id] = source_name
     return render_template('landing.html', landing_name=landing.landing_name, 
                                             # story_url = article['url'], 
                                             # story_author=article['author'], 

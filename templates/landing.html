@@ -1,43 +1,7 @@
 {% extends 'base.html' %}
 <!--NEED TO ADD landing_name to Jinja render-->
 {% block title %} {{ landing_name }} {% endblock %}
-<script type="text/javascript" > 
-"use strict";
-var passwordtext = $('#explain_password').data('password');
-//"Passwords must contain at least 6 characters."
 
-function showStories(response){
-
-        // $("#results").html("");
-        console.log(response);
-        
-           //figure out how to make this image just appear
-           $("#results").html(
-            for (var i =0; i < response["articles"].length; i++){
-            // console.log(i)
-           "<a href=" +response["articles"][i]["urlToImage"]+ ">"+ "Image </a>"
-            "<a href=" +response["articles"][i]["url"]+ ">" + 
-             response['articles'][i]['title']  + "</a>" +
-            "<p>" +  response["articles"][i]['author'] + "</p>" + 
-            "<p>" +response["articles"][i]["description"] +"</p>" +
-            "<p>" +response["articles"][i]["publishedAt"]+ "</p>" } )
-            
-        
-
-    }
-    function getRequestInfo(evt){
-        evt.preventDefault();
-
-        var formInputs={
-            "source_id": $(".source_name").val(),
-            "sortby":$("#sortby").val()
-        };
-        //QUESTION HOW DO I PUT VARIABLE IN BELOW
-        $.get("/news-landing.json",
-                formInputs,
-                showStories);
-    }
-    $("#chose_source_btn").on("click", getRequestInfo);</script>
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
@@ -45,12 +9,14 @@ function showStories(response){
     <form>
         <fieldset>
             <legend>Choose your source for {{ category }} news from {{ country }} in {{ language }}:</legend>
-            {% for source_id, source_name in all_sources_available.iteritems() %} 
+             
             <!--- changed the id to value if impact occurs -->
                 <select  class='source_name' name='sources'>
-                    <option  value='{{ source_id }}' > {{ source_name }} </option>
-                </select>         
-            {% endfor %}
+                    {% for source_id, source_name in all_sources_available.iteritems() %}
+                        <option  value='{{ source_id }}' > {{ source_name }} </option>
+                    {% endfor %}
+                </select> 
+            
              <p>How to Sort</p>
         <select id="sortby" name ='sortby'>
             <option value='top' checked="checked"> Top </option>
