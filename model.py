@@ -88,7 +88,7 @@ class News_api_user_topics(db.Model):
     #TODO find out IF it has to be unique does it hae to be nullable?
     landing_id=db.Column(db.Integer, db.ForeignKey('landings.landing_id'))
     media_type=db.Column(db.String(7), nullable=False)
-    sortby_code=db.Column(db.String(3), db.ForeignKey('newssortby.sortby_code'))
+    # sortby_code=db.Column(db.String(3), db.ForeignKey('newssortby.sortby_code'))
     category_code=db.Column(db.String(4), db.ForeignKey('newscategories.category_code'))
     language_code=db.Column(db.String(2), db.ForeignKey('languages.language_code'))
     country_code=db.Column(db.String(2), db.ForeignKey('newscountries.country_code'))

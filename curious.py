@@ -301,21 +301,22 @@ def new_landing_catch():
         #landing_id= db.session.query(Landing.landing_id).filter(Landing.session['current_user'] and Landing.landing_name==landing_name).first()
     
         media_type = request.form.get('type')
-        sortby = request.form.get('sortby')
+        # sortby = request.form.get('sortby')
         category = request.form.get('category')
         language = request.form.get('language')
         country = request.form.get('country')
+        print "THIS IS WHAT WE WANT", language, country
  
 
         #translate user input above to codes to be saved in table
-        sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
+        # sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
         category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
-        language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
-        country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
-
+        # language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
+        # country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
+       
 
         # add to database
-        topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, sortby_code=sortby_code, category_code=category_code, language_code=language_code, country_code=country_code) 
+        topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
     
         db.session.add(topic)
         db.session.commit()
@@ -348,6 +349,8 @@ def landing(landingname):
 
     # fetch the category row for this landing
     category = News_api_category.query.get(topic.category_code)
+    country= News_api_country.query.get(topic.country_code)
+    language=News_api_language.query.get(topic.language_code)
 
     # make the api call
     response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
@@ -360,48 +363,117 @@ def landing(landingname):
         die("need more sources")
 
     #create a list to hold all the sources from this query
-    all_sources_available = []
+    all_sources_available = {}
     #sources is a list of dictionaries
-    for source_index in len(response['sources']):
+    for source_index in range(len(response['sources'])):
         #take the dictionary at that index in the list of sources
-        source = response['sources'][source_index]
+        source_name = response['sources'][source_index]['name']
+        source_id = response['sources'][source_index]['id']
 
-        all_sources_available.append(source)
-        #JQUERY/ajax this on to the landing itself???? Let them click and chose?
-
-
-
-        source_id = source['id']
-        source_image_url = source['urlsToLogos']['small']
-        #sortby available is a list of three max options
-        source_sortByAvailable = source['sortBysAvailable']
-
-    sortby = News_api_sortby.query.get(topic.sortby_code)
-    if sortby is None:
-        sortby_name = "top"
-    else:
-        sortby_name = sortby.sortby_name
-
-    headlines_response = news.newstextrequest(source_id, sortby_name)
-
-    if headlines_response['status'] != "ok":
-        die(headlines_response)
-
-    if len(headlines_response['articles']) == 0:
-        die("must have articles in the response")
-
-    # only show the first article
-    # TODO: show all articles for each source
-    article = headlines_response['articles'][0]
-
+        all_sources_available['source_id'] = source_name
     return render_template('landing.html', landing_name=landing.landing_name, 
-                                            story_url = article['url'], 
-                                            story_author=article['author'], 
-                                            story_title=article['title'], 
-                                            story_description=article['description'],
-                                            story_timestamp=article['publishedAt'] ,
-                                            current_user = current_user()
+                                            # story_url = article['url'], 
+                                            # story_author=article['author'], 
+                                            # story_title=article['title'], 
+                                            # story_description=article['description'],
+                                            # story_timestamp=article['publishedAt'] ,
+                                            current_user = current_user(),
+                                            category=category,
+                                            country=country,
+                                            language=language,
                                             all_sources_available=all_sources_available)
+
+    
+    # ____________
+    # function showStories(response){
+
+    #     $("#results").html("");
+
+    #     for (var i =0; i < response['articles'].length; i++){
+
+    #        <!--figure out how to make this image just appear-->
+    #        $("#results").html(
+    #        "<a href=" +response['articles'][i]['urlToImage']+ ">"+ Image "</a>"
+    #         "<a href=" +response['articles'][i]['url']+ ">" + 
+    #          response['articles'][i]['title']  + "</a>" +
+    #         "<p>" +  response['articles'][i]['author'] + "</p>" + 
+    #         "<p>" +response['articles'][i]['description'] +"</p>" +
+    #         "<p>" +response['articles'][i]['publishedAt']+ "</p>" )
+            
+    #     }
+
+    # }
+    # function getRequestInfo(evt){
+    #     evt.preventDefault();
+    #     var formInputs={
+    #         "source_id": $('.source_name').attr("id")
+    #         "sortby":$('#sortby').val()
+    #     };
+    #     #QUESTION HOW DO I PUT VARIABLE IN BELOW
+    #     $.get('/news-landing.json',
+    #             formInputs,
+    #             showStories;
+    # }
+    # $('#chose_source_btn').on('click', getRequestInfo);
+    # ____________
+#TODO BE AWARE ROUTE CHANGE with News added at start
+@app.route('/news-landing.json')
+def news_landing():
+    """ Get json from API call of text return json for ajax callback showStories(result) """
+        #JQUERY/ajax this on to the landing itself???? Let them click and chose?
+    #NOT CERTAIN WHAT GET FROM DICTIONARY ARGS? 
+    #NOT CERTAIN HOW TO GET LANDING ID HERE???
+    # topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
+    
+    #this comes from the jquery js function getRequestInfo
+    source_id = request.args.get('source_id')
+    sortby = request.args.get('sortby')
+    #TODO GET THE SOURCE IMAGE INTO THIS SO WE HAVE IT
+    if sortby=="top":
+        headlines_response = news.newstextrequest(source_id, sortby)
+        if headlines_response['status'] != 'ok':
+            die("response for this source and sortby not coming through")
+        else:
+            return headlines_response
+    if sortby != "top":
+        headlines_response = news.newstextrequest(source_id, sortby)
+        if headlines_response['status'] != 'ok':
+            sortby = "top"
+            headlines_response = news.newstextrequest(source_id, sortby)
+            if headlines_response['status'] != "ok":
+                die("response with defalut sortby top is not coming through")
+            else:
+                return headlines_response
+
+    #    
+
+    # #TODO MAY HAVE TO CHANGE BELOW TO SET TO TOP IF NO SORTBY QUERY FOR THAT SOURCE 
+
+    
+
+    #
+
+    # if headlines_response['status'] != "ok":
+    #     die(headlines_response)
+
+    # if len(headlines_response['articles']) == 0:
+    #     die("must have articles in the response")
+
+    # # only show the first article
+    # # TODO: show all articles for each source
+    # article = headlines_response['articles'][0]
+
+    # return render_template('landing.html', landing_name=landing.landing_name, 
+    #                                         story_url = article['url'], 
+    #                                         story_author=article['author'], 
+    #                                         story_title=article['title'], 
+    #                                         story_description=article['description'],
+    #                                         story_timestamp=article['publishedAt'] ,
+    #                                         current_user = current_user(),
+    #                                         category=category,
+    #                                         country=country,
+    #                                         language=language
+    #                                         all_sources_available=all_sources_available)
 
 
 @app.route('/log_out_catch', methods=['DELETE'])

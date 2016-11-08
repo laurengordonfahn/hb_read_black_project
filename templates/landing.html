@@ -9,22 +9,26 @@
     <form>
         <fieldset>
             <legend>Choose your source for {{ category }} news from {{ country }} in {{ language }}:</legend>
-            {% for source in all_sources_available %}   
-                <select class='source_name' name='sources'> {{ source }} </select>         
+            {% for source_id, source_name in all_sources_available.iteritems() %} 
+            <!--- changed the id to value if impact occurs -->
+                <select  class='source_name' name='sources'>
+                    <option  value='{{ source_id }}' > {{ source_name }} </option>
+                </select>         
             {% endfor %}
+             <p>How to Sort</p>
+        <select id="sortby" name ='sortby'>
+            <option value='top' checked="checked"> Top </option>
+            <option value='latest'> Latest </option>
+            <option value='popular'> Popular </option>
+        </select>
             <input id='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'> 
-        </fieldset
+        </fieldset>
     </form>
 
 
     <!--need to figure out how to dom manipulate so come up when needed only-->
-    <div id='hide stories until made'>
-        {% for story in all_stories_avaliable %}
-            <a href= "{{ story_url }}" >  {{ story_title }} </a>
-            <p> {{ story_author }} </p>
-            <p> {{ story_description }} </p>
-            <p> {{ story_timestamp }} </p>
-        {% endfor %}
+    <div id='results'>
+        
     </div>
 
     <form action='/new_landing_catch' method='POST'>
