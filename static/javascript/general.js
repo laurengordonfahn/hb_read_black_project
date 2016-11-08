@@ -6,10 +6,10 @@ function showStories(response){
         $("#results").html("");
 
         for (var i =0; i < response['articles'].length; i++){
-
-           <!--figure out how to make this image just appear-->
+            console.log(i)
+           //figure out how to make this image just appear
            $("#results").html(
-           "<a href=" +response['articles'][i]['urlToImage']+ ">"+ Image "</a>"
+           "<a href=" +response['articles'][i]['urlToImage']+ ">"+ "Image </a>"
             "<a href=" +response['articles'][i]['url']+ ">" + 
              response['articles'][i]['title']  + "</a>" +
             "<p>" +  response['articles'][i]['author'] + "</p>" + 
@@ -25,7 +25,7 @@ function showStories(response){
             "source_id": $('.source_name').attr("id")
             "sortby":$('#sortby').val()
         };
-        #QUESTION HOW DO I PUT VARIABLE IN BELOW
+        //QUESTION HOW DO I PUT VARIABLE IN BELOW
         $.get('/news-landing.json',
                 formInputs,
                 showStories;

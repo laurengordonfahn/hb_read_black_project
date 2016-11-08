@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>{% block title %} {% endblock %}</title> 
-    <!-- created without being filled -->
-    <link rel='stylesheet' href="static/css/stylesheet.css">
+
+    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
 </head>
 <body>
     {% if current_user %}
@@ -25,9 +26,9 @@
   
     {% block content %}{% endblock%}
 
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- created without being filled -->
-    <script src ="static/javascript/general.js"></script>
+    
+
+    
 
 
 </body>

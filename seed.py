@@ -1,4 +1,3 @@
-
 from sqlalchemy import func
 from model import Gender
 from model import Academic_level

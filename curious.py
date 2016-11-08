@@ -378,9 +378,9 @@ def landing(landingname):
                                             # story_description=article['description'],
                                             # story_timestamp=article['publishedAt'] ,
                                             current_user = current_user(),
-                                            category=category,
-                                            country=country,
-                                            language=language,
+                                            category=category.category_name,
+                                            country=country.country_name,
+                                            language=language.language_name,
                                             all_sources_available=all_sources_available)
 
     
@@ -428,13 +428,16 @@ def news_landing():
     #this comes from the jquery js function getRequestInfo
     source_id = request.args.get('source_id')
     sortby = request.args.get('sortby')
+    print "source_id", source_id
+    print "sortby", sortby
     #TODO GET THE SOURCE IMAGE INTO THIS SO WE HAVE IT
     if sortby=="top":
         headlines_response = news.newstextrequest(source_id, sortby)
         if headlines_response['status'] != 'ok':
             die("response for this source and sortby not coming through")
         else:
-            return headlines_response
+            print "************** RESPONSE: ", headlines_response
+            return jsonify(headlines_response)
     if sortby != "top":
         headlines_response = news.newstextrequest(source_id, sortby)
         if headlines_response['status'] != 'ok':
@@ -443,7 +446,8 @@ def news_landing():
             if headlines_response['status'] != "ok":
                 die("response with defalut sortby top is not coming through")
             else:
-                return headlines_response
+                print "************** RESPONSE: ", headlines_response
+                return jsonify(headlines_response)
 
     #    
 
