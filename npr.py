@@ -17,3 +17,50 @@ def nprtextrequest():
 
 def npraudiorequest():
     pass
+
+
+###################
+from curious import nproauth_redirect
+from random import choice
+from string import ascii_lowercase
+
+def nproauth():
+    nprapplicationid=os.environ["NPRAPPLICATIONID"]
+    nprapplicationsec=os.environ["NPRAPPLICATIONSECRET"]
+    state =(''.join(choice(ascii_lowercase) for i in range(16)))
+    state =str(state)
+    uri= "http://localhost:5000/nproauth/tokengiver"
+
+
+    payload ={
+        'client_id': nprapplicationid,
+        'state': state,
+        'redirect_uri': uri,
+        'response_type':'code',
+        'scope':'identity.readonly'
+    }
+
+    r = requests.get('https://api.npr.org/authorization/v2/authorize', params=payload)
+
+    output_text =r.text
+
+def nprtoken():
+    nprapplicationid=os.environ["NPRAPPLICATIONID"]
+    nprapplicationsec=os.environ["NPRAPPLICATIONSECRET"]
+
+    payload= {
+   "grant_type": "authorization_code",
+   "client_id": nprapplicationid,
+   "client_secret": nprapplicationsec ,
+   "code": nproauth_redirect() ,
+   "redirect_uri": "http://localhost:5000/nproauth/tokengiver"
+    }
+
+    r = request.post('https://api.npr.org/authorization/v2/token', params=payload)
+
+    output_text=r.text
+
+
+
+
+

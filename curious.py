@@ -147,6 +147,7 @@ def registar_catch():
     academic = request.form.get('academic')
     gender = request.form.get('gender')
 
+    
     #pull information from signup from db
     user = User.query.get(session['current_user'])
     
@@ -164,7 +165,8 @@ def registar_catch():
         return redirect('/registar/%s' % user.username)
     else:
         user.age = age
-        user.academic_code = academic_code
+        user.academic_code = academic_code.academic_code
+        user.gender_code= gender_code.gender_code
         db.session.commit()
         flash('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
         return render_template('new_landing.html', username=user.username, current_user=current_user())
@@ -480,10 +482,36 @@ def news_landing():
     #                                         all_sources_available=all_sources_available)
 
 
-@app.route('/log_out_catch', methods=['DELETE'])
+    
+
+@app.route('/nproauth/tokengiver')
+def nproauth_redirect():
+
+    #authorization code sent here how do I save it
+    #TODO HOW DO I GET THIS OVER TO npr.py file
+    
+
+    # how do I make sure that its listening for authorization code?
+    return oauthresponsecode=npr.nproauth()
+
+@app.route('/nproauth/getter', method=['POST'])
+def nproauth_getter():
+    oauthresponsetoken= npr.nprtoken()
+    {
+    #LOOKS LIKE THIS ISH
+# "access_token": "tDlflPO3sjsue834keDfkf838rturZkGDUsYr6Gp",
+# "token_type": "Bearer",
+# "expires_in": 720869706,                
+# "refresh_token": "tasdfasd4keDfSDasdfDF UsYr6Gp"
+# }
+    #TODO store locally the access_token and refresh token is sent over they must both be sent in. 
+
+
+@app.route('/log_out_catch', methods=['POST'])
 def log_out_catch():
     """ Delete 'current_user' from session and redirect homepage """
-    session.clear()
+    del session['current_user']
+    # session.clear()
     flash('You have logged out.')
     return redirect('/')
 

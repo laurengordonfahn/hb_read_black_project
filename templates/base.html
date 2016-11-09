@@ -14,7 +14,7 @@
         <a  href='/profile/{{ current_user.username }}'>Profile</a>
         <a  href='/new_landing/{{ current_user.username }}'>Add New Landing</a>
         <!--CREATE LOG OUT CATCH and get ride of logout if not signed in-->
-        <form action='/log_out_catch' method='DELETE'><input type='submit' name='log-out' value='Log-Out'></form>
+        <form action='/log_out_catch' method='POST'><input type='submit' name='log-out' value='Log-Out'></form>
     {% endif %}
 
     <ul>

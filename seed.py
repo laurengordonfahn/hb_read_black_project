@@ -45,11 +45,11 @@ def load_academic():
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
     Academic_level.query.delete()
 
-    hacademic = Academic_level(academic_code= 'hs', academic_name= 'High School')
-    tacademic = Academic_level(academic_code= 'ts', academic_name= 'Trade School')
-    aacademic = Academic_level(academic_code= 'ba', academic_name= 'B.A.')
-    sacademic = Academic_level(academic_code= 'bs', academic_name= 'B.S.')
-    uacademic = Academic_level(academic_code= 'hr', academic_name= 'Higher')
+    hacademic = Academic_level(academic_code= 'hs', academic_name= 'highschool')
+    tacademic = Academic_level(academic_code= 'ts', academic_name= 'tradeschool')
+    aacademic = Academic_level(academic_code= 'ba', academic_name= 'ba')
+    sacademic = Academic_level(academic_code= 'bs', academic_name= 'bs')
+    uacademic = Academic_level(academic_code= 'hr', academic_name= 'higher')
 
 
     # We need to add to the session or it won't ever be stored
