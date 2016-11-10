@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %} Sign-In {% endblock %}
+
+{% block content %}
+
+<h1> Your Saved Newspapers </h1>
+<br>
+    {% for landingname in landingnames %}
+        <a href="/landing/{{ landingname }}"><button>{{ landingname }}</button></a>
+    {% endfor %}
+{% endblock %}

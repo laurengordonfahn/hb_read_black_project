@@ -51,15 +51,22 @@ def login_catch():
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
         user_id = db.session.query(User.user_id).filter(User.username=='pot_username').first()
-        landingname=db.session.query(Landing.landing_name).filter(Landing.primary_landing==True).first()
+        
         #session will be instantiated with current_user set equal to the user_id
         session.setdefault('current_user', user_id)
         #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
-        return redirect("/landing/%s" % landingname)
+        # topics = db.session.query(News_api_user_topics.topic_id).filter(News_api_user_topics.)
+        return redirect("/landing/options")
     else:
         flash('Your login information did not match.')
         return redirect('/')
 
+@app.route('/landing/opitons')
+def landing_options():
+
+    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+
+    return render_template("landing_options.html", landingname=landingname)
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
@@ -335,11 +342,11 @@ def landing(landingname):
         return redirect("/")
 
     user_id = session['current_user']
-    landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
+    #WITH NEW LOGIC don't need lines below?
+    # landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
 
-    if landing is None:
-        die("can't find landing with name %s" % landingname)
-
+    # if landing is None:
+    #     die("can't find landing with name %s" % landingname)
     topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
 
     if topic is None:
@@ -492,12 +499,13 @@ def nproauth_redirect():
     
 
     # how do I make sure that its listening for authorization code?
-    return oauthresponsecode=npr.nproauth()
+    return npr.nproauth()
+   
 
-@app.route('/nproauth/getter', method=['POST'])
+@app.route('/nproauth/getter', methods=['POST'])
 def nproauth_getter():
     oauthresponsetoken= npr.nprtoken()
-    {
+    # {
     #LOOKS LIKE THIS ISH
 # "access_token": "tDlflPO3sjsue834keDfkf838rturZkGDUsYr6Gp",
 # "token_type": "Bearer",

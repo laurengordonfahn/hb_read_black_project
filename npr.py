@@ -7,7 +7,7 @@ def nprtextrequest():
     
     payload = { 'apiKey': apikey,
                 'id': '1003', 
-               'type': 'text'}
+                }
     
     r = requests.get(
         'http://api.npr.org/query?', params=payload)
@@ -20,16 +20,29 @@ def npraudiorequest():
 
 
 ###################
-from curious import nproauth_redirect
+# from curious import nproauth_redirect
 from random import choice
 from string import ascii_lowercase
+from werkzeug import security
+from flask_oauth import OAuth
 
 def nproauth():
     nprapplicationid=os.environ["NPRAPPLICATIONID"]
     nprapplicationsec=os.environ["NPRAPPLICATIONSECRET"]
-    state =(''.join(choice(ascii_lowercase) for i in range(16)))
-    state =str(state)
+    # state =(''.join(choice(ascii_lowercase) for i in range(16)))
+    # state =str(state)
+    state=lambda: security.gen_salt(20)
     uri= "http://localhost:5000/nproauth/tokengiver"
+
+
+    npr = oauth.remote_app('npr',
+        base_url='https://api.npr.org/authorization/v2/authorize',
+        # request_token_url='https://api.twitter.com/oauth/request_token',
+        # access_token_url='https://api.twitter.com/oauth/access_token',
+        # authorize_url='https://api.twitter.com/oauth/authenticate',
+        consumer_key=nprapplicationid,
+        consumer_secret='nprapplicationsec'
+)
 
 
     payload ={
@@ -43,6 +56,7 @@ def nproauth():
     r = requests.get('https://api.npr.org/authorization/v2/authorize', params=payload)
 
     output_text =r.text
+    return output_text
 
 def nprtoken():
     nprapplicationid=os.environ["NPRAPPLICATIONID"]
