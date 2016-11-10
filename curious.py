@@ -40,6 +40,9 @@ def index():
 def login_catch():
     """ Process the Log-In form from Sign-In page"""
 
+    # clear current user
+    del session['current_user']
+
     #pull username typed in to login
     pot_username = request.form.get('username')
     #check the db for the typed in username
@@ -50,23 +53,32 @@ def login_catch():
     if (doesname.username ==  pot_username) and (doesname.password == pot_password):
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
-        user_id = db.session.query(User.user_id).filter(User.username=='pot_username').first()
-        
+        user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
+
+        print user_id[0]
+
         #session will be instantiated with current_user set equal to the user_id
-        session.setdefault('current_user', user_id)
+        session.setdefault('current_user', user_id[0])
         #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
         # topics = db.session.query(News_api_user_topics.topic_id).filter(News_api_user_topics.)
+
+        print "ending login"
+        print session
+
         return redirect("/landing/options")
     else:
         flash('Your login information did not match.')
         return redirect('/')
 
-@app.route('/landing/opitons')
+@app.route('/landing/options')
 def landing_options():
 
-    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+    print "starting landing options"
+    print session
 
-    return render_template("landing_options.html", landingname=landingname)
+    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+    print "***************", landingnames, type(landingnames), current_user().user_id
+    return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
@@ -330,11 +342,11 @@ def new_landing_catch():
         db.session.add(topic)
         db.session.commit()
 
-        return redirect('/landing/%s' % landing_add.landing_name)        
+        return redirect('/yourlanding/%s' % landing_add.landing_name)        
     
 
 # NEED TO CHANGE landingname from username
-@app.route('/landing/<landingname>')
+@app.route('/yourlanding/<landingname>')
 def landing(landingname):
     """ Render landing page after Log-In or after creation of new_landing """
 
@@ -343,10 +355,14 @@ def landing(landingname):
 
     user_id = session['current_user']
     #WITH NEW LOGIC don't need lines below?
-    # landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
-
-    # if landing is None:
-    #     die("can't find landing with name %s" % landingname)
+    #db session return a direct id
+    # landing_id= db.session(Landing.landing_id).filter(Landing.landing_name==landingname and Landing.user_id==session['current_user']).first()
+    #its a table queried with these parameters to get the object equal to it its OBJECT with all attributes/parameters
+    print "*******************",landingname, user_id
+    landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
+    
+    if landing is None:
+        die("can't find landing with name %s" % landingname)
     topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
 
     if topic is None:

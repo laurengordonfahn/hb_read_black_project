@@ -7,6 +7,6 @@
 <h1> Your Saved Newspapers </h1>
 <br>
     {% for landingname in landingnames %}
-        <a href="/landing/{{ landingname }}"><button>{{ landingname }}</button></a>
+        <a href="/yourlanding/{{ landingname[0] }}"><button>{{ landingname[0] }}</button></a>
     {% endfor %}
 {% endblock %}
