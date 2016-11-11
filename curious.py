@@ -70,7 +70,7 @@ def login_catch():
     else:
         flash('Your login information did not match.')
         return redirect('/')
-
+# MAKE THIS PART OF THE MAKE A NEW LANDING PAGE!!!!
 @app.route('/landing/options')
 def landing_options():
 
@@ -80,6 +80,7 @@ def landing_options():
     landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
     print "***************", landingnames, type(landingnames), current_user().user_id
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
+    
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
@@ -291,7 +292,7 @@ def new_landing(username):
 
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
-    """ Process the New Landing Construciton Page """
+    """ Process the New Landing Construction Page """
 
     if not is_logged_in():
         return redirect("/")
@@ -300,8 +301,9 @@ def new_landing_catch():
     # has_landing_name = db.session.query(Landing.landing_name).filter(User.user_id==session['current_user']).first()
 
     landing_name = request.form.get('new_landing_name')
+    print "##############", landing_name
     #check if this landing name has already been used for this user
-    check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.session['current_user']).first()
+    check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
     #if this landing name is taken tell them to change it otherwise save it
     if check_landing_name:
         flash("Your landing name must be unique please lable this something other than %s" % landing_name)
@@ -340,8 +342,8 @@ def new_landing_catch():
         #translate user input above to codes to be saved in table
         # sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
             category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
-        # language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
-        # country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
+            # language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
+            # country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
        
 
         # add to database
@@ -378,35 +380,38 @@ def landing(landingname):
         die("can't find topic with landing_id %d" % landing.landing_id)
 
 
-    if topic.media_type != "text":
-        die("landing type %s not supported (!= text)" % topic.media_type)
+    
 
     # fetch the category row for this landing
     i=0
     while i< len(topic):
+        if topic.media_type != "text":
+            # die("landing type %s not supported (!= text)" % topic.media_type) 
+            #IS THIS OK INSTEAD OF DIE
+            continue
         category = News_api_category.query.get(topic.category_code)
         country= News_api_country.query.get(topic.country_code)
         language=News_api_language.query.get(topic.language_code)
 
-    # make the api call
-    response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
+        # make the api call
+        response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
 
-    # show exception if api returns error
-    if response['status'] != "ok":
-        die(response)
+        # show exception if api returns error
+        if response['status'] != "ok":
+            die(response)
 
-    if len(response['sources']) == 0:
-        die("need more sources")
+        if len(response['sources']) == 0:
+            die("need more sources")
 
-    #create a list to hold all the sources from this query
-    all_sources_available = {}
-    #sources is a list of dictionaries
-    for source_index in range(len(response['sources'])):
-        #take the dictionary at that index in the list of sources
-        source_name = response['sources'][source_index]['name']
-        source_id = response['sources'][source_index]['id']
+        #create a list to hold all the sources from this query
+        all_sources_available = {}
+        #sources is a list of dictionaries
+        for source_index in range(len(response['sources'])):
+            #take the dictionary at that index in the list of sources
+            source_name = response['sources'][source_index]['name']
+            source_id = response['sources'][source_index]['id']
 
-        all_sources_available[source_id] = source_name
+            all_sources_available[source_id] = source_name
     return render_template('landing.html', landing_name=landing.landing_name, 
                                             # story_url = article['url'], 
                                             # story_author=article['author'], 

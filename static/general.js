@@ -54,64 +54,61 @@ function showStories(response){
 ////////////////////
 
 var story_count = 1;
+console.log("This is makeing sure javascript is running" + story_count);
+function addStoryHtml(){
 
-function addStoryHtml(evt){
-    evt.preventDefault();
 
     // (var index=1, ,'click', i++){
     //     $(".category").addClass(story_count)
     // }
     //CHANGE THIS SO THE NAME VALUE IS DIFFERENT
-    $(".add_story_div").html(
-        "<p>Type</p>
-        <select  name='type-'"+ story_count +">
-            <option value='text'> Text </option>
-            <!-- <option value='audio'> Audio </option>
-            <option value='video'> Video </option> -->
-        </select>
-        <p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>
-        <br>
+    console.log("This is running addStoryHtml")
+    $("#add_story_div").append(
+        "<p>Type</p><select name='type-"+ story_count + "'> " +
+            "<option value='text'> Text </option> " +
+            "<!-- <option value='audio'> Audio </option>" +
+            "<option value='video'> Video </option> -->" +
+        "</select>" +
+        "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
+        "<br>" +
     
-        <p> Topic Category </p>
-        <select id = 'category-' "+ story_count + " name='category'>
-            <option value='business'> Business </option>
-            <option value='entertainment'> Entertainment </option>
-            <option value='gaming'>Gaming </option>
-            <option value='general'>General </option>
-            <option value='music'> Music</option>
-            <option value='science-and-nature'> Science-and-Nature </option>
-            <option value='technology'> Technology</option>
-        </select>
-        <br>
+        "<p> Topic Category </p>" +
+        "<select name='category-"+ story_count + "'>" +
+            "<option value='business'> Business </option>" +
+            "<option value='entertainment'> Entertainment </option>" +
+            "<option value='gaming'>Gaming </option>" +
+            "<option value='general'>General </option>" +
+            "<option value='music'> Music</option>" +
+            "<option value='science-and-nature'> Science-and-Nature </option>" +
+            "<option value='technology'> Technology</option>" +
+        "</select>" +
+        "<br>" +
 
-        <!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->
-        <p>Language</p>
-        <select id = 'language-'" + story_count+ " name='language'>
-            <option value = 'en'>English</option>
-            <option value = 'de'>German</option>
-            <option value = 'fr'>French</option>
-            <option value = 'all'> All</option>
-        </select>
-        <br>
-        <!-- AT SOME POINT CHOSE MULTIPLE PLACES -->
-        <p>Country</p>
-        <select id = 'country-' " +  story_count + " name='country' +{{ index }} >
-            <option value = 'au'> Austraila</option>
-            <option value = 'de'>Germany</option>
-            <option value = 'gb'>Great Britian</option>
-            <option value = 'in'>India</option>
-            <option value = 'it'>Italy</option>
-            <option value = 'us'>United States</option>
-        </select>
-        <br>
+        "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
+        "<p>Language</p>"+
+        "<select name='language-" + story_count + "'>"+
+            "<option value = 'en'>English</option>" +
+            "<option value = 'de'>German</option>"+
+            "<option value = 'fr'>French</option>"+
+            "<option value = 'all'> All</option>"+
+       " </select>" +
+       " <br> "+
+        "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
+        "<p>Country</p>" +
+        "<select name='country-" + story_count + "'>"+
+            "<option value = 'au'> Austraila</option>"+
+            "<option value = 'de'>Germany</option>" +
+            "<option value = 'gb'>Great Britian</option>" +
+            "<option value = 'in'>India</option>" +
+            "<option value = 'it'>Italy</option>" +
+            "<option value = 'us'>United States</option>" +
+        "</select>" +
+        "<br>" +
+    "</form>" +
+    "<br>"
+    );
 
-        <div class='add_story_div'></div>
-        
-        <input type='submit' name='keyword_txt_btn' value='Submit'>
-    </form>
-    <br>");
-
-    story_count ++
+    story_count ++;
 }
 
 $("#add_story").on('click', addStoryHtml);
@@ -144,7 +141,8 @@ $("#add_story").on('click', addStoryHtml);
 // $('#keyword_txt_btn').on('click', processAllForm)
 
 function addHiddenCount(){
-    $('#add_story').html(story_count);
+    console.log("This is testing that addHiddenCount is running")
+    $('#hidden_story_count').html(story_count);
 }
 $('#add_story').on('click', addHiddenCount)
 

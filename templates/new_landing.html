@@ -47,21 +47,16 @@
         </select>
         <br>
 
-        <div class="add_story_div"></div>
-        <input type = 'hidden' name='story_count'>        
+        <div id="add_story_div"></div>
+        <input id="hidden_story_count" type = 'hidden' name='story_count'>        
         <input type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Submit'>
     </form>
     <br>
 
 
     <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    <form action='/new_landing_catch' method='POST'>
-        <feildset>
-            <legend>Add Another News Story</legend>
-                 <input id = 'add_story' type='submit' name='add_story' value='Add'>
-
-        </feildset>
-    </form>
+    <p>Add A Story</p>
+    <button id='add_story'>Add</button>
     
 
 {% endblock %}
