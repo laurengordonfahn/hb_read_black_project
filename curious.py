@@ -41,7 +41,8 @@ def login_catch():
     """ Process the Log-In form from Sign-In page"""
 
     # clear current user
-    del session['current_user']
+    if 'current_user' in session:
+        del session['current_user']
 
     #pull username typed in to login
     pot_username = request.form.get('username')
@@ -320,31 +321,39 @@ def new_landing_catch():
         
         #get landing id 
         #landing_id= db.session.query(Landing.landing_id).filter(Landing.session['current_user'] and Landing.landing_name==landing_name).first()
-    
-        media_type = request.form.get('type')
-        # sortby = request.form.get('sortby')
-        category = request.form.get('category')
-        language = request.form.get('language')
-        country = request.form.get('country')
-        print "THIS IS WHAT WE WANT", language, country
+        index = request.form.get('story_count')
+        # index = request.form.get("index")
+        # story_list =request.form.get("story")
+        while i<length(index +1):
+            category= request.form.get('category-'+i)
+            language= request.form.get('language-'+i)
+            country=request.form.get('country-'+i)
+        #     story= story_list[i]
+        # # sortby = request.form.get('sortby')
+        #     category=story["category"]
+        #     language=story["language"]
+        #     country=story["country"]
+            
+            print "THIS IS WHAT WE WANT", language, country
  
 
         #translate user input above to codes to be saved in table
         # sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
-        category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+            category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
         # country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
        
 
         # add to database
-        topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
+            topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
     
-        db.session.add(topic)
-        db.session.commit()
+            db.session.add(topic)
+            db.session.commit()
+            i+=1
 
         return redirect('/yourlanding/%s' % landing_add.landing_name)        
     
-
+######TODO NEED TO ADD LOGIC TO HANDLE MULTIPLE STORY QUERIES FOR LANDING PAGE
 # NEED TO CHANGE landingname from username
 @app.route('/yourlanding/<landingname>')
 def landing(landingname):
@@ -363,7 +372,7 @@ def landing(landingname):
     
     if landing is None:
         die("can't find landing with name %s" % landingname)
-    topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
+    topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).all()
 
     if topic is None:
         die("can't find topic with landing_id %d" % landing.landing_id)
@@ -373,9 +382,11 @@ def landing(landingname):
         die("landing type %s not supported (!= text)" % topic.media_type)
 
     # fetch the category row for this landing
-    category = News_api_category.query.get(topic.category_code)
-    country= News_api_country.query.get(topic.country_code)
-    language=News_api_language.query.get(topic.language_code)
+    i=0
+    while i< len(topic):
+        category = News_api_category.query.get(topic.category_code)
+        country= News_api_country.query.get(topic.country_code)
+        language=News_api_language.query.get(topic.language_code)
 
     # make the api call
     response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)

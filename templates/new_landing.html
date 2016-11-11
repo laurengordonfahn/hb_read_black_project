@@ -6,7 +6,7 @@
         <input type='text' name='new_landing_name' placeholder='add your new landing name'>
     
         <p>Type</p>
-        <select name='type'>
+        <select id="type-0" name='type'>
             <option value='text'> Text </option>
             <!-- <option value='audio'> Audio </option>
             <option value='video'> Video </option> -->
@@ -15,7 +15,7 @@
         <br>
     
         <p> Topic Category </p>
-        <select name='category'>
+        <select id="category-0" name='category'>
             <option value='business'> Business </option>
             <option value='entertainment'> Entertainment </option>
             <option value='gaming'>Gaming </option>
@@ -28,7 +28,7 @@
 
         <!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->
         <p>Language</p>
-        <select name='language'>
+        <select id="language-0" name='language'>
             <option value = 'en'>English</option>
             <option value = 'de'>German</option>
             <option value = 'fr'>French</option>
@@ -37,7 +37,7 @@
         <br>
         <!-- AT SOME POINT CHOSE MULTIPLE PLACES -->
         <p>Country</p>
-        <select name='country'>
+        <select id="country-0" name='country'>
             <option value = 'au'> Austraila</option>
             <option value = 'de'>Germany</option>
             <option value = 'gb'>Great Britian</option>
@@ -47,17 +47,19 @@
         </select>
         <br>
 
-
-        
-        <input type='submit' name='keyword_txt_btn' value='Submit'>
+        <div class="add_story_div"></div>
+        <input type = 'hidden' name='story_count'>        
+        <input type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Submit'>
     </form>
     <br>
+
 
     <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
     <form action='/new_landing_catch' method='POST'>
         <feildset>
-            <legend>Add Another Landing</legend>
-                 <input type='submit' name='add_column' value='Add'>
+            <legend>Add Another News Story</legend>
+                 <input id = 'add_story' type='submit' name='add_story' value='Add'>
+
         </feildset>
     </form>
     
