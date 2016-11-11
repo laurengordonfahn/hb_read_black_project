@@ -288,7 +288,7 @@ def new_landing(username):
         return redirect("/")
 
     user = User.query.get(session['current_user'])
-    return render_template('new_landing.html', username=user.username)
+    return render_template('new_landing.html', username=user.username, current_user=current_user())
 
 @app.route('/new_landing_catch', methods=['POST'])
 def new_landing_catch():
@@ -306,9 +306,11 @@ def new_landing_catch():
     check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
     #if this landing name is taken tell them to change it otherwise save it
     if check_landing_name:
-        flash("Your landing name must be unique please lable this something other than %s" % landing_name)
-    
-        return redirect('/new_landing')
+        flash("Your landing name must be unique please label this something other than %s" % landing_name)
+        user = current_user() 
+        print "####*****#####", user, user.username
+
+        return redirect('/new_landing/%s' % user.username)
     else:
 
         landing_add = Landing(user_id=session['current_user'], landing_name=landing_name, primary_landing=True)
@@ -324,9 +326,11 @@ def new_landing_catch():
         #get landing id 
         #landing_id= db.session.query(Landing.landing_id).filter(Landing.session['current_user'] and Landing.landing_name==landing_name).first()
         index = request.form.get('story_count')
+        print "$$$$$$$$$$$$$", index, type(index)
         # index = request.form.get("index")
         # story_list =request.form.get("story")
-        while i<length(index +1):
+        i = 0
+        while i<len(index +1):
             category= request.form.get('category-'+i)
             language= request.form.get('language-'+i)
             country=request.form.get('country-'+i)
@@ -383,6 +387,7 @@ def landing(landingname):
     
 
     # fetch the category row for this landing
+    story_dict = {} 
     i=0
     while i< len(topic):
         if topic.media_type != "text":
@@ -412,6 +417,7 @@ def landing(landingname):
             source_id = response['sources'][source_index]['id']
 
             all_sources_available[source_id] = source_name
+        story_dict["story" + str(i)] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
     return render_template('landing.html', landing_name=landing.landing_name, 
                                             # story_url = article['url'], 
                                             # story_author=article['author'], 
@@ -422,7 +428,8 @@ def landing(landingname):
                                             category=category.category_name,
                                             country=country.country_name,
                                             language=language.language_name,
-                                            all_sources_available=all_sources_available)
+                                            all_sources_available=all_sources_available,
+                                            story_dict=story_dict)
 
     
     # ____________

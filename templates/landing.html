@@ -5,39 +5,40 @@
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
+    {% for story in story_dict %}
+        <form>
+            <fieldset>
+                <legend>Choose your source for {{ story[category] }} news from {{ story[country] }} in {{ story[language] }}:</legend>
+                 
+                <!--- changed the id to value if impact occurs -->
+                    <select  class='source_name' name='sources'>
+                        {% for source_id, source_name in story[all_sources_available].iteritems() %}
+                            <option  value='{{ source_id }}' > {{ source_name }} </option>
+                        {% endfor %}
+                    </select> 
+                
+                 <p>How to Sort</p>
+            <select id="sortby" name ='sortby'>
+                <option value='top' checked="checked"> Top </option>
+                <option value='latest'> Latest </option>
+                <option value='popular'> Popular </option>
+            </select>
+                <input id='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'> 
+            </fieldset>
+        </form>
     
-    <form>
-        <fieldset>
-            <legend>Choose your source for {{ category }} news from {{ country }} in {{ language }}:</legend>
-             
-            <!--- changed the id to value if impact occurs -->
-                <select  class='source_name' name='sources'>
-                    {% for source_id, source_name in all_sources_available.iteritems() %}
-                        <option  value='{{ source_id }}' > {{ source_name }} </option>
-                    {% endfor %}
-                </select> 
+    
+        <!--need to figure out how to dom manipulate so come up when needed only-->
+        <div id='results'>
             
-             <p>How to Sort</p>
-        <select id="sortby" name ='sortby'>
-            <option value='top' checked="checked"> Top </option>
-            <option value='latest'> Latest </option>
-            <option value='popular'> Popular </option>
-        </select>
-            <input id='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'> 
-        </fieldset>
-    </form>
-
-
-    <!--need to figure out how to dom manipulate so come up when needed only-->
-    <div id='results'>
-        
-    </div>
-<!--DO LOGIC FOR ADDING ANOTHER STORY TO AN EXHISTING LANDING-->
-    <form action='/new_landing_catch' method='POST'>
-        <feildset>
-            <legend>Add Another Landing</legend>
-                 <input type='submit' name='add_column' value='Add'>
-        </feildset>
-    </form>
+        </div>
+    <!--DO LOGIC FOR ADDING ANOTHER STORY TO AN EXHISTING LANDING-->
+        <form action='/new_landing_catch' method='POST'>
+            <feildset>
+                <legend>Add Another Landing</legend>
+                     <input type='submit' name='add_column' value='Add'>
+            </feildset>
+        </form>
+    {% endfor %}
 
 {% endblock %}
