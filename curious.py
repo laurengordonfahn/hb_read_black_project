@@ -29,7 +29,7 @@ app.jinja_env.undefined = StrictUndefined
 #Fix server-side caching issues
 app.jinja_env.auto_reload = True
 
-
+#TODO age formula to increment age which means I need a datetime associated with the usercreation
 @app.route('/')
 def index():
     """ Render Sign-In page """
@@ -123,32 +123,12 @@ def sign_up_catch():
 
         # return redirect('/registar/%s' % pot_username)
         return render_template('registar.html', current_user=user)
-        #TODO DELETE CODE BELOW BUT WAS IN LINE ABOVE IF CURENT USER FUN FAILS
-        # username=user.username, email=user.email,
+        
     
-#TODO DELETE THIS ROUTE IT MAY BE UNNECESSARY
+#TO DO THIS ROUTE MAY BE UNNECESSARY BUT IT LOOKS ODD TO HAVE THE OTHER ROUTE SHOW UP 
 @app.route('/registar/<username>')
 def registar(username):
     """ Render Registar page after Sign-Up """
-    # user = User.query.get(session['current_user']).first()
-    #user = User.query.get(session['current_user'])
-
-    # TODO: always use the current_user variable in templates to get username, email
-    #MAY NEED TO FIX THIS
-    # user = current_user()
-    # if user:
-    #     username = user.username
-    #     email = user.email
-    # else:
-    #     username = None
-    #     email = None
-
-    #TODO DELETE IF WORKS
-    # email= user.email
-    # username = user.username
-    # age = user.age
-    # gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
-    # academic_code = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     
     return render_template('registar.html', current_user= current_user())
     
@@ -196,13 +176,14 @@ def registar_catch():
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
-    user = db.session.query(User.email, User.username, User.password, User.academic_code, User.gender_code).filter(User.username==session['current_user']).first()
+    user= User.query.get(session['current_user'])
     email= user.email
     username = user.username
     age = user.age
     academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
-    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).one()
-    return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender)
+    gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
+    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+    return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
 
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():
@@ -212,7 +193,7 @@ def profile_catch():
     #pull second email from profile form
     sec_email = request.form.get('sec_email')
 
-    regex_email = r"^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$"
+    regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
     #pull password from profile form
     pot_password = request.form.get('password')
     # verify if password is adequate.
@@ -234,17 +215,16 @@ def profile_catch():
     dbacademic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).first()
 
     
-    if email != regex_email:
+    if not regex_email:
         flash('Your email cannot be verified, please retype your email.')
         return redirect('/profile/%s' % user.username)
     elif email != sec_email:
         flash('Your second email does not match your first, please retype your email.')
         return redirect('/profile/%s' % user.username)
     else:
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
+        
         user.email  = email
-        # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        # db.session.exectue(sql, {'email': email, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
+       
         db.session.commit()
         return redirect('/profile/%s' % user.username)
 
@@ -255,27 +235,22 @@ def profile_catch():
         flash('Your second password does not match your first, please re-enter to verify.')
         return redirect('/profile/%s' % user.username)
     else:
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
+       
         user.password=pot_password
-        # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        # db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': pot_password, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': dbacademic_code})
+        
         db.session.commit()
         return redirect('/profile/%s' % user.username)
    
     if academic:
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
+        
         user.academic_code = academic_code
-        # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        # academic_code = db.session.query(Academic_level.academic_code).filter(Academic.name== academic).one()
-        # db.session.exectue(sql, {'email': dbemail, 'username': dbusername, 'password': dbpassword, 'age': dbage, 'gender_code': dbgender_code, 'academic_code': academic_code})
+        
         db.session.commit()
         return redirect('/profile/%s'  % user.username)
     if gender:
-        # user = User(email=email,username=pot_username, password=pot_password, age='awaiting', gender_code='awaiting', academic_code='awaiting')
+       
         user.gender_code=gender_code
-        # sql = 'INSERT INTO users(email, username, password, age, gender_code, academic_code) VALUES(:email, :username, :password, :age, :gender_code, :academic_code)'
-        # gender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).one()
-        # db.session.exectue(sql, {'email': email, 'username': username, 'password': pot_password, 'age': age, 'gender_code':gender_code, 'academic_code': dbacademic_code})
+        
         db.session.commit()
         return redirect('/profile/%s' % user.username)
     
@@ -297,64 +272,51 @@ def new_landing_catch():
     if not is_logged_in():
         return redirect("/")
 
-    #TODO COME BACK TO THIS LOGIC MAY BE NECESSARY BUT MAY STORE IT SOME WHERE ELSE
-    # has_landing_name = db.session.query(Landing.landing_name).filter(User.user_id==session['current_user']).first()
 
     landing_name = request.form.get('new_landing_name')
-    print "##############", landing_name
+    # print "##############", landing_name
     #check if this landing name has already been used for this user
     check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
     #if this landing name is taken tell them to change it otherwise save it
     if check_landing_name:
         flash("Your landing name must be unique please label this something other than %s" % landing_name)
         user = current_user() 
-        print "####*****#####", user, user.username
+        # print "####*****#####", user, user.username
 
         return redirect('/new_landing/%s' % user.username)
     else:
-
-        landing_add = Landing(user_id=session['current_user'], landing_name=landing_name, primary_landing=True)
-
+        #adding the new landing name to the database
+        landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
+        #Note: removed landing_primary from the above line.
         db.session.add(landing_add)
         db.session.commit()
 
+        #gathering informaiton to create rows in our topic table. 
         landing_id = landing_add.landing_id
-
-
-        print "you created landing_id %d" % landing_id
-        
-        #get landing id 
-        #landing_id= db.session.query(Landing.landing_id).filter(Landing.session['current_user'] and Landing.landing_name==landing_name).first()
+        media_type = request.form.get('type')
+        # print "you created landing_id %d" % landing_id
         index = request.form.get('story_count')
         print "$$$$$$$$$$$$$", index, type(index)
-        # index = request.form.get("index")
-        # story_list =request.form.get("story")
+
+        #beging loop over all the different query/topic requests for news stories
+        index = int(index)
         i = 0
-        while i<len(index +1):
-            category= request.form.get('category-'+i)
-            language= request.form.get('language-'+i)
-            country=request.form.get('country-'+i)
-        #     story= story_list[i]
-        # # sortby = request.form.get('sortby')
-        #     category=story["category"]
-        #     language=story["language"]
-        #     country=story["country"]
-            
-            print "THIS IS WHAT WE WANT", language, country
+        while i < index:
+            #gather input from the form
+            category= request.form.get('category-%d'% i)
+            language= request.form.get('language-%d'% i)
+            country=request.form.get('country-%d'% i)
+        
+            # print "THIS IS WHAT WE WANT", language, country
  
 
-        #translate user input above to codes to be saved in table
-        # sortby_code = db.session.query(News_api_sortby.sortby_code).filter(News_api_sortby.sortby_name == sortby).first()
+            #translate user input above to codes to be saved in table language and country come as they need to be
             category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
-            # language_code= db.session.query(News_api_language.language_code).filter(News_api_language.language_name == language).first()
-            # country_code= db.session.query(News_api_country.country_code).filter(News_api_country.country_name == country).first()
-       
-
         # add to database
             topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
-    
             db.session.add(topic)
             db.session.commit()
+            
             i+=1
 
         return redirect('/yourlanding/%s' % landing_add.landing_name)        
@@ -369,115 +331,87 @@ def landing(landingname):
         return redirect("/")
 
     user_id = session['current_user']
+    #Just to help me remember the difference move to db functions later
     #WITH NEW LOGIC don't need lines below?
     #db session return a direct id
     # landing_id= db.session(Landing.landing_id).filter(Landing.landing_name==landingname and Landing.user_id==session['current_user']).first()
     #its a table queried with these parameters to get the object equal to it its OBJECT with all attributes/parameters
-    print "*******************",landingname, user_id
+    #landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
+
+    # print "*******************",landingname, user_id
+    #This query returns an object with all attributes "dotable"
     landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
     
     if landing is None:
         die("can't find landing with name %s" % landingname)
-    topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).all()
+    
+    #gather all topic objects in a list for this landing
+    topics = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).all()
 
-    if topic is None:
+    if len(topics) == 0:
         die("can't find topic with landing_id %d" % landing.landing_id)
-
-
+    # print "@@@@@@@@@@@@@@@@@", topics
     
 
     # fetch the category row for this landing
     story_dict = {} 
-    i=0
-    while i< len(topic):
+    for topic in topics:
         if topic.media_type != "text":
             # die("landing type %s not supported (!= text)" % topic.media_type) 
-            #IS THIS OK INSTEAD OF DIE
             continue
-        category = News_api_category.query.get(topic.category_code)
-        country= News_api_country.query.get(topic.country_code)
-        language=News_api_language.query.get(topic.language_code)
-
+        else:
+            category = News_api_category.query.get(topic.category_code)
+            country= News_api_country.query.get(topic.country_code)
+            language=News_api_language.query.get(topic.language_code)
+            print "^^^^^^^^^^^^^^^^^^", category 
+            if category and country and language:
         # make the api call
-        response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
-
+                response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
         # show exception if api returns error
-        if response['status'] != "ok":
-            die(response)
+                if response['status'] != "ok":
+                    die(response)
 
-        if len(response['sources']) == 0:
-            die("need more sources")
+                if len(response['sources']) == 0:
+                    die("need more sources")
 
         #create a list to hold all the sources from this query
-        all_sources_available = {}
+                all_sources_available = {}
         #sources is a list of dictionaries
-        for source_index in range(len(response['sources'])):
-            #take the dictionary at that index in the list of sources
-            source_name = response['sources'][source_index]['name']
-            source_id = response['sources'][source_index]['id']
+                if response:
+                    for source_index in range(len(response['sources'])):
+                        #take the dictionary at that index in the list of sources
+                        source_name = response['sources'][source_index]['name']
+                        source_id = response['sources'][source_index]['id']
+                        #all_soucres_available dictionary is for the drop down list of source names on landing.html
+                        all_sources_available[source_id] = source_name
 
-            all_sources_available[source_id] = source_name
-        story_dict["story" + str(i)] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
+                    story_dict[topic] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
+                    print "(((((((((((((((((((((", story_dict[topic], story_dict[topic]['category'].category_name
+
     return render_template('landing.html', landing_name=landing.landing_name, 
-                                            # story_url = article['url'], 
-                                            # story_author=article['author'], 
-                                            # story_title=article['title'], 
-                                            # story_description=article['description'],
-                                            # story_timestamp=article['publishedAt'] ,
                                             current_user = current_user(),
                                             category=category.category_name,
                                             country=country.country_name,
                                             language=language.language_name,
                                             all_sources_available=all_sources_available,
                                             story_dict=story_dict)
-
-    
-    # ____________
-    # function showStories(response){
-
-    #     $("#results").html("");
-
-    #     for (var i =0; i < response['articles'].length; i++){
-
-    #        <!--figure out how to make this image just appear-->
-    #        $("#results").html(
-    #        "<a href=" +response['articles'][i]['urlToImage']+ ">"+ Image "</a>"
-    #         "<a href=" +response['articles'][i]['url']+ ">" + 
-    #          response['articles'][i]['title']  + "</a>" +
-    #         "<p>" +  response['articles'][i]['author'] + "</p>" + 
-    #         "<p>" +response['articles'][i]['description'] +"</p>" +
-    #         "<p>" +response['articles'][i]['publishedAt']+ "</p>" )
-            
-    #     }
-
-    # }
-    # function getRequestInfo(evt){
-    #     evt.preventDefault();
-    #     var formInputs={
-    #         "source_id": $('.source_name').attr("id")
-    #         "sortby":$('#sortby').val()
-    #     };
-    #     #QUESTION HOW DO I PUT VARIABLE IN BELOW
-    #     $.get('/news-landing.json',
-    #             formInputs,
-    #             showStories;
-    # }
-    # $('#chose_source_btn').on('click', getRequestInfo);
-    # ____________
+                                            # story_url = article['url'], 
+                                            # story_author=article['author'], 
+                                            # story_title=article['title'], 
+                                            # story_description=article['description'],
+                                            # story_timestamp=article['publishedAt'] ,
+   
 #TODO BE AWARE ROUTE CHANGE with News added at start
 @app.route('/news-landing.json')
 def news_landing():
     """ Get json from API call of text return json for ajax callback showStories(result) """
-        #JQUERY/ajax this on to the landing itself???? Let them click and chose?
-    #NOT CERTAIN WHAT GET FROM DICTIONARY ARGS? 
-    #NOT CERTAIN HOW TO GET LANDING ID HERE???
-    # topic = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).first()
-    
+        
     #this comes from the jquery js function getRequestInfo
     source_id = request.args.get('source_id')
     sortby = request.args.get('sortby')
     print "source_id", source_id
     print "sortby", sortby
+
     #TODO GET THE SOURCE IMAGE INTO THIS SO WE HAVE IT
     if sortby=="top":
         headlines_response = news.newstextrequest(source_id, sortby)
@@ -497,68 +431,15 @@ def news_landing():
                 print "************** RESPONSE: ", headlines_response
                 return jsonify(headlines_response)
 
-    #    
+     
 
-    # #TODO MAY HAVE TO CHANGE BELOW TO SET TO TOP IF NO SORTBY QUERY FOR THAT SOURCE 
-
-    
-
-    #
-
-    # if headlines_response['status'] != "ok":
-    #     die(headlines_response)
-
-    # if len(headlines_response['articles']) == 0:
-    #     die("must have articles in the response")
-
-    # # only show the first article
-    # # TODO: show all articles for each source
-    # article = headlines_response['articles'][0]
-
-    # return render_template('landing.html', landing_name=landing.landing_name, 
-    #                                         story_url = article['url'], 
-    #                                         story_author=article['author'], 
-    #                                         story_title=article['title'], 
-    #                                         story_description=article['description'],
-    #                                         story_timestamp=article['publishedAt'] ,
-    #                                         current_user = current_user(),
-    #                                         category=category,
-    #                                         country=country,
-    #                                         language=language
-    #                                         all_sources_available=all_sources_available)
-
-
-    
-
-@app.route('/nproauth/tokengiver')
-def nproauth_redirect():
-
-    #authorization code sent here how do I save it
-    #TODO HOW DO I GET THIS OVER TO npr.py file
-    
-
-    # how do I make sure that its listening for authorization code?
-    return npr.nproauth()
-   
-
-@app.route('/nproauth/getter', methods=['POST'])
-def nproauth_getter():
-    oauthresponsetoken= npr.nprtoken()
-    # {
-    #LOOKS LIKE THIS ISH
-# "access_token": "tDlflPO3sjsue834keDfkf838rturZkGDUsYr6Gp",
-# "token_type": "Bearer",
-# "expires_in": 720869706,                
-# "refresh_token": "tasdfasd4keDfSDasdfDF UsYr6Gp"
-# }
-    #TODO store locally the access_token and refresh token is sent over they must both be sent in. 
+    # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
 
 
 @app.route('/log_out_catch', methods=['POST'])
 def log_out_catch():
     """ Delete 'current_user' from session and redirect homepage """
     del session['current_user']
-    # session.clear()
     flash('You have logged out.')
     return redirect('/')
 

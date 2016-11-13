@@ -108,63 +108,38 @@ function addStoryHtml(){
     "<br>"
     );
 
-    story_count ++;
+    story_count++;
 }
 
 $("#add_story").on('click', addStoryHtml);
 
-////////////////////
-// function submit_landing(){
-//     $("keyword_txt_btn").on("submit", )
-// }
-// function processAllForm(evt){
-//     evt.preventDefault();
-
-//     var formInputs = { 
-//         "index": story_count,
-//         "story"=[]
-//     };
-
-//     for(i = 0; i < range(story_count + 1); i++){
-            
-//         var topic_dictionary = { "type": $("#type-" +i).val(),
-//             "category": $("category-" + i).val() ,
-//             "language": $("language-"+ i).val() ,
-//             "country": $("country-" +i).val()
-//         };
-//         story.push(topic_dictionary);
-//     }
-
-//     $.post('/new_landing_catch', formInputs, submit_landing);
-// }
-
-// $('#keyword_txt_btn').on('click', processAllForm)
 
 function addHiddenCount(){
+
+
     console.log("This is testing that addHiddenCount is running")
-    $('#hidden_story_count').html(story_count);
+    $('#hidden_story_count').val(story_count.toString());
 }
 $('#add_story').on('click', addHiddenCount)
 
-//     $('.bootpopup').click(function(){
-//   var frametarget = $(this).attr('href');
-//   var targetmodal = $(this).attr('target');
-//   if (targetmodal == undefined) {
-//     targetmodal = '#popupModal';
-//   } else { 
-//     targetmodal = '#'+targetmodal;
-//   }
-//   if ($(this).attr('title') != undefined) {
-//     $(targetmodal+ ' .modal-header h3').html($(this).attr('title'));
-//     $(targetmodal+' .modal-header').show();
-//   } else {
-//      $(targetmodal+' .modal-header h3').html('');
-//     $(targetmodal+' .modal-header').hide();
-//   }  
-//     $(targetmodal).on('show', function () {
-//         $('iframe').attr("src", frametarget );   
-//     });
-//     $(targetmodal).modal({show:true});
-//   return false;
 
-// });
+function deleteRequest(evt){
+    evt.preventDefault()
+
+    var btn = $(evt.currentTarget);
+
+    var name = btn.attr('name');
+
+    alert("name = " + name);
+
+    
+    var formInputs={ 
+        "landingname": $("#delete_landing_btn").val()
+
+    }
+    $.get("/delete_landing",
+                formInputs,
+                showStories);
+}
+$('#delete_landing_btn').on('click', deleteRequest)
+

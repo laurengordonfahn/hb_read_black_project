@@ -5,14 +5,14 @@
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    {% for story in story_dict %}
+    {% for topic, story_info in story_dict.iteritems() %}
         <form>
             <fieldset>
-                <legend>Choose your source for {{ story[category] }} news from {{ story[country] }} in {{ story[language] }}:</legend>
+                <legend>Choose your source for {{ story_info['category'].category_name }} news from {{ story_info['country'].country_name }} in {{ story_info['language'].language_name }}:</legend>
                  
                 <!--- changed the id to value if impact occurs -->
                     <select  class='source_name' name='sources'>
-                        {% for source_id, source_name in story[all_sources_available].iteritems() %}
+                        {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
                             <option  value='{{ source_id }}' > {{ source_name }} </option>
                         {% endfor %}
                     </select> 
@@ -32,13 +32,14 @@
         <div id='results'>
             
         </div>
-    <!--DO LOGIC FOR ADDING ANOTHER STORY TO AN EXHISTING LANDING-->
-        <form action='/new_landing_catch' method='POST'>
+   
+    {% endfor %}
+     <!--DO LOGIC FOR ADDING ANOTHER STORY TO AN EXHISTING LANDING-->
+        <form action='/new_landing/{{ current_user.username }}' method='GET'>
             <feildset>
                 <legend>Add Another Landing</legend>
                      <input type='submit' name='add_column' value='Add'>
             </feildset>
         </form>
-    {% endfor %}
 
 {% endblock %}
