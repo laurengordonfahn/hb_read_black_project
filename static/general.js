@@ -3,30 +3,18 @@ var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 //////////////////// 
 function showStories(response){
-
+    
+    
         $("#results").html("");
-        console.log(response);
-        
+           console.log(response);
+       
            //figure out how to make this image just appear
         for (var i =0; i < response["articles"].length; i++){
              console.log(i);
            $("#results").append(
-            //works but not what I want
-           "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
-//              "<a href='http://twitter.github.io/bootstrap/' class='btn bootpopup' title='This is title' target='popupModal2'>Open modal</a>
-
-// <div id='popupModal2' class='modal hide fade' tabindex='-1' role='dialog'>
-//     <div class='modal-header'>
-//         <button type='button' class='close' data-dismiss='modal'>"+ response["articles"][i]["url"] +"</button>
-//             <h3>Title</h3>
-//     </div>
-//     <div class='modal-body'>
-//       <iframe src='' style='zoom:0.60' frameborder='5' height='350' width='99.6%''></iframe>
-//     </div>
-//     <div class='modal-footer'>
-//         <button class='btn' data-dismiss='modal'>OK</button>
-//     </div>
-// </div>
+            //works but not what I want iframe killer for some impacts useage
+           // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
+            
            "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
             "<a href=" + response["articles"][i]["url"]+ ">" + 
              response['articles'][i]['title']  + "</a>" +
@@ -38,8 +26,8 @@ function showStories(response){
     }
     function getRequestInfo(evt){
         evt.preventDefault();
-        console.log($(".source_name").val())
-        console.log($("#sortby").val())
+        // console.log($(".source_name").val())
+        // console.log($("#sortby").val())
         var formInputs={
             "source_id": $(".source_name").val(),
             "sortby":$("#sortby").val()
@@ -123,6 +111,27 @@ function addHiddenCount(){
 $('#add_story').on('click', addHiddenCount)
 
 
+/////////////////////////////////
+function deleteLandingOnScreen(result){
+    landingnames = result;
+
+    var html_string =  "<p>Your Landing Pages: </p>" ;
+
+    for(var i=0; i < landingnames.length(); i++){
+        html_string += "<a href='/yourlanding/" + landingnames[i] + "'><button>" + landingnames[i][0] + " </button> </a>" + 
+                "<form action='/delete_catch'>" +
+                    "<input id='delete_landing_btn' name='" + landingnames[i] +"' type='submit'value='Delete this Landing'>" +
+                "</form>" 
+            
+        }
+
+
+    $(update_your_landings).html(html_string);
+    
+
+
+}
+
 function deleteRequest(evt){
     evt.preventDefault()
 
@@ -134,12 +143,14 @@ function deleteRequest(evt){
 
     
     var formInputs={ 
-        "landingname": $("#delete_landing_btn").val()
+        "landingname": name
 
-    }
-    $.get("/delete_landing",
+    };
+
+    $.post("/delete_landing.json",
                 formInputs,
-                showStories);
+                deleteLandingOnScreen);
 }
+
 $('#delete_landing_btn').on('click', deleteRequest)
 
