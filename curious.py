@@ -187,72 +187,69 @@ def profile(username):
 
 @app.route('/profile_catch', methods=['POST'])
 def profile_catch():
-    """ Process the Profile form from Profile page """
-    #pull email from profile form
-    email = request.form.get('email')
-    #pull second email from profile form
-    sec_email = request.form.get('sec_email')
-
-    regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
-    #pull password from profile form
-    pot_password = request.form.get('password')
-    # verify if password is adequate.
-    #pull second password from profile form
-    pot2_password = request.form.get('sec_password')
-    #pull academic from profile form
-    academic = request.form.get('academic')
-    #pull gender from profile form
-    gender = request.form.get('gender')
-
-    user = User.query.get(session['current_user'])
-    dbage = user.age
-    dbemail = user.email
-    dbusername = user.username
-    dbpassword = user.password
-
-    #pull gendercode and academic code from db
-    dbgender_code = db.session.query(Gender.gender_code).filter(Gender.name==gender).first()
-    dbacademic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.name==academic).first()
-
+    """ Process the Profile form from Profile page """    
     
-    if not regex_email:
-        flash('Your email cannot be verified, please retype your email.')
-        return redirect('/profile/%s' % user.username)
-    elif email != sec_email:
-        flash('Your second email does not match your first, please retype your email.')
-        return redirect('/profile/%s' % user.username)
-    else:
-        
-        user.email  = email
-       
-        db.session.commit()
-        return redirect('/profile/%s' % user.username)
+    user = User.query.get(session['current_user'])
+    which_form= request.form.get('field')
 
-    if len(pot_password) < 6:
-        flash('Your password is not long enough try something with at least 6 characters.')
-        return redirect('/profile/%s' % user.username)
-    elif pot_password != pot2_password:
-        flash('Your second password does not match your first, please re-enter to verify.')
-        return redirect('/profile/%s' % user.username)
-    else:
-       
-        user.password=pot_password
-        
-        db.session.commit()
-        return redirect('/profile/%s' % user.username)
-   
-    if academic:
-        
-        user.academic_code = academic_code
-        
-        db.session.commit()
-        return redirect('/profile/%s'  % user.username)
-    if gender:
-       
-        user.gender_code=gender_code
-        
-        db.session.commit()
-        return redirect('/profile/%s' % user.username)
+    if which_form == 'email':
+        #pull email from profile form
+        email = request.form.get('email')
+        #pull second email from profile form
+        sec_email = request.form.get('sec_email')
+
+        regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
+        print "#####@@@@@@@######", regex_email_check
+        if not regex_email_check:
+            flash('Your email cannot be verified, please retype your email.')
+            return redirect('/profile/%s' % user.username)
+        elif email != sec_email:
+            flash('Your second email does not match your first, please retype your email.')
+            return redirect('/profile/%s' % user.username)
+        else:
+            
+            user.email  = email
+           
+            db.session.commit()
+            return redirect('/profile/%s' % user.username)
+    elif which_form == 'password':
+        #pull password from profile form
+        pot_password = request.form.get('password')
+        # verify if password is adequate.
+        #pull second password from profile form
+        pot2_password = request.form.get('sec_password')
+        if len(pot_password) < 6:
+            flash('Your password is not long enough try something with at least 6 characters.')
+            return redirect('/profile/%s' % user.username)
+        elif pot_password != pot2_password:
+            flash('Your second password does not match your first, please re-enter to verify.')
+            return redirect('/profile/%s' % user.username)
+        else:
+           
+            user.password=pot_password
+            
+            db.session.commit()
+            return redirect('/profile/%s' % user.username)
+    elif which_form == 'academic':
+        #pull academic from profile form
+        academic = request.form.get('academic')
+        academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
+        if academic:
+            
+            user.academic_code = academic_code
+            
+            db.session.commit()
+            return redirect('/profile/%s'  % user.username)
+    elif which_form == 'gender':
+        #pull gender from profile form
+        gender = request.form.get('gender')
+        gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
+        print "$$$$$$$$$$$$$$$$$$", gender, gender_code[0]
+        if gender: 
+            user.gender_code=gender_code[0]
+            
+            db.session.commit()
+            return redirect('/profile/%s' % user.username)
 
 @app.route('/delete_landing.json', methods=['POST'])
 def delete_landing():

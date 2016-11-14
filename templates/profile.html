@@ -9,8 +9,10 @@
 <p> You are signed in as: {{ username }} </p>
 <br>
 <p> Your current email associated with this account: {{ email }}
+
 <form action='/profile_catch' method='POST'>
-    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
+    <input type ='hidden' name='field' value='email'>
+    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fibut    password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your email associated with your account: </legend>
         <input type='email' name='email' placeholder='email'>
@@ -21,24 +23,31 @@
     </feildset>
 </form>
 <br>
+
+
 <form action='/profile_catch' method='POST'>
-    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fixed but password changable each section should have a submit button therefore its own form -->
+    <input type='hidden' name='field' value='password'>
+    <!-- I NEED TO FIGURE OUT HOW TO SEND THEM TO THIS PAGE AND KEEP THE PROFILE NAME AND BLOCK OUT THE PASSWORD and make the username not in this but fibut    password changable each section should have a submit button therefore its own form -->
    <feildset>
         <legend> Change your password: </legend>
-        <input type='text' name='password' placeholder='password'>
+        <input type='password' name='password' placeholder='password'>
         <br>
-        <input type='text' name='sec_password' placeholder='re-type password'>
+        <input type='password' name='sec_password' placeholder='re-type password'>
         <br>
         <input type='submit' name='change_password_btn' value='Submit'>
     </feildset>
 </form>
+
 <br>
+
 <p> Your age: {{ age }} </p>
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
 <br>
 
 <p> Your registared Academic Level with us is: {{ academic_level.academic_name }} </p>
+
 <form action='/profile_catch' method='POST'>
+    <input type='hidden' name='field' value='academic'>
     <p> Academic Level: </p>
     <select name='academic'>
         <option value='highschool'> High School </option>
@@ -49,18 +58,22 @@
     </select>
     <input type='submit' name='academic_btn' value='Submit'>
 </form>
+
 <br>
 
 <p> Your gender on file is: {{ gender.gender_name }} </p>
+
 <form action='/profile_catch' method='POST'>
+    <input type='hidden' name='field' value='gender'>
     <p>Gender:</p>
     <select name='gender'>
-        <option value='female'> Female </option>
-        <option value='male'> Male </option>
-        <option value='other'> Other </option>
+        <option value='Female'> Female </option>
+        <option value='Male'> Male </option>
+        <option value='Other'> Other </option>
     </select>
     <input type='submit' name='gender_btn' value='Submit'>
 </form>
+
 <br>
 
 <!-- create a list of the landing names this person has  AND DO radio buttons need submit?-->
