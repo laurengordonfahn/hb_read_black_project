@@ -137,22 +137,20 @@ $('#add_story').on('click', addHiddenCount)
 
 /////////////////////////////////
 function deleteLandingOnScreen(result){
-    landingnames = result;
+    var landingnames = result.landings;
 
     var html_string =  "<p>Your Landing Pages: </p>" ;
 
-    for(var i=0; i < landingnames.length(); i++){
-        html_string += "<a href='/yourlanding/" + landingnames[i] + "'><button>" + landingnames[i][0] + " </button> </a>" + 
+    for(var i=0; i < landingnames.length; i++){
+        html_string += "<a href='/yourlanding/" + landingnames[i] + "'><button>" + landingnames[i] + " </button> </a>" + 
                 "<form action='/delete_catch'>" +
-                    "<input id='delete_landing_btn' name='" + landingnames[i] +"' type='submit'value='Delete this Landing'>" +
+                    "<input class='delete_landing_btn' name='" + landingnames[i] +"' type='submit'value='Delete this Landing'>" +
                 "</form>" 
             
         }
 
 
-    $(update_your_landings).html(html_string);
-    
-
+    $('update_your_landings').html(html_string);
 
 }
 
@@ -162,13 +160,9 @@ function deleteRequest(evt){
     var btn = $(evt.currentTarget);
 
     var name = btn.attr('name');
-
-    alert("name = " + name);
-
     
     var formInputs={ 
         "landingname": name
-
     };
 
     $.post("/delete_landing.json",
@@ -176,5 +170,5 @@ function deleteRequest(evt){
                 deleteLandingOnScreen);
 }
 
-$('#delete_landing_btn').on('click', deleteRequest)
+$('.delete_landing_btn').on('click', deleteRequest)
 

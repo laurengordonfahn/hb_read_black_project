@@ -78,10 +78,10 @@
 
 <!-- create a list of the landing names this person has  AND DO radio buttons need submit?-->
 <!-- FINISHE THIS PEICE WHEN MORE THAN ONE LANDING NOT YET! -->
-<div id=update_your_landings>
+<div id="update_your_landings">
     <p>Your Landing Pages: </p>
     {% for landingname in landingnames %}
-        <a href="/yourlanding/{{ landingname[0] }}"><button> {{ landingname[0] }} </button> </a> <form action='/delete_catch'><input id="delete_landing_btn" name="{{ landingname }}" type="submit" value='Delete this Landing'></form>
+        <a href="/yourlanding/{{ landingname[0] }}"><button> {{ landingname[0] }} </button> </a> <form action='/delete_catch'><input class="delete_landing_btn" name="{{ landingname[0] }}" type="submit" value='Delete this Landing'></form>
     {% endfor %}
 </div>
  

@@ -176,7 +176,11 @@ def registar_catch():
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
-    user= User.query.get(session['current_user'])
+
+    if not is_logged_in():
+        return redirect("/")
+
+    user= current_user()
     email= user.email
     username = user.username
     age = user.age
@@ -254,22 +258,29 @@ def profile_catch():
 @app.route('/delete_landing.json', methods=['POST'])
 def delete_landing():
     #get the landing name to be deleted from the jquery dictionary
-    landingname = request.get('landingname')
+    landingname = request.form.get('landingname')
     #grab the object for the landing name from the landings table
     landing_row = Landing.query.filter_by(landing_name=landingname, user_id=session['current_user']).first()
     #grab a list of objects of all the topics associated with the landing page to be delted
     topic_rows = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing_row.landing_id).all()
     #delete all topic rows associated with the removed landing recursively
     for row in topic_rows:
+        print "deleting topic", row
         db.session.delete(row)
+    db.session.commit()
+
     #delte the landingname row in the landing table
     db.session.delete(landing_row)
     #commit all changes to the database
     db.session.commit()
-    #grab all the landing names that still exhist for this user as a list of names
+    # grab all the landing names that still exhist for this user as a list of names
     landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
-    return landingnames
 
+    response = {
+        'landings': landingnames
+    }
+
+    return jsonify(response)
     
 #TODO WHERE DOES THE USERNAME COME FROM!!!
 @app.route('/new_landing/<username>')
