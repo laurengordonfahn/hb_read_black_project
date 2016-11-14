@@ -2,16 +2,18 @@
 var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 //////////////////// 
-function showStories(response){
-    
-    
-        $("#results").html("");
-           console.log(response);
+function showStories(topic_id,response){
+
+        var results_div = $("#topic-results-" + topic_id);
+
+        results_div.html("");
+
+        console.log(response);
        
            //figure out how to make this image just appear
         for (var i =0; i < response["articles"].length; i++){
              console.log(i);
-           $("#results").append(
+           results_div.append(
             //works but not what I want iframe killer for some impacts useage
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
@@ -26,18 +28,40 @@ function showStories(response){
     }
     function getRequestInfo(evt){
         evt.preventDefault();
+
+        var btn = $(evt.currentTarget);
+
+        var form = btn.closest('form');
+
+
+
+        var id = form.find('select.source_name').val();
+
+        var sortby = form.find('select.sortby').val();
+
+
+        var topic_id = form.attr('topic-id');
+
         // console.log($(".source_name").val())
         // console.log($("#sortby").val())
         var formInputs={
-            "source_id": $(".source_name").val(),
-            "sortby":$("#sortby").val()
+            "topic_id": topic_id,
+            "source_id": id,
+            "sortby":sortby
         };
+
+        debugger
+
+        var handler = function(response) {
+            return showStories(topic_id,response);
+        }
+
         //QUESTION HOW DO I PUT VARIABLE IN BELOW
         $.get("/news-landing.json",
                 formInputs,
-                showStories);
+                handler);
     }
-    $("#chose_source_btn").on("click", getRequestInfo);
+    $("input.chose_source_btn").on("click", getRequestInfo);
 
 ////////////////////
 

@@ -8,7 +8,7 @@
     
     {% for topic, story_info in story_dict.iteritems() %}
 
-            <form>
+            <form topic-id="{{topic.topic_id}}">
                 <fieldset>
                     <legend>Choose your source for {{ story_info['category'].category_name }} news      from {{ story_info['country'].country_name }} in {{ story_info['language'].     language_name }}:</legend>
                      
@@ -20,18 +20,18 @@
                         </select> 
                     
                      <p>How to Sort</p>
-                <select id="sortby" name ='sortby'>
+                <select class="sortby" name ='sortby'>
                     <option value='top' checked="checked"> Top </option>
                     <option value='latest'> Latest </option>
                     <option value='popular'> Popular </option>
                 </select>
-                    <input id='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'>     
+                    <input class='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'>     
                 </fieldset>
             </form>
             
         
             <!--need to figure out how to dom manipulate so come up when needed only-->
-            <div id='results'>
+            <div class='results' id='topic-results-{{topic.topic_id}}'>
                 
             </div>
         
