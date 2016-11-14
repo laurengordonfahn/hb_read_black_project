@@ -17,23 +17,63 @@ function showStories(topic_id,response){
             //works but not what I want iframe killer for some impacts useage
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
+           "<form action='/saved_pages_catch'>"+
            "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
-            "<a href=" + response["articles"][i]["url"]+ ">" + 
-             response['articles'][i]['title']  + "</a>" +
-            "<p>" +  response["articles"][i]['author'] + "</p>" + 
+           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
+            "<a href=" + response["articles"][i]["url"]+ ">" + "</a>" +
+            "<p>" + response['articles'][i]['title']  + "</p>" +
+            "<input type='hidden' name='author' value='"+response["articles"][i]['author'] +"' >"+
+            "<p>" + response["articles"][i]['author'] + "</p>" + 
             "<p>" +response["articles"][i]["description"] +"</p>" +
-            "<p>" +response["articles"][i]["publishedAt"]+ "</p>" 
+            "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
+            "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
+            "<input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>" +
+            "</form>" 
             );
         }
     }
+
+    function stopSaveForm(evt){
+        evt.preventDefault();
+        debugger
+        var  btn= $(evt.currentTarget);
+        var form = btn.closest('form');
+        var url=form.find('input[name="url"]').val()
+        var title=form.find('input[name="author"]').val()
+        var author=form.find('input[name="title"]').val()
+        var published_at=form.find('input[name="published_at"]').val()
+
+    
+        var formInputs={ 
+            
+                'url': url,
+                'title':title,
+                'author': author,
+                'published_at': published_at
+    
+            };
+
+        var alertSaved = function(response) {
+
+
+        };
+
+        $.post("/saved_pages_catch",
+                formInputs,
+                alertSaved
+                );
+
+    }
+
+    //$('.save_btn_class').on('click',stopSaveForm);
+    $('body').on('click','.save_btn_class',stopSaveForm);
+
     function getRequestInfo(evt){
         evt.preventDefault();
 
         var btn = $(evt.currentTarget);
 
         var form = btn.closest('form');
-
-
 
         var id = form.find('select.source_name').val();
 
@@ -49,8 +89,6 @@ function showStories(topic_id,response){
             "source_id": id,
             "sortby":sortby
         };
-
-        debugger
 
         var handler = function(response) {
             return showStories(topic_id,response);

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Saved Pages {% endblock %}
+{% block content %}
+
+{{current_user.username}}, saved pages:
+
+<ul>
+{% for saved_story in saved_stories %}
+    <li> {{ saved_story.title }} 
+        {{ saved_story. author }}
+        {{ saved_story.story_date}}
+        {{ saved_story.url }}
+    </li>
+</ul>
+
+{% endblock %}

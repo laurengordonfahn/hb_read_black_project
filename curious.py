@@ -463,7 +463,24 @@ def news_landing():
      
 
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
+@app.route('/saved_pages_catch', methods=['POST'])
+def saved_pages_catch():
+    url = request.form.get('url')
+    title = request.form.get('title')
+    author = request.form.get('author')
+    published_at =request.form.get('published_at')
 
+    saved_story_add = Saved_story(user_id=session['current_user'], story_url=url, story_title=title, story_author=author, story_date=published_at)
+    db.session.add(saved_story_add)
+    db.session.commit()
+
+    return jsonify({'ok': True})
+
+@app.route('/saved_pages')
+def saved_pages():
+    
+    saved_stories = Saved_story.query.filter_by(user_id=session['current_user']).all()
+    return render_template('saved_pages.html', saved_stories=saved_stories)
 
 @app.route('/log_out_catch', methods=['POST'])
 def log_out_catch():

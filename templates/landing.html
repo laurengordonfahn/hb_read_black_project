@@ -10,11 +10,11 @@
 
             <form topic-id="{{topic.topic_id}}">
                 <fieldset>
-                    <legend>Choose your source for {{ story_info['category'].category_name }} news      from {{ story_info['country'].country_name }} in {{ story_info['language'].     language_name }}:</legend>
+                    <legend>Choose your source for {{ story_info['category'].category_name }} news from {{ story_info['country'].country_name }} in {{ story_info['language'].language_name }}:</legend>
                      
                     <!--- changed the id to value if impact occurs -->
                         <select  class='source_name' name='sources'>
-                            {% for source_id, source_name in story_info['all_sources_available'].       iteritems() %}
+                            {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
                                 <option  value='{{ source_id }}' > {{ source_name }} </option>
                             {% endfor %}
                         </select> 

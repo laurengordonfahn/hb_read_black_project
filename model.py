@@ -122,7 +122,14 @@ class News_api_language(db.Model):
     language_code=db.Column(db.String(2), primary_key=True)
     language_name=db.Column(db.String(12), nullable=False, unique=True)
 
-
+class Saved_story(db.Model):
+    __tablename__="saved_stories"
+    saved_story_id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    story_url=db.Column(db.Text, nullable=False, unique=False)
+    story_title=db.Column(db.String(250), nullable=True, unique=False)
+    story_author=db.Column(db.String(100), nullable=True, unique=False)
+    story_date=db.Column(db.DateTime)
 
 
 
