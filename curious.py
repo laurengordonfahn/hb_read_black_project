@@ -293,61 +293,61 @@ def new_landing(username):
     user = User.query.get(session['current_user'])
     return render_template('new_landing.html', username=user.username, current_user=current_user())
 
-@app.route('/new_landing_catch', methods=['POST'])
-def new_landing_catch():
-    """ Process the New Landing Construction Page """
+# @app.route('/new_landing_catch', methods=['POST'])
+# def new_landing_catch():
+#     """ Process the New Landing Construction Page """
 
-    if not is_logged_in():
-        return redirect("/")
+#     if not is_logged_in():
+#         return redirect("/")
 
 
-    landing_name = request.form.get('new_landing_name')
-    # print "##############", landing_name
-    #check if this landing name has already been used for this user
-    check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
-    #if this landing name is taken tell them to change it otherwise save it
-    if check_landing_name:
-        flash("Your landing name must be unique please label this something other than %s" % landing_name)
-        user = current_user() 
-        # print "####*****#####", user, user.username
+#     landing_name = request.form.get('new_landing_name')
+#     # print "##############", landing_name
+#     #check if this landing name has already been used for this user
+#     check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
+#     #if this landing name is taken tell them to change it otherwise save it
+#     if check_landing_name:
+#         flash("Your landing name must be unique please label this something other than %s" % landing_name)
+#         user = current_user() 
+#         # print "####*****#####", user, user.username
 
-        return redirect('/new_landing/%s' % user.username)
-    else:
-        #adding the new landing name to the database
-        landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
-        #Note: removed landing_primary from the above line.
-        db.session.add(landing_add)
-        db.session.commit()
+#         return redirect('/new_landing/%s' % user.username)
+#     else:
+#         #adding the new landing name to the database
+#         landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
+#         #Note: removed landing_primary from the above line.
+#         db.session.add(landing_add)
+#         db.session.commit()
 
-        #gathering informaiton to create rows in our topic table. 
-        landing_id = landing_add.landing_id
-        media_type = request.form.get('type')
-        # print "you created landing_id %d" % landing_id
-        index = request.form.get('story_count')
-        print "$$$$$$$$$$$$$", index, type(index)
+#         #gathering informaiton to create rows in our topic table. 
+#         landing_id = landing_add.landing_id
+#         media_type = request.form.get('type')
+#         # print "you created landing_id %d" % landing_id
+#         index = request.form.get('story_count')
+#         print "$$$$$$$$$$$$$", index, type(index)
 
-        #beging loop over all the different query/topic requests for news stories
-        index = int(index)
-        i = 0
-        while i < index:
-            #gather input from the form
-            category= request.form.get('category-%d'% i)
-            language= request.form.get('language-%d'% i)
-            country=request.form.get('country-%d'% i)
+#         #beging loop over all the different query/topic requests for news stories
+#         index = int(index)
+#         i = 0
+#         while i < index:
+#             #gather input from the form
+#             category= request.form.get('category-%d'% i)
+#             language= request.form.get('language-%d'% i)
+#             country=request.form.get('country-%d'% i)
         
-            # print "THIS IS WHAT WE WANT", language, country
+#             # print "THIS IS WHAT WE WANT", language, country
  
 
-            #translate user input above to codes to be saved in table language and country come as they need to be
-            category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
-        # add to database
-            topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
-            db.session.add(topic)
-            db.session.commit()
+#             #translate user input above to codes to be saved in table language and country come as they need to be
+#             category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+#         # add to database
+#             topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
+#             db.session.add(topic)
+#             db.session.commit()
             
-            i+=1
+#             i+=1
 
-        return redirect('/yourlanding/%s' % landing_add.landing_name)        
+#         return redirect('/yourlanding/%s' % landing_add.landing_name)        
     
 ######TODO NEED TO ADD LOGIC TO HANDLE MULTIPLE STORY QUERIES FOR LANDING PAGE
 # NEED TO CHANGE landingname from username
@@ -397,9 +397,10 @@ def landing(landingname):
                 response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
         # show exception if api returns error
                 if response['status'] != "ok":
-                    die(response)
-
+                    flash("There are no stories with that search query, the US and GB have more options usally.")
+                    return redirect('/yourlanding/%s' % landingname)
                 if len(response['sources']) == 0:
+                    # flash('There where not enough sources to create this query, try a different search')
                     die("need more sources")
 
         #create a list to hold all the sources from this query
@@ -460,8 +461,90 @@ def news_landing():
                 print "************** RESPONSE: ", headlines_response
                 return jsonify(headlines_response)
 
-     
+@app.route('/cautious_query_api.json', methods=['POST'])
+def cautious_query_api():
+    """ Check the status of a query from the API before letting the query be saved in the database from the new_landing creation page"""
+    
+    media_type=request.form.get('type')
+    category=request.form.get('category')
+    country=request.form.get('country')
+    language=request.form.get('language')
+    print "PAYLOADPAYLOADPAYLOADPAYLOADPAYLOADPAYLOAD", media_type, category, country, language,
+    if media_type != "text":
+        die("landing type %s not supported (!= text)" % media_type)  
 
+    # make the api call
+    response = news.newssourcesrequest(category,language,country)
+    if response['status'] == "ok":
+        if not is_logged_in():
+            return redirect("/")
+
+
+            landing_name = request.form.get('new_landing_name')
+            # print "##############", landing_name
+            #check if this landing name has already been used for this user
+            check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
+            #if this landing name is taken tell them to change it otherwise save it
+            if check_landing_name:
+                flash("Your landing name must be unique please label this something other than %s" % landing_name)
+                user = current_user() 
+                # print "####*****#####", user, user.username
+
+                return redirect('/new_landing/%s' % user.username)
+        else:
+            #adding the new landing name to the database
+            landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
+            #Note: removed landing_primary from the above line.
+            db.session.add(landing_add)
+            db.session.commit()
+
+            #gathering informaiton to create rows in our topic table. 
+            landing_id = landing_add.landing_id
+            media_type = request.form.get('type')
+            # print "you created landing_id %d" % landing_id
+            index = request.form.get('story_count')
+            print "$$$$$$$$$$$$$", index, type(index)
+
+            #beging loop over all the different query/topic requests for news stories
+            index = int(index)
+        
+            #gather input from the form
+            category= request.form.get('category-%d'% i)
+            language= request.form.get('language-%d'% i)
+            country=request.form.get('country-%d'% i)
+        
+            # print "THIS IS WHAT WE WANT", language, country
+ 
+
+            #translate user input above to codes to be saved in table language and country come as they need to be
+            category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+        # add to database
+            topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
+            db.session.add(topic)
+            db.session.commit()
+            
+    print "RRRRRRRRRRRRRRRRRR", response
+    # show exception if api returns error
+    return jsonify(response)
+        
+@app.route('/check_landing_name.json')
+def check_landing_name():
+    """ Check the viability of the landing name before letting the user continue """
+
+    
+    landing_name = request.form.get('new_landing_name')
+    if landing_name != "":
+            # print "##############", landing_name
+            #check if this landing name has already been used for this user
+        check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
+          #if this landing name is taken tell them to change it otherwise save it
+        if check_landing_name:
+            response= {'landing_name_used': 'yes'} 
+        else:
+            response = {'landing_name_used': 'no'}   
+    else:
+        response={'landing_name_needed': 'yes'}
+    return jsonify(response)
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
 @app.route('/saved_pages_catch', methods=['POST'])
 def saved_pages_catch():

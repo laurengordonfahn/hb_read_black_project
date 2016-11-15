@@ -2,61 +2,70 @@
 {% block title %} New Landing {% endblock %}
 {% block content %}
     <form action='/new_landing_catch' method='POST'>
-        <p> Name this Landing Page </p>
-        <input type='text' name='new_landing_name' placeholder='add your new landing name'>
+        <p> Name this News Landing Page </p>
+        <input id='new_landing_name' type='text' name='new_landing_name' placeholder='add your new landing name'>
+        <div id="stories_you_have_so_far"> </div>
+        <div id="add_story_div">
+            <p>Type</p>
+            <select id="type-0" name='type'>
+                <option value='text'> Text </option>
+                <!-- <option value='audio'> Audio </option>
+                <option value='video'> Video </option> -->
+            </select>
+            <p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>
+            <br>
+        
+            <p> Topic Category </p>
+            <select id="category-0" name='category-0'>
+                <option value='business'> Business </option>
+                <option value='entertainment'> Entertainment </option>
+                <option value='gaming'>Gaming </option>
+                <option value='general'>General </option>
+                <option value='music'> Music</option>
+                <option value='science-and-nature'> Science-and-Nature </option>
+                <option value='technology'> Technology</option>
+            </select>
+            <br>
     
-        <p>Type</p>
-        <select id="type-0" name='type'>
-            <option value='text'> Text </option>
-            <!-- <option value='audio'> Audio </option>
-            <option value='video'> Video </option> -->
-        </select>
-        <p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>
-        <br>
-    
-        <p> Topic Category </p>
-        <select id="category" name='category-0'>
-            <option value='business'> Business </option>
-            <option value='entertainment'> Entertainment </option>
-            <option value='gaming'>Gaming </option>
-            <option value='general'>General </option>
-            <option value='music'> Music</option>
-            <option value='science-and-nature'> Science-and-Nature </option>
-            <option value='technology'> Technology</option>
-        </select>
-        <br>
+            <!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->
+            <p>Language</p>
+            <select id="language-0" name='language-0'>
+                <option value = 'en'>English</option>
+                <option value = 'de'>German</option>
+                <option value = 'fr'>French</option>
+                <option value = 'all'> All</option>
+            </select>
+            <br>
+            <!-- AT SOME POINT CHOSE MULTIPLE PLACES -->
+            <p>Country</p>
+            <select id="country-0" name='country-0'>
+                <option value = 'au'> Austraila</option>
+                <option value = 'de'>Germany</option>
+                <option value = 'gb'>Great Britian</option>
+                <option value = 'in'>India</option>
+                <option value = 'it'>Italy</option>
+                <option value = 'us'>United States</option>
+            </select>
+            <br>
+            <p>Add A Story</p>
 
-        <!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->
-        <p>Language</p>
-        <select id="language" name='language-0'>
-            <option value = 'en'>English</option>
-            <option value = 'de'>German</option>
-            <option value = 'fr'>French</option>
-            <option value = 'all'> All</option>
-        </select>
-        <br>
-        <!-- AT SOME POINT CHOSE MULTIPLE PLACES -->
-        <p>Country</p>
-        <select id="country" name='country-0'>
-            <option value = 'au'> Austraila</option>
-            <option value = 'de'>Germany</option>
-            <option value = 'gb'>Great Britian</option>
-            <option value = 'in'>India</option>
-            <option value = 'it'>Italy</option>
-            <option value = 'us'>United States</option>
-        </select>
-        <br>
-
-        <div id="add_story_div"></div>
-        <input id='hidden_story_count' type='hidden' name='story_count' value="1">      
-        <input type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Submit'>
+        
+        <input id='hidden_story_count' type='hidden' name='story_count' value="0">      
+        <input id='add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>
+        </div>
     </form>
     <br>
 
 
     <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    <p>Add A Story</p>
-    <button id='add_story'>Add</button>
+    
+
+    <form action='/landing/options'>
+        <fieldset>
+            <legend>Go to Your News Landing Pages </legend>
+            <input type='submit' id='take_to_landing' value='Get News'>
+        </fieldset>
+    </form>
     
 
 {% endblock %}
