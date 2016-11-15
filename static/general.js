@@ -1,7 +1,9 @@
-"use strict";
+// global variables don't run with strict mode
+// "use strict";
+
 var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
-//////////////////// 
+////////////For yourlanding page /////////
 function showStories(topic_id,response){
 
         var results_div = $("#topic-results-" + topic_id);
@@ -33,6 +35,9 @@ function showStories(topic_id,response){
         }
     }
 
+
+
+//////////For  saving a story in yourlanding page //////////////
     function stopSaveForm(evt){
         evt.preventDefault();
         debugger
@@ -68,6 +73,10 @@ function showStories(topic_id,response){
     //$('.save_btn_class').on('click',stopSaveForm);
     $('body').on('click','.save_btn_class',stopSaveForm);
 
+
+
+///////////for yourlanding page chose a source drop down //////////////
+
     function getRequestInfo(evt){
         evt.preventDefault();
 
@@ -102,6 +111,26 @@ function showStories(topic_id,response){
     $("input.chose_source_btn").on("click", getRequestInfo);
 
 
+///////////////new_landing page creation button click counter/ id and name attribute counter/////////////
+var STORY_COUNT = -1;
+function addToStoryCount(evt){
+    evt.preventDefault();
+    STORY_COUNT = window.STORY_COUNT + 1;
+    console.log(window.STORY_COUNT +  " This is the count in addToStoryCount");
+}
+$('#add_story').on('click', addToStoryCount);
+
+console.log("This is makeing sure javascript is running" + window.STORY_COUNT);
+
+////// newlanding page add a counter for the number new stories added to a landing page////////
+function addHiddenCount(){
+
+
+    console.log("This is testing that addHiddenCount is running")
+    $('#hidden_story_count').val(window.STORY_COUNT.toString());
+}
+$('#add_story').on('click', addHiddenCount);
+
 
 //////////////Runs on new_landing page when need to make the landig name unique for user and need to be named/////
 function warnUniqueLandingName(response){
@@ -110,7 +139,7 @@ function warnUniqueLandingName(response){
         alert('You already have a news landing page named ' + landing_name + 'please make a unique landing name.');
     }
     else if(response['landing_name_used'] === 'no'){
-        $('#new_landing_name').attr('readonly');
+        $('#new_landing_name').attr('readonly', true);
     }
     else if(response['landing_name_needed'] === 'yes'){
         alert('You must name this landing page');
@@ -134,28 +163,30 @@ $('#add_story').one('click', mustNameLanding);
 
 ////////////////////
 
-var STORY_COUNT = 0;
-console.log(STORY_COUNT);
-console.log("This is makeing sure javascript is running" + STORY_COUNT);
+
+////////// Add a new story to the new_landing//////
 function addStoryHtml(response){
 
+    console.log(response);
+
     if(response['status'] != "ok"){
-        var type=$('#type-' +STORY_COUNT).val();
-        var category = $('#category-' + STORY_COUNT).val();
-        var country=$('#country-' + STORY_COUNT).val();
-        var language=$('#language-'+ STORY_COUNT).val();
-        alert("The Story Query for"+ category + type + "news from" + country + "in the language" + language +"is not supported right now.");
+        var type=$('#type-' +window.STORY_COUNT).val();
+        var category = $('#category-' + window.STORY_COUNT).val();
+        var country=$('#country-' + window.STORY_COUNT).val();
+        var language=$('#language-'+ window.STORY_COUNT).val();
+        alert("The Story Query for "+ category +" " + type + " news from" + country + " in the language " + language +" is not supported right now.");
     }
 
     else{
 
         $("#add_story_div").html("")
 
-        console.log("This is running addStoryHtml")
+        console.log("This is running addStoryHtml");
+        console.log(window.STORY_COUNT +  " This is the count in addHTML");
 
         $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + category + type + "news from" + country + "in the language" + language + "has been saved to your landing page.</p>")
         $("#add_story_div").html(
-            "<p>Type</p><select id = 'type-" + STORY_COUNT+"' name='type-"+ STORY_COUNT + "'> " +
+            "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
                 "<option value='text'> Text </option> " +
                 "<!-- <option value='audio'> Audio </option>" +
                 "<option value='video'> Video </option> -->" +
@@ -164,7 +195,7 @@ function addStoryHtml(response){
             "<br>" +
         
             "<p> Topic Category </p>" +
-            "<select id='category-" + STORY_COUNT +"'name='category-"+ STORY_COUNT + "'>" +
+            "<select id='category-" + window.STORY_COUNT +"'name='category-"+ window.STORY_COUNT + "'>" +
                 "<option value='business'> Business </option>" +
                 "<option value='entertainment'> Entertainment </option>" +
                 "<option value='gaming'>Gaming </option>" +
@@ -177,7 +208,7 @@ function addStoryHtml(response){
     
             "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
             "<p>Language</p>"+
-            "<select id='language-" + STORY_COUNT + "'name='language-" + STORY_COUNT + "'>"+
+            "<select id='language-" + window.STORY_COUNT + "'name='language-" + window.STORY_COUNT + "'>"+
                 "<option value = 'en'>English</option>" +
                 "<option value = 'de'>German</option>"+
                 "<option value = 'fr'>French</option>"+
@@ -186,7 +217,7 @@ function addStoryHtml(response){
            " <br> "+
             "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
             "<p>Country</p>" +
-            "<select id='country-" + STORY_COUNT + "' name='country-" + STORY_COUNT + "'>"+
+            "<select id='country-" + window.STORY_COUNT + "' name='country-" + window.STORY_COUNT + "'>"+
                 "<option value = 'au'> Austraila</option>"+
                 "<option value = 'de'>Germany</option>" +
                 "<option value = 'gb'>Great Britian</option>" +
@@ -196,27 +227,28 @@ function addStoryHtml(response){
             "</select>" +
             "<br>" +
             "<p>Add A Story</p>" +
-            "<input id='hidden_STORY_COUNT' type='hidden' name='STORY_COUNT' value='"+(STORY_COUNT + 1)+"'>" +       
+            "<input id='hidden_window.STORY_COUNT' type='hidden' name='window.STORY_COUNT' value='"+(window.STORY_COUNT)+"'>" +       
             "<input id='#add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>"    +
             "</form>" +
             "<br>"
             );
-    
-            STORY_COUNT++;
+            
+            //possibly not needed because of event handerl addToStoryCount
+            // window.STORY_COUNT++;
     }
 }
 
 function checkStoryQuery(evt){
     evt.preventDefault();
-    console.log("checkStoryQuery is running")
-    console.log(STORY_COUNT)
-    var type=$('#type-' + STORY_COUNT).val();
-    console.log()
-    var category = $('#category-' + STORY_COUNT).val();
-    var country = $('#country-' + STORY_COUNT).val();
-    var language = $('#language-'+ STORY_COUNT).val();
+    console.log("checkStoryQuery is running");
+    console.log(window.STORY_COUNT +  " This is the count in checkStoryQuery");
+    var type=$('#type-' + window.STORY_COUNT).val();
+    console.log(type);
+    var category = $('#category-' + window.STORY_COUNT).val();
+    var country = $('#country-' + window.STORY_COUNT).val();
+    var language = $('#language-'+ window.STORY_COUNT).val();
     var landing_name = $('#new_landing_name').val();
-    var STORY_COUNT = $('#hidden_story_count').val();
+    var count_of_story = $('#hidden_story_count').val();
     
     var formInputs = {
             'type': type,
@@ -224,8 +256,9 @@ function checkStoryQuery(evt){
             'country': country,
             'language': language,
             'new_landing_name': landing_name,
-            'story_count': STORY_COUNT
+            'story_count': count_of_story
     };
+
     console.log(formInputs)
     $.post(
         '/cautious_query_api.json', 
@@ -235,14 +268,6 @@ function checkStoryQuery(evt){
 
 $("#add_story").on('click', checkStoryQuery);
 
-////// newlanding page add a counter for the number new stories added to a landing page////////
-function addHiddenCount(){
-
-
-    console.log("This is testing that addHiddenCount is running")
-    $('#hidden_STORY_COUNT').val(STORY_COUNT.toString());
-}
-$('#add_story').on('click', addHiddenCount);
 
 
 

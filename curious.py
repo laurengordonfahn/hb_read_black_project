@@ -505,16 +505,17 @@ def cautious_query_api():
 
             #beging loop over all the different query/topic requests for news stories
             index = int(index)
-        
+            
             #gather input from the form
-            category= request.form.get('category-%d'% i)
-            language= request.form.get('language-%d'% i)
-            country=request.form.get('country-%d'% i)
+            category= request.form.get('category-%d'% index)
+            language= request.form.get('language-%d'% index)
+            country=request.form.get('country-%d'% index)
         
             # print "THIS IS WHAT WE WANT", language, country
  
 
             #translate user input above to codes to be saved in table language and country come as they need to be
+
             category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # add to database
             topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
