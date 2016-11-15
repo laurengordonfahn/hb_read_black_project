@@ -101,118 +101,9 @@ function showStories(topic_id,response){
     }
     $("input.chose_source_btn").on("click", getRequestInfo);
 
-////////////////////
-
-var story_count = 0;
-console.log("This is makeing sure javascript is running" + story_count);
-function addStoryHtml(response){
-
-    if(response['status'] != "ok"){
-        var type=$('#type-' +story_count).val();
-        var category = $('#category-' + story_count).val();
-        var country=$('#country-' + story_count).val();
-        var language=$('#language-'+ story_count).val();
-        alert("The Story Query for"+ category + type + "news from" + country + "in the language" + language +"is not supported right now.");
-    }
-
-    else{
-
-        $("#add_story_div").html("")
-
-        console.log("This is running addStoryHtml")
-
-        $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + category + type + "news from" + country + "in the language" + language + "has been saved to your landing page.</p>")
-        $("#add_story_div").html(
-            "<p>Type</p><select id = 'type-" + story_count+"' name='type-"+ story_count + "'> " +
-                "<option value='text'> Text </option> " +
-                "<!-- <option value='audio'> Audio </option>" +
-                "<option value='video'> Video </option> -->" +
-            "</select>" +
-            "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
-            "<br>" +
-        
-            "<p> Topic Category </p>" +
-            "<select id='category-" + story_count +"'name='category-"+ story_count + "'>" +
-                "<option value='business'> Business </option>" +
-                "<option value='entertainment'> Entertainment </option>" +
-                "<option value='gaming'>Gaming </option>" +
-                "<option value='general'>General </option>" +
-                "<option value='music'> Music</option>" +
-                "<option value='science-and-nature'> Science-and-Nature </option>" +
-                "<option value='technology'> Technology</option>" +
-            "</select>" +
-            "<br>" +
-    
-            "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
-            "<p>Language</p>"+
-            "<select id='language-" + story_count + "'name='language-" + story_count + "'>"+
-                "<option value = 'en'>English</option>" +
-                "<option value = 'de'>German</option>"+
-                "<option value = 'fr'>French</option>"+
-                "<option value = 'all'> All</option>"+
-           " </select>" +
-           " <br> "+
-            "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
-            "<p>Country</p>" +
-            "<select id='country-" + story_count + "' name='country-" + story_count + "'>"+
-                "<option value = 'au'> Austraila</option>"+
-                "<option value = 'de'>Germany</option>" +
-                "<option value = 'gb'>Great Britian</option>" +
-                "<option value = 'in'>India</option>" +
-                "<option value = 'it'>Italy</option>" +
-                "<option value = 'us'>United States</option>" +
-            "</select>" +
-            "<br>" +
-            "<p>Add A Story</p>" +
-            "<input id='hidden_story_count' type='hidden' name='story_count' value='"+(story_count + 1)+"'>" +       
-            "<input id='#add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>"    +
-            "</form>" +
-            "<br>"
-            );
-    
-            story_count++;
-    }
-}
-
-function checkStoryQuery(evt){
-    evt.preventDefault();
-    console.log("checkStoryQuery is running")
-
-    var type=$('#type-' +story_count).val();
-    var category = $('#category-' + story_count).val();
-    var country=$('#country-' + story_count).val();
-    var language=$('#language-'+ story_count).val();
-    var landing_name=$('#new_landing_name').val();
-    var story_count =$('#hidden_story_count').val();
-    var formInputs={
-            'type': type,
-            'category': category,
-            'country': country,
-            'language': language,
-            'new_landing_name': landing_name,
-            'story_count': story_count
-    };
-    console.log(formInputs)
-    $.post(
-        '/cautious_query_api.json', 
-        formInputs,
-        addStoryHtml);
-}
-
-$("#add_story").on('click', checkStoryQuery);
 
 
-function addHiddenCount(){
-
-
-    console.log("This is testing that addHiddenCount is running")
-    $('#hidden_story_count').val(story_count.toString());
-}
-$('#add_story').on('click', addHiddenCount);
-
-
-
-////////////////////////////////
+//////////////Runs on new_landing page when need to make the landig name unique for user and need to be named/////
 function warnUniqueLandingName(response){
     if (response['landing_name_used'] === 'yes'){
         var landing_name =$('new_landing_name').val();
@@ -241,8 +132,121 @@ function mustNameLanding(evt){
 $('#add_story').one('click', mustNameLanding);
 
 
+////////////////////
 
-/////////////////////////////////
+var STORY_COUNT = 0;
+console.log(STORY_COUNT);
+console.log("This is makeing sure javascript is running" + STORY_COUNT);
+function addStoryHtml(response){
+
+    if(response['status'] != "ok"){
+        var type=$('#type-' +STORY_COUNT).val();
+        var category = $('#category-' + STORY_COUNT).val();
+        var country=$('#country-' + STORY_COUNT).val();
+        var language=$('#language-'+ STORY_COUNT).val();
+        alert("The Story Query for"+ category + type + "news from" + country + "in the language" + language +"is not supported right now.");
+    }
+
+    else{
+
+        $("#add_story_div").html("")
+
+        console.log("This is running addStoryHtml")
+
+        $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + category + type + "news from" + country + "in the language" + language + "has been saved to your landing page.</p>")
+        $("#add_story_div").html(
+            "<p>Type</p><select id = 'type-" + STORY_COUNT+"' name='type-"+ STORY_COUNT + "'> " +
+                "<option value='text'> Text </option> " +
+                "<!-- <option value='audio'> Audio </option>" +
+                "<option value='video'> Video </option> -->" +
+            "</select>" +
+            "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
+            "<br>" +
+        
+            "<p> Topic Category </p>" +
+            "<select id='category-" + STORY_COUNT +"'name='category-"+ STORY_COUNT + "'>" +
+                "<option value='business'> Business </option>" +
+                "<option value='entertainment'> Entertainment </option>" +
+                "<option value='gaming'>Gaming </option>" +
+                "<option value='general'>General </option>" +
+                "<option value='music'> Music</option>" +
+                "<option value='science-and-nature'> Science-and-Nature </option>" +
+                "<option value='technology'> Technology</option>" +
+            "</select>" +
+            "<br>" +
+    
+            "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
+            "<p>Language</p>"+
+            "<select id='language-" + STORY_COUNT + "'name='language-" + STORY_COUNT + "'>"+
+                "<option value = 'en'>English</option>" +
+                "<option value = 'de'>German</option>"+
+                "<option value = 'fr'>French</option>"+
+                "<option value = 'all'> All</option>"+
+           " </select>" +
+           " <br> "+
+            "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
+            "<p>Country</p>" +
+            "<select id='country-" + STORY_COUNT + "' name='country-" + STORY_COUNT + "'>"+
+                "<option value = 'au'> Austraila</option>"+
+                "<option value = 'de'>Germany</option>" +
+                "<option value = 'gb'>Great Britian</option>" +
+                "<option value = 'in'>India</option>" +
+                "<option value = 'it'>Italy</option>" +
+                "<option value = 'us'>United States</option>" +
+            "</select>" +
+            "<br>" +
+            "<p>Add A Story</p>" +
+            "<input id='hidden_STORY_COUNT' type='hidden' name='STORY_COUNT' value='"+(STORY_COUNT + 1)+"'>" +       
+            "<input id='#add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>"    +
+            "</form>" +
+            "<br>"
+            );
+    
+            STORY_COUNT++;
+    }
+}
+
+function checkStoryQuery(evt){
+    evt.preventDefault();
+    console.log("checkStoryQuery is running")
+    console.log(STORY_COUNT)
+    var type=$('#type-' + STORY_COUNT).val();
+    console.log()
+    var category = $('#category-' + STORY_COUNT).val();
+    var country = $('#country-' + STORY_COUNT).val();
+    var language = $('#language-'+ STORY_COUNT).val();
+    var landing_name = $('#new_landing_name').val();
+    var STORY_COUNT = $('#hidden_story_count').val();
+    
+    var formInputs = {
+            'type': type,
+            'category': category,
+            'country': country,
+            'language': language,
+            'new_landing_name': landing_name,
+            'story_count': STORY_COUNT
+    };
+    console.log(formInputs)
+    $.post(
+        '/cautious_query_api.json', 
+        formInputs,
+        addStoryHtml);
+}
+
+$("#add_story").on('click', checkStoryQuery);
+
+////// newlanding page add a counter for the number new stories added to a landing page////////
+function addHiddenCount(){
+
+
+    console.log("This is testing that addHiddenCount is running")
+    $('#hidden_STORY_COUNT').val(STORY_COUNT.toString());
+}
+$('#add_story').on('click', addHiddenCount);
+
+
+
+/////////Function Logic for Deleting a Landing from the profile page/////////////
 function deleteLandingOnScreen(result){
     var landingnames = result.landings;
 

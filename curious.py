@@ -469,7 +469,9 @@ def cautious_query_api():
     category=request.form.get('category')
     country=request.form.get('country')
     language=request.form.get('language')
-    print "PAYLOADPAYLOADPAYLOADPAYLOADPAYLOADPAYLOAD", media_type, category, country, language,
+    landing_name = request.form.get('new_landing_name')
+    print "##############", landing_name
+    print "PAYLOADPAYLOADPAYLOADPAYLOADPAYLOADPAYLOAD", media_type, category, country, language
     if media_type != "text":
         die("landing type %s not supported (!= text)" % media_type)  
 
@@ -478,10 +480,6 @@ def cautious_query_api():
     if response['status'] == "ok":
         if not is_logged_in():
             return redirect("/")
-
-
-            landing_name = request.form.get('new_landing_name')
-            # print "##############", landing_name
             #check if this landing name has already been used for this user
             check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
             #if this landing name is taken tell them to change it otherwise save it
