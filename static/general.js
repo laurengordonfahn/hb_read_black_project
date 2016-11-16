@@ -221,7 +221,7 @@ function addStoryHtml(response){
 
     if(response['status'] != "ok"){
         
-        alert("The Story Query for "+ response['category'] +" " + response['type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        alert("The Story Query for "+ response['category'] +" " + response['media_type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
     }
 
     else{
@@ -231,7 +231,7 @@ function addStoryHtml(response){
         console.log("This is running addStoryHtml");
         console.log(window.STORY_COUNT +  " This is the count in addHTML");
 
-        $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + category + type + "news from" + country + "in the language" + language + "has been saved to your landing page.</p>")
+        $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + response['category'] + " " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page.</p>")
         $("#add_story_div").html(
             "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
                 "<option value='text'> Text </option> " +
@@ -279,6 +279,9 @@ function addStoryHtml(response){
             "</form>" +
             "<br>"
             );
+
+        $('#add_story').on('click', addHiddenCount);
+        $("#add_story").on('click', checkStoryQuery);
             
             //possibly not needed because of event handerl addToStoryCount
             // window.STORY_COUNT++;

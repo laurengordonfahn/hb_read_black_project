@@ -494,8 +494,7 @@ def cautious_query_api():
             #adding the new landing name to the database
             landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
             #Note: removed landing_primary from the above line.
-            db.session.add(landing_add)
-            db.session.commit()
+        
 
             #gathering informaiton to create rows in our topic table. 
             landing_id = landing_add.landing_id
@@ -508,9 +507,9 @@ def cautious_query_api():
             index = int(index)
             
             #gather input from the form
-            category= request.form.get('category-%d'% index)
-            language= request.form.get('language-%d'% index)
-            country=request.form.get('country-%d'% index)
+            # category= request.form.get('category-%d'% index)
+            # language= request.form.get('language-%d'% index)
+            # country=request.form.get('country-%d'% index)
         
             # print "THIS IS WHAT WE WANT", language, country
  
@@ -551,7 +550,11 @@ def check_landing_name():
         if check_landing_name:
             response= {'landing_name_used': 'yes'} 
         else:
-            response = {'landing_name_used': 'no'}   
+            response = {'landing_name_used': 'no'} 
+            landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
+            #Note: removed landing_primary from the above line.
+            db.session.add(landing_add)
+            db.session.commit()  
     else:
         response={'landing_name_needed': 'yes'}
     print "999999999999999999", response
