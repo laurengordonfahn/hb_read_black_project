@@ -22,7 +22,10 @@ function showStories(topic_id,response){
            "<form action='/saved_pages_catch'>"+
            "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
            "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
-            "<a href=" + response["articles"][i]["url"]+ ">"+ "<p>" + response['articles'][i]['title']  + "</p></a>" +
+           //////////////////////////////// added the rel portion below only////////
+
+
+            "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"] + "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='author' value='"+response["articles"][i]['author'] +"' >"+
             "<p>" + response["articles"][i]['author'] + "</p>" + 
             "<p>" +response["articles"][i]["description"] +"</p>" +
@@ -33,6 +36,19 @@ function showStories(topic_id,response){
             );
         }
     }
+
+    //////////////// didn't work when click on link to story url open new window in small demension/////////
+    /// this goes in the  a tag rel='external-new-window'
+// $(document).ready(function() {
+//     $('a[rel|=external]').click(function(){
+//         window.open(this.href);
+//         return false;
+//     });
+//     $('a[rel=external-new-window]').click(function(){
+//         window.open(this.href, "myWindowName", "width=800, height=600");
+//         return false;
+//     });
+// })
 
 
 
