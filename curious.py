@@ -413,6 +413,8 @@ def landing(landingname):
                         #take the dictionary at that index in the list of sources
                         source_name = response['sources'][source_index]['name']
                         source_id = response['sources'][source_index]['id']
+                        # ##########CHANGED THE NEXT TWO LINES ################
+                        # source_image_url = response['sources'][source_index]['urlsToLogos']['small']
                         #all_soucres_available dictionary is for the drop down list of source names on landing.html
                         all_sources_available[source_id] = source_name
 
@@ -433,7 +435,7 @@ def landing(landingname):
                                             # story_timestamp=article['publishedAt'] ,
    
 #TODO BE AWARE ROUTE CHANGE with News added at start
-@app.route('/news-landing.json', methods =['POST'])
+@app.route('/news-landing.json')
 def news_landing():
     """ Get json from API call of text return json for ajax callback showStories(result) """
         

@@ -22,8 +22,7 @@ function showStories(topic_id,response){
            "<form action='/saved_pages_catch'>"+
            "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
            "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
-            "<a href=" + response["articles"][i]["url"]+ ">" + "</a>" +
-            "<p>" + response['articles'][i]['title']  + "</p>" +
+            "<a href=" + response["articles"][i]["url"]+ ">"+ "<p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='author' value='"+response["articles"][i]['author'] +"' >"+
             "<p>" + response["articles"][i]['author'] + "</p>" + 
             "<p>" +response["articles"][i]["description"] +"</p>" +
@@ -96,13 +95,13 @@ function showStories(topic_id,response){
         var formInputs={
             "topic_id": topic_id,
             "source_id": id,
-            "sortby":sortby
+            "sortby":sortby,
         };
 
         var handler = function(response) {
             return showStories(topic_id,response);
         }
-
+        console.log(formInputs);
         //QUESTION HOW DO I PUT VARIABLE IN BELOW
         $.get("/news-landing.json",
                 formInputs,
