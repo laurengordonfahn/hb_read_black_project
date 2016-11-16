@@ -6,7 +6,7 @@
     
 </head>
 <body>
-    {% if current_user %}
+    {% if 'current_user' in session %}
         <!-- ADD username to jinja -->
         <!--Show only if signed in-->
         <!-- IS IT bootstrap that puts things in the hamburger? or is is it a form HOW DO I MAKE FORM A LINK THAT LOG OUTS-->
@@ -16,6 +16,8 @@
         <!--CREATE LOG OUT CATCH and get ride of logout if not signed in-->
         <form action='/log_out_catch' method='POST'><input type='submit' name='log-out' value='Log-Out'></form>
         <a href='/landing/options'>Change Landing </a>
+        <br>
+        <a href='/saved_pages'> See Saved Stories </a>
     {% endif %}
 
     <ul>

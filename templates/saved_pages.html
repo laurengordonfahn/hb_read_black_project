@@ -3,15 +3,17 @@
 {% block title %} Saved Pages {% endblock %}
 {% block content %}
 
-{{current_user.username}}, saved pages:
+{{current_user.username}}'s, saved pages:
 
 <ul>
 {% for saved_story in saved_stories %}
-    <li> {{ saved_story.title }} 
-        {{ saved_story. author }}
+    <li>  
+        <a href='{{ saved_story.story_url }}'>{{ saved_story.story_title }}</a>
+        {{ saved_story. story_author }}
         {{ saved_story.story_date}}
-        {{ saved_story.url }}
+        
     </li>
+{% endfor %}
 </ul>
 
 {% endblock %}

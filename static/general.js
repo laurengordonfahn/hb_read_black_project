@@ -15,6 +15,7 @@ function showStories(topic_id,response){
            //figure out how to make this image just appear
         for (var i =0; i < response["articles"].length; i++){
              console.log(i);
+             console.log(response["articles"][i]["url"])
            results_div.append(
             //works but not what I want iframe killer for some impacts useage
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
@@ -22,11 +23,9 @@ function showStories(topic_id,response){
            "<form action='/saved_pages_catch'>"+
            "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
            "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
-           //////////////////////////////// added the rel portion below only////////
-
-
-            "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"] + "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
-            "<input type='hidden' name='author' value='"+response["articles"][i]['author'] +"' >"+
+            "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
+            "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
+            "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
             "<p>" + response["articles"][i]['author'] + "</p>" + 
             "<p>" +response["articles"][i]["description"] +"</p>" +
             "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
@@ -59,8 +58,8 @@ function showStories(topic_id,response){
         var  btn= $(evt.currentTarget);
         var form = btn.closest('form');
         var url=form.find('input[name="url"]').val()
-        var title=form.find('input[name="author"]').val()
-        var author=form.find('input[name="title"]').val()
+        var title=form.find('input[name="title"]').val()
+        var author=form.find('input[name="author"]').val()
         var published_at=form.find('input[name="published_at"]').val()
 
     

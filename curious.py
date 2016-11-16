@@ -571,6 +571,7 @@ def saved_pages_catch():
     author = request.form.get('author')
     published_at =request.form.get('published_at')
 
+    print "@@@@@@@@@@@@@@@@@@", author
     saved_story_add = Saved_story(user_id=session['current_user'], story_url=url, story_title=title, story_author=author, story_date=published_at)
     db.session.add(saved_story_add)
     db.session.commit()
@@ -581,7 +582,7 @@ def saved_pages_catch():
 def saved_pages():
     
     saved_stories = Saved_story.query.filter_by(user_id=session['current_user']).all()
-    return render_template('saved_pages.html', saved_stories=saved_stories)
+    return render_template('saved_pages.html', saved_stories=saved_stories, current_user=current_user())
 
 @app.route('/log_out_catch', methods=['POST'])
 def log_out_catch():
