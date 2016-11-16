@@ -259,8 +259,10 @@ def profile_catch():
 def delete_landing():
     #get the landing name to be deleted from the jquery dictionary
     landingname = request.form.get('landingname')
+    print "@@@@@@@@@@@@@@@@@@@@@@@@", landingname
     #grab the object for the landing name from the landings table
     landing_row = Landing.query.filter_by(landing_name=landingname, user_id=session['current_user']).first()
+    print landing_row
     #grab a list of objects of all the topics associated with the landing page to be delted
     topic_rows = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing_row.landing_id).all()
     #delete all topic rows associated with the removed landing recursively
@@ -492,9 +494,9 @@ def cautious_query_api():
             #     return redirect('/new_landing/%s' % user.username)
         else:
             #adding the new landing name to the database
-            landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
+            landing_add = Landing.query.filter_by(user_id=session['current_user'], landing_name=landing_name).first()
             #Note: removed landing_primary from the above line.
-        
+            print landing_add
 
             #gathering informaiton to create rows in our topic table. 
             landing_id = landing_add.landing_id

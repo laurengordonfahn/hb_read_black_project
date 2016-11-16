@@ -338,7 +338,7 @@ function deleteLandingOnScreen(result){
         }
 
 
-    $('update_your_landings').html(html_string);
+    $('#update_your_landings').html(html_string);
 
 }
 
