@@ -431,7 +431,7 @@ def landing(landingname):
                                             # story_timestamp=article['publishedAt'] ,
    
 #TODO BE AWARE ROUTE CHANGE with News added at start
-@app.route('/news-landing.json')
+@app.route('/news-landing.json', methods =['POST'])
 def news_landing():
     """ Get json from API call of text return json for ajax callback showStories(result) """
         
@@ -480,15 +480,16 @@ def cautious_query_api():
     if response['status'] == "ok":
         if not is_logged_in():
             return redirect("/")
+            #not needed any more because handled in a different route due to jquery
             #check if this landing name has already been used for this user
-            check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
-            #if this landing name is taken tell them to change it otherwise save it
-            if check_landing_name:
-                flash("Your landing name must be unique please label this something other than %s" % landing_name)
-                user = current_user() 
-                # print "####*****#####", user, user.username
+            # check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
+            # #if this landing name is taken tell them to change it otherwise save it
+            # if check_landing_name:
+            #     flash("Your landing name must be unique please label this something other than %s" % landing_name)
+            #     user = current_user() 
+            #     # print "####*****#####", user, user.username
 
-                return redirect('/new_landing/%s' % user.username)
+            #     return redirect('/new_landing/%s' % user.username)
         else:
             #adding the new landing name to the database
             landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
@@ -523,19 +524,29 @@ def cautious_query_api():
             db.session.commit()
             
     print "RRRRRRRRRRRRRRRRRR", response
+    response_dict ={
+        'status': response['status'],
+        'category': category,
+        'country': country,
+        'type': media_type,
+        'language': language
+    }
     # show exception if api returns error
-    return jsonify(response)
+    return jsonify(response_dict)
         
-@app.route('/check_landing_name.json')
+@app.route('/check_landing_name.json', methods=['POST'])
 def check_landing_name():
     """ Check the viability of the landing name before letting the user continue """
 
     
     landing_name = request.form.get('new_landing_name')
+    print "##############", landing_name
+
     if landing_name != "":
-            # print "##############", landing_name
+            
             #check if this landing name has already been used for this user
         check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
+        print "$$$$$$$$$$$$$$$$$$$", check_landing_name
           #if this landing name is taken tell them to change it otherwise save it
         if check_landing_name:
             response= {'landing_name_used': 'yes'} 
@@ -543,6 +554,7 @@ def check_landing_name():
             response = {'landing_name_used': 'no'}   
     else:
         response={'landing_name_needed': 'yes'}
+    print "999999999999999999", response
     return jsonify(response)
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
 @app.route('/saved_pages_catch', methods=['POST'])

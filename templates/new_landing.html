@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% block title %} New Landing {% endblock %}
 {% block content %}
-    <form action='/cautious_query_api.json'  method='POST'>
+    <form action="#" method='POST'>
         <p> Name this News Landing Page </p>
         <input id='new_landing_name' type='text' name='new_landing_name' placeholder='add your new landing name'>
+        <div id='add_first_story_div'> 
+            <button id='add_first_story_btn' type='submit' >Add First Story</button>
+        </div>
         <div id="stories_you_have_so_far"> </div>
         <div id="add_story_div">
-            <p>Type</p>
+            <!-- <p>Type</p>
             <select id="type-0" name='type'>
-                <option value='text'> Text </option>
+                <option value='text'> Text </option> -->
                 <!-- <option value='audio'> Audio </option>
                 <option value='video'> Video </option> -->
-            </select>
+           <!--  </select>
             <p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>
             <br>
         
@@ -25,19 +28,19 @@
                 <option value='science-and-nature'> Science-and-Nature </option>
                 <option value='technology'> Technology</option>
             </select>
-            <br>
+            <br> -->
     
             <!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->
-            <p>Language</p>
+            <!-- <p>Language</p>
             <select id="language-0" name='language-0'>
                 <option value = 'en'>English</option>
                 <option value = 'de'>German</option>
                 <option value = 'fr'>French</option>
                 <option value = 'all'> All</option>
             </select>
-            <br>
+            <br> -->
             <!-- AT SOME POINT CHOSE MULTIPLE PLACES -->
-            <p>Country</p>
+            <!-- <p>Country</p>
             <select id="country-0" name='country-0'>
                 <option value = 'au'> Austraila</option>
                 <option value = 'de'>Germany</option>
@@ -46,12 +49,12 @@
                 <option value = 'it'>Italy</option>
                 <option value = 'us'>United States</option>
             </select>
-            <br>
-            <p>Add A Story</p>
+            <br> -->
+            <!-- <p>Add A Story</p> 
 
         
         <input id='hidden_story_count' type='hidden' name='story_count' value="0">      
-        <input id='add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>
+        <input id='add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'> -->
         </div>
     </form>
     <br>
