@@ -331,7 +331,7 @@ function deleteLandingOnScreen(result){
     var html_string =  "<p>Your Landing Pages: </p>" ;
 
     for(var i=0; i < landingnames.length; i++){
-        html_string += "<a href='/yourlanding/" + landingnames[i] + "'><button>" + landingnames[i] + " </button> </a>" + 
+        html_string += "<a href=\"/yourlanding/" + landingnames[i] + "\"><button>" + landingnames[i] + " </button> </a>" + 
                 "<form action='/delete_catch'>" +
                     "<input class='delete_landing_btn' name='" + landingnames[i] +"' type='submit'value='Delete this Landing'>" +
                 "</form>" 
@@ -373,9 +373,10 @@ function addStoryHtmlOnLanding(response){
     }
 
     else{
+        console.log(response['landingname']);
         $('#add_new_story_refill_div').html("");
         $('#add_new_story_refill_div').html(
-            "<a href='/yourlanding/" + response['landingname'] + "' ><button>Refresh With new Story</button></a>"
+            "<a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a>"
             );
 
     }      
@@ -441,7 +442,7 @@ function createNewStoryForm(evt){
             "<br>" +
             "<p>Add this Story</p>" +
             "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
-            "<input id='new_landing_name' type='hidden' name='new_landing_name' value='"+ landingname +"'>" +      
+            "<input id='new_landing_name' type='hidden' name='new_landing_name' value= \""+ landingname +"\">" +      
             "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
             "</form>" +
             "<br>"
@@ -457,6 +458,7 @@ function createNewStoryForm(evt){
                             var country = $('#country-' + topic_count).val();
                             var language = $('#language-'+ topic_count).val();
                             var landing_name = $('#new_landing_name').val();
+                            console.log(landing_name);
                             var count_of_story = $('#hidden_story_count').val();
                             
                             var formInputs = {
@@ -467,6 +469,8 @@ function createNewStoryForm(evt){
                                     'new_landing_name': landing_name,
                                     'story_count': count_of_story
                             };
+
+                            console.log(formInputs);
 
     
             $.post(

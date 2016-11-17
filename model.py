@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
+
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
 # object, where we do most of our interactions (like committing, etc.)
@@ -128,6 +128,13 @@ class Saved_story(db.Model):
     story_title=db.Column(db.String(250), nullable=True, unique=False)
     story_author=db.Column(db.String(700), nullable=True, unique=False)
     story_date=db.Column(db.DateTime)
+
+
+class Npr_api_topic_source(db.Model):
+    __tablename___="npr_topics"
+    source_code_id=db.Column(db.Integer, primary_key=True)
+    source_keyword=db.Column(db.String(79), nullable=False, unique=True)
+    source_description=db.Column(db.Text)
 
 def example_user_data():
     """ Create some sample data."""

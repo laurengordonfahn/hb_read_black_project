@@ -539,6 +539,8 @@ def cautious_query_api():
         'language': language,
         'landingname': landing_name
     }
+
+    print response_dict
     # show exception if api returns error
     return jsonify(response_dict)
         

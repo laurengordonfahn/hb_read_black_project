@@ -6,6 +6,7 @@ from model import News_api_sortby
 from model import News_api_country
 from model import News_api_category
 from model import News_api_language
+from model import Npr_api_topic_source 
 from model import Type
 
 from model import connect_to_db, db
@@ -173,6 +174,19 @@ def load_news_api_sources():
         #We need to add to the session or it won't ever be stored
         db.session.add(source)
     #Once we're done, we should commit our work
+    db.session.commit()
+
+def load_npr_api_topic_sources():
+    """ Load the Topic Search words for NPR source data from the npr_data.csv"""
+
+    Npr_api_topic_source.delete()
+
+    for row in open("npr_data.csv"):
+        row = row.rstrip()
+        source_keyword, source_code, source_description = row.split(",")
+
+        source_topic = Npr_api_topic_source(source_code=source_code, source_keyword=source_keyword, source_description=source_description)
+        db.session.add(source_topic)
     db.session.commit()
 
 def load_type():
