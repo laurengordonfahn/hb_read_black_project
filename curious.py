@@ -67,6 +67,9 @@ def login_catch():
             print session
 
             return redirect("/landing/options")
+        else:
+            flash('Your login information did not match.')
+            return redirect('/')   
     else:
         flash('Your login information did not match.')
         return redirect('/')
