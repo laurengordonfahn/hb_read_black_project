@@ -50,23 +50,23 @@ def login_catch():
     doesname = User.query.filter(User.username == pot_username).first()
     #pull password typed in to login
     pot_password = request.form.get('password')
-
-    if (doesname.username ==  pot_username) and (doesname.password == pot_password):
+    if doesname:
+        if (doesname.username ==  pot_username) and (doesname.password == pot_password):
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
-        user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
+            user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
 
-        print user_id[0]
+            print user_id[0]
 
         #session will be instantiated with current_user set equal to the user_id
-        session.setdefault('current_user', user_id[0])
+            session.setdefault('current_user', user_id[0])
         #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
         # topics = db.session.query(News_api_user_topics.topic_id).filter(News_api_user_topics.)
 
-        print "ending login"
-        print session
+            print "ending login"
+            print session
 
-        return redirect("/landing/options")
+            return redirect("/landing/options")
     else:
         flash('Your login information did not match.')
         return redirect('/')

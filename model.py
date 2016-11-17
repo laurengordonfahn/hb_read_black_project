@@ -126,41 +126,44 @@ class Saved_story(db.Model):
     story_author=db.Column(db.String(700), nullable=True, unique=False)
     story_date=db.Column(db.DateTime)
 
-# def example_user_data():
-#     """ Create some sample data."""
+def example_user_data():
+    """ Create some sample data."""
 
-#     #In case this is run more than once, empty out existing data
-#     User.query.delete()
-#     Landing.query.delete()
-#     News_api_user_topics.query.delete()
-#     Saved_story.query.delete()
+    #In case this is run more than once, empty out existing data
+    User.query.delete()
+    Landing.query.delete()
+    News_api_user_topics.query.delete()
+    Saved_story.query.delete()
 
 
-#     #Add sample users,landings, topics, saved stories
-#     a = User(email='a@gmail.com', username='a', password='123456', age='18', gender_code='f', academic_code='hs')
-#     b = User(email='b@gmail.com', username='b', password='123456', age='18', gender_code='m', academic_code='ts')
-#     c = User(email='c@gmail.com', username='c', password='123456', age='18', gender_code='o', academic_code='ba')
-#     d = User(email='d@gmail.com', username='d', password='123456', age='18', gender_code='f', academic_code='bs')
-#     e = User(email='e@gmail.com', username='e', password='123456', age='18', gender_code='m', academic_code='hr')
+    #Add sample users,landings, topics, saved stories
+    a = User(email='a@gmail.com', username='a', password='123456', age='18', gender_code='f', academic_code='hs')
+    b = User(email='b@gmail.com', username='b', password='123456', age='18', gender_code='m', academic_code='ts')
+    c = User(email='c@gmail.com', username='c', password='123456', age='18', gender_code='o', academic_code='ba')
+    d = User(email='d@gmail.com', username='d', password='123456', age='18', gender_code='f', academic_code='bs')
+    e = User(email='e@gmail.com', username='e', password='123456', age='18', gender_code='m', academic_code='hr')
 
-#     landing_a=Landing(user_id=1, landing_name='a')
-#     landing_aa=Landing(user_id=1, landing_name='a\'s')
-#     landing_b=Landing(user_id=2, landing_name=b)
-#     landing_c=Landing(user_id=3, landing_name=c)
-#     landing_d=Landing(user_id=4, landing_name=d)
-#     landing_e=Landing(user_id=5, landing_name=e)
+    landing_a=Landing(user_id=1, landing_name='a')
+    landing_aa=Landing(user_id=1, landing_name='a\'s')
+    landing_b=Landing(user_id=2, landing_name='b')
+    landing_c=Landing(user_id=3, landing_name='c')
+    landing_d=Landing(user_id=4, landing_name='d')
+    landing_e=Landing(user_id=5, landing_name='e')
 
-#     topic_a=News_api_user_topics(user_id=1, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_aa=News_api_user_topics(user_id=1, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_aaa=News_api_user_topics(user_id=1, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_b=News_api_user_topics(user_id=2, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_c=News_api_user_topics(user_id=3, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_d=News_api_user_topics(user_id=4, landing_id=, media_type=, category_code=, language_code=, country_code=)
-#     topic_e=News_api_user_topics(user_id=5, landing_id=, media_type=, category_code=, language_code=, country_code=)
+    topic_a=News_api_user_topics(user_id=1, landing_id=1, media_type='text', category_code='gnrl', language_code='en', country_code='us')
+    topic_aa=News_api_user_topics(user_id=1, landing_id=2, media_type='text', category_code='bsns', language_code='de', country_code='gb')
+    topic_aaa=News_api_user_topics(user_id=1, landing_id=3, media_type='text', category_code='sprt', language_code='en', country_code='it')
+    topic_b=News_api_user_topics(user_id=2, landing_id=4, media_type='text', category_code='tech', language_code='de', country_code='gb')
+    topic_c=News_api_user_topics(user_id=3, landing_id=5, media_type='text', category_code='gnrl', language_code='fr', country_code='de')
+    topic_d=News_api_user_topics(user_id=4, landing_id=6, media_type='text', category_code='bsns', language_code='en', country_code='in')
+    topic_e=News_api_user_topics(user_id=5, landing_id=7, media_type='text', category_code='bsns', language_code='en', country_code='au')
 
-#     saved_a=Saved_story(user_id=,story_url=, story_title=, story_author=, story_date=)
-#     saved_aa=Saved_story(user_id=,story_url=, story_title=, story_author=, story_date=)
-#     saved_b=Saved_story(user_id=,story_url=, story_title=, story_author=, story_date=)
+    saved_a=Saved_story(user_id=1,story_url='www.a.com', story_title='ahaha', story_author='aaron', story_date='1-1-2011')
+    saved_aa=Saved_story(user_id=1,story_url='www.aa.com', story_title='aaaaa', story_author='arthor', story_date='1-1-2111')
+    saved_b=Saved_story(user_id=2,story_url='www.b.com', story_title='blllahhal', story_author='bambi', story_date='1-1-1111')
+
+    db.session.add_all([a, b, c, d, e, landing_a, landing_aa, landing_b, landing_c, landing_d, landing_e, topic_a, topic_aa, topic_aaa, topic_b, topic_c, topic_d, topic_e, saved_a, saved_aa, saved_b])
+    db.session.commit()
 
 
 

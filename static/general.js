@@ -21,12 +21,14 @@ function showStories(topic_id,response){
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
            "<form action='/saved_pages_catch'>"+
-           "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
+           // "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
            "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
             "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
+            "<p> Author(s): </p>" +
             "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
             "<p>" + response["articles"][i]['author'] + "</p>" + 
+            "<p> Description: </p>" +
             "<p>" +response["articles"][i]["description"] +"</p>" +
             "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
             "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
