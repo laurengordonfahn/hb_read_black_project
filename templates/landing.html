@@ -37,12 +37,19 @@
         
         
     {% endfor %}
+    <div id='add_new_story_refill_div'></div>
+    
+   
         
     <form action='/new_landing/{{ current_user.username }}' method='GET'>
-        <feildset>
-            <legend>Add Another Landing</legend>
-                 <input type='submit' name='add_column' value='Add'>
-        </feildset>
+        <fieldset>
+            <legend>Add a new topic to this exhisting news landing page:</legend>
+                <input id='hidden_count_for_landingname' type='hidden' name='hidden_count_add_story' value='{{ story_dict|length }}'>
+
+                 <input id='hidden_landingname_add_story' type='hidden' name='hidden_landingname_add_story' value='{{ landing_name }}'>
+
+                <input id='add_story_to_exhisting_landing' type='submit' name='add_story' value='Add'>
+        </fieldset>
     </form>
 
     

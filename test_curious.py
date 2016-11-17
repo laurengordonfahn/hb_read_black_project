@@ -27,7 +27,7 @@ class MyAppUnitTestCaseLoggedOut(TestCase):
         db.session.close()
         db.drop_all()
     
-    #RENDER NORMLA
+    #RENDER NORMAL
    
     def test_index_render_pass(self):
         """ tests for correct word content index.html render in route '/' """

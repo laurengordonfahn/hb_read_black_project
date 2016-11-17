@@ -92,7 +92,7 @@ def load_countries():
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
     News_api_country.query.delete()
 
-    au = News_api_country(country_code= 'au', country_name= 'Austraila')
+    au = News_api_country(country_code= 'au', country_name= 'Australia')
     de = News_api_country(country_code= 'de', country_name= 'Germany')
     gb = News_api_country(country_code= 'gb', country_name= 'Great Britian')
     inn = News_api_country(country_code= 'in', country_name= 'India')
