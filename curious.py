@@ -4,6 +4,8 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 
 from flask_debugtoolbar import DebugToolbarExtension
 
+from flask.ext.bcrypt import Bcrypt
+
 #Need to create and import Classes in Database model.py
 #ADD ALL CLASSES FROM MODELS!
 from model import  *
@@ -20,6 +22,7 @@ from server_functions import * #current_user()
 from random import shuffle
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.secret_key = "dry monday"
 
 # Normally, if you use an undefined variable in Jinja2, it fails
@@ -50,8 +53,13 @@ def login_catch():
     doesname = User.query.filter(User.username == pot_username).first()
     #pull password typed in to login
     pot_password = request.form.get('password')
+
+    #hash the pot_password and then compare it in the line after with the hash stored
+    pw_hash = bcrypt.generate_password_hash(pot_password)
+    
+
     if doesname:
-        if (doesname.username ==  pot_username) and (doesname.password == pot_password):
+        if (doesname.username ==  pot_username) and (doesname.password == pw_hash):
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
             user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
@@ -117,7 +125,9 @@ def sign_up_catch():
         flash('Your second password does not match your first, please re-enter to verify.')
         return redirect('/')
     else:
-        user = User(email=email,username=pot_username, password=pot_password) 
+        pot_passwordhash = bcrypt.generate_password_hash(pot_password)
+        
+        user = User(email=email,username=pot_username, password=pot_passwordhash) 
         db.session.add(user)
         db.session.commit()
         #session will be instantiated with current_user set equal to the user_id

@@ -21,8 +21,8 @@ function showStories(topic_id,response){
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
            "<form action='/saved_pages_catch'>"+
-           // "<a href=" + response["articles"][i]["urlToImage"]+ "> Image </a>" +
-           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "'>" +
+           "<image src=" + response["articles"][i]["urlToImage"]+ ">" +
+           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "' height='15' width='15'>" +
             "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
             "<p> Author(s): </p>" +
@@ -438,47 +438,47 @@ function addStoryHtmlOnLanding(response){
 //                 "<option value = 'it'>Italy</option>" +
 //                 "<option value = 'us'>United States</option>" +
 //             "</select>" +
-            "<br>" +
-            "<p>Add this Story</p>" +
-            "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
-            "<input id='new_landing_name' type='hidden' name='new_landing_name' value='"+ landingname +"'>" +      
-            "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
-            "</form>" +
-            "<br>"
-        );
+        //     "<br>" +
+        //     "<p>Add this Story</p>" +
+        //     "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
+        //     "<input id='new_landing_name' type='hidden' name='new_landing_name' value='"+ landingname +"'>" +      
+        //     "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
+        //     "</form>" +
+        //     "<br>"
+        // );
 
-        // is the right way to do an inline function?
+//         // is the right way to do an inline function?
         
-        $("#add_story_to_a_landing").on('click', function(evt){
-                            evt.preventDefault();
+//         $("#add_story_to_a_landing").on('click', function(evt){
+//                             evt.preventDefault();
     
-                            var type=$('#type-' + topic_count).val();
-                            var category = $('#category-' + topic_count).val();
-                            var country = $('#country-' + topic_count).val();
-                            var language = $('#language-'+ topic_count).val();
-                            var landing_name = $('#new_landing_name').val();
-                            var count_of_story = $('#hidden_story_count').val();
+//                             var type=$('#type-' + topic_count).val();
+//                             var category = $('#category-' + topic_count).val();
+//                             var country = $('#country-' + topic_count).val();
+//                             var language = $('#language-'+ topic_count).val();
+//                             var landing_name = $('#new_landing_name').val();
+//                             var count_of_story = $('#hidden_story_count').val();
                             
-                            var formInputs = {
-                                    'type': type,
-                                    'category': category,
-                                    'country': country,
-                                    'language': language,
-                                    'new_landing_name': landing_name,
-                                    'story_count': count_of_story
-                            };
+//                             var formInputs = {
+//                                     'type': type,
+//                                     'category': category,
+//                                     'country': country,
+//                                     'language': language,
+//                                     'new_landing_name': landing_name,
+//                                     'story_count': count_of_story
+//                             };
 
     
-            $.post(
-                    '/cautious_query_api.json', 
-                    formInputs,
-                    addStoryHtmlOnLanding);
-        });
+//             $.post(
+//                     '/cautious_query_api.json', 
+//                     formInputs,
+//                     addStoryHtmlOnLanding);
+//         });
 
 
-}
+// }
 
-$('#add_story_to_exhisting_landing')on.('click', createNewStoryForm);
+// $('#add_story_to_exhisting_landing')on.('click', createNewStoryForm);
 
 
 
