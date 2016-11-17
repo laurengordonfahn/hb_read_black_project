@@ -51,15 +51,16 @@ def login_catch():
     pot_username = request.form.get('username')
     #check the db for the typed in username
     doesname = User.query.filter(User.username == pot_username).first()
+    print "444444444444444444", doesname.password
     #pull password typed in to login
     pot_password = request.form.get('password')
 
     #hash the pot_password and then compare it in the line after with the hash stored
-    pw_hash = bcrypt.generate_password_hash(pot_password)
-    
+
+    pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
 
     if doesname:
-        if (doesname.username ==  pot_username) and (doesname.password == pw_hash):
+        if (doesname.username ==  pot_username) and (pw_hash_bool):
         #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
         #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
             user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()

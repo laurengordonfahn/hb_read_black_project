@@ -375,7 +375,7 @@ function addStoryHtmlOnLanding(response){
     else{
         $('#add_new_story_refill_div').html("");
         $('#add_new_story_refill_div').html(
-            "<a href='/yourlanding/" + response['landing_name'] + "' ><button>Refresh With new Story</button></a>"
+            "<a href='/yourlanding/" + response['landingname'] + "' ><button>Refresh With new Story</button></a>"
             );
 
     }      
@@ -386,99 +386,99 @@ function addStoryHtmlOnLanding(response){
 
 
    
-// function createNewStoryForm(evt){
-//     evt.preventDefault();
-//     var btn= $(evt.currentTarget);
-//     var form = btn.closest('form');
-//     var landingname= form.find('input[name="hidden_landingname_add_story"]').val(); 
-//     var topic_count = form.find('input[name="hidden_count_add_story"]').val();
+function createNewStoryForm(evt){
+    evt.preventDefault();
+    var btn= $(evt.currentTarget);
+    var form = btn.closest('form');
+    var landingname= form.find('input[name="hidden_landingname_add_story"]').val(); 
+    var topic_count = form.find('input[name="hidden_count_add_story"]').val();
     
 
 
-//         $('#add_new_story_refill_div').html("");
-//         $('#add_new_story_refill_div').html(
+        $('#add_new_story_refill_div').html("");
+        $('#add_new_story_refill_div').html(
 
+            "<form>" + 
+                "<p>Type</p><select id = 'type-" + topic_count +"' name='type-"+ topic_count + "'> " +
+                "<option value='text'> Text </option> " +
+                "<!-- <option value='audio'> Audio </option>" +
+                "<option value='video'> Video </option> -->" +
+            "</select>" +
+            "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
+            "<br>" +
         
-//             "<p>Type</p><select id = 'type-" + topic_count +"' name='type-"+ topic_count + "'> " +
-//                 "<option value='text'> Text </option> " +
-//                 "<!-- <option value='audio'> Audio </option>" +
-//                 "<option value='video'> Video </option> -->" +
-//             "</select>" +
-//             "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
-//             "<br>" +
-        
-//             "<p> Topic Category </p>" +
-//             "<select id='category-" + topic_count +"'name='category-"+ topic_count + "'>" +
-//                 "<option value='business'> Business </option>" +
-//                 "<option value='entertainment'> Entertainment </option>" +
-//                 "<option value='gaming'>Gaming </option>" +
-//                 "<option value='general'>General </option>" +
-//                 "<option value='music'> Music</option>" +
-//                 "<option value='science-and-nature'> Science-and-Nature </option>" +
-//                 "<option value='technology'> Technology</option>" +
-//             "</select>" +
-//             "<br>" +
+            "<p> Topic Category </p>" +
+            "<select id='category-" + topic_count +"'name='category-"+ topic_count + "'>" +
+                "<option value='business'> Business </option>" +
+                "<option value='entertainment'> Entertainment </option>" +
+                "<option value='gaming'>Gaming </option>" +
+                "<option value='general'>General </option>" +
+                "<option value='music'> Music</option>" +
+                "<option value='science-and-nature'> Science-and-Nature </option>" +
+                "<option value='technology'> Technology</option>" +
+            "</select>" +
+            "<br>" +
     
-//             "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
-//             "<p>Language</p>"+
-//             "<select id='language-" + topic_count + "'name='language-" + topic_count + "'>"+
-//                 "<option value = 'en'>English</option>" +
-//                 "<option value = 'de'>German</option>"+
-//                 "<option value = 'fr'>French</option>"+
-//                 "<option value = 'all'> All</option>"+
-//            " </select>" +
-//            " <br> "+
-//             "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
-//             "<p>Country</p>" +
-//             "<select id='country-" + topic_count + "' name='country-" + topic_count + "'>"+
-//                 "<option value = 'au'> Australia</option>"+
-//                 "<option value = 'de'>Germany</option>" +
-//                 "<option value = 'gb'>Great Britian</option>" +
-//                 "<option value = 'in'>India</option>" +
-//                 "<option value = 'it'>Italy</option>" +
-//                 "<option value = 'us'>United States</option>" +
-//             "</select>" +
-        //     "<br>" +
-        //     "<p>Add this Story</p>" +
-        //     "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
-        //     "<input id='new_landing_name' type='hidden' name='new_landing_name' value='"+ landingname +"'>" +      
-        //     "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
-        //     "</form>" +
-        //     "<br>"
-        // );
+            "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
+            "<p>Language</p>"+
+            "<select id='language-" + topic_count + "'name='language-" + topic_count + "'>"+
+                "<option value = 'en'>English</option>" +
+                "<option value = 'de'>German</option>"+
+                "<option value = 'fr'>French</option>"+
+                "<option value = 'all'> All</option>"+
+           " </select>" +
+           " <br> "+
+            "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
+            "<p>Country</p>" +
+            "<select id='country-" + topic_count + "' name='country-" + topic_count + "'>"+
+                "<option value = 'au'> Australia</option>"+
+                "<option value = 'de'>Germany</option>" +
+                "<option value = 'gb'>Great Britian</option>" +
+                "<option value = 'in'>India</option>" +
+                "<option value = 'it'>Italy</option>" +
+                "<option value = 'us'>United States</option>" +
+            "</select>" +
+            "<br>" +
+            "<p>Add this Story</p>" +
+            "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
+            "<input id='new_landing_name' type='hidden' name='new_landing_name' value='"+ landingname +"'>" +      
+            "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
+            "</form>" +
+            "<br>"
+        );
 
-//         // is the right way to do an inline function?
+        // is the right way to do an inline function?
         
-//         $("#add_story_to_a_landing").on('click', function(evt){
-//                             evt.preventDefault();
-    
-//                             var type=$('#type-' + topic_count).val();
-//                             var category = $('#category-' + topic_count).val();
-//                             var country = $('#country-' + topic_count).val();
-//                             var language = $('#language-'+ topic_count).val();
-//                             var landing_name = $('#new_landing_name').val();
-//                             var count_of_story = $('#hidden_story_count').val();
+        $("#add_story_to_a_landing").on('click', function(evt){
+                            evt.preventDefault();
+                            console.log("Inline function getting thrown too soon!")
+                            var type=$('#type-' + topic_count).val();
+                            var category = $('#category-' + topic_count).val();
+                            var country = $('#country-' + topic_count).val();
+                            var language = $('#language-'+ topic_count).val();
+                            var landing_name = $('#new_landing_name').val();
+                            var count_of_story = $('#hidden_story_count').val();
                             
-//                             var formInputs = {
-//                                     'type': type,
-//                                     'category': category,
-//                                     'country': country,
-//                                     'language': language,
-//                                     'new_landing_name': landing_name,
-//                                     'story_count': count_of_story
-//                             };
+                            var formInputs = {
+                                    'type': type,
+                                    'category': category,
+                                    'country': country,
+                                    'language': language,
+                                    'new_landing_name': landing_name,
+                                    'story_count': count_of_story
+                            };
 
     
-//             $.post(
-//                     '/cautious_query_api.json', 
-//                     formInputs,
-//                     addStoryHtmlOnLanding);
-//         });
+            $.post(
+                    '/cautious_query_api.json', 
+                    formInputs,
+                    addStoryHtmlOnLanding);
+        });
 
 
-// }
+}
 
-// $('#add_story_to_exhisting_landing')on.('click', createNewStoryForm);
+$('#add_story_to_exhisting_landing').on('click', createNewStoryForm);
 
 
 
