@@ -12,6 +12,9 @@ from model import Type
 from model import connect_to_db, db
 from curious import app
 
+#### IS THIS RIGHT TO GET THE THING TO LOAD
+import npr_data
+
 
 
 def load_gender():
