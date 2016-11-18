@@ -15,10 +15,14 @@
                     <!--- changed the id to value if impact occurs -->
                         <select  class='source_name' name='sources'>
                             {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
-                                <option  value='{{ source_id }}' > {{ source_name }} </option>
+                                <option  value='{{ source_id }}' > {{ source_name[0] }} </option>
                             {% endfor %}
+                                
                         </select> 
-                    
+                    {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
+                    <input class='hidden_source_url_logo' type='hidden' name='{{ source_name[0]}}' value='{{ source_name[1] }}'>
+                    {% endfor %}
+
                      <p>How to Sort</p>
                 <select class="sortby" name ='sortby'>
                     <option value='top' checked="checked"> Top </option>

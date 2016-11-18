@@ -132,8 +132,9 @@ class Saved_story(db.Model):
 
 class Npr_api_topic_source(db.Model):
     __tablename___="npr_topics"
-    source_code_id=db.Column(db.Integer, primary_key=True)
-    source_keyword=db.Column(db.String(79), nullable=False, unique=True)
+    source_id=db.Column(db.Integer,primary_key=True, autoincrement=True)
+    source_code=db.Column(db.String(10))
+    source_keyword=db.Column(db.String(79), nullable=False)
     source_description=db.Column(db.Text)
 
 def example_user_data():

@@ -12,8 +12,7 @@ from model import Type
 from model import connect_to_db, db
 from curious import app
 
-#### IS THIS RIGHT TO GET THE THING TO LOAD
-import npr_data
+
 
 
 
@@ -115,7 +114,7 @@ def load_countries():
     db.session.commit()
 
 
-def load_categrories():
+def load_categories():
     """ Load newscategories table from code below. """
 
     # Delete all rows in table, so if we need to run this a second time,
@@ -182,11 +181,18 @@ def load_news_api_sources():
 def load_npr_api_topic_sources():
     """ Load the Topic Search words for NPR source data from the npr_data.csv"""
 
-    Npr_api_topic_source.delete()
-
+    Npr_api_topic_source.query.delete()
+   
     for row in open("npr_data.csv"):
         row = row.rstrip()
-        source_keyword, source_code, source_description = row.split(",")
+        row_quote =row.split("\"")
+        if len(row_quote)== 3:
+            source_keyword, source_code = row_quote[0].strip(",").split(",")
+            source_description= row_quote[1]
+        if len(row_quote) == 1:
+            source_keyword, source_code, source_description=row_quote[0].split(",")
+        print source_keyword, source_code, source_description
+
 
         source_topic = Npr_api_topic_source(source_code=source_code, source_keyword=source_keyword, source_description=source_description)
         db.session.add(source_topic)
@@ -240,9 +246,10 @@ if __name__ == "__main__":
     load_academic()
     load_sortby()
     load_countries()
-    load_categrories()
+    load_categories()
     load_languages()
-    load_news_api_sources()
     load_type()
+    load_npr_api_topic_sources()
+    load_news_api_sources()
 
 

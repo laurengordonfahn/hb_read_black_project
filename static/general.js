@@ -17,12 +17,12 @@ function showStories(topic_id,response){
              console.log(i);
              console.log(response["articles"][i]["url"])
            results_div.append(
-            //works but not what I want iframe killer for some impacts useage
+            //works but not what I want iframe killer for some impacts useage change the height element!
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
            "<form action='/saved_pages_catch'>"+
-           "<image src=" + response["articles"][i]["urlToImage"]+ ">" +
-           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "' height='15' width='15'>" +
+           "<image src=" + response["articles"][i]["urlToImage"]+ " height='125' width='175'>" +
+           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + ">" +
             "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
             "<p> Author(s): </p>" +
@@ -207,7 +207,6 @@ console.log("This is makeing sure javascript is running" + window.STORY_COUNT);
 
 ////// newlanding page add a counter for the number new stories added to a landing page////////
 function addHiddenCount(){
-
 
     console.log("This is testing that addHiddenCount is running")
     $('#hidden_story_count').val(window.STORY_COUNT.toString());
