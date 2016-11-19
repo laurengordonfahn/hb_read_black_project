@@ -15,12 +15,12 @@
                     <!--- changed the id to value if impact occurs -->
                         <select  class='source_name' name='sources'>
                             {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
-                                <option  value='{{ source_id }}' > {{  }} </option>
+                                <option  value='{{ source_id }}' > {{  source_name[0] }} </option>
                             {% endfor %}
                                 
                         </select> 
                     {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
-                    <input class='hidden_source_url_logo' type='hidden' name='{{ source_id }}' value='{{ source_name[source_id][1] }}'>
+                    <input class='hidden_source_url_logo' type='hidden' name='{{ source_id }}' value='{{ source_name[1] }}'>
                     {% endfor %}
 
                      <p>How to Sort</p>
@@ -35,6 +35,9 @@
             
         
             <!--need to figure out how to dom manipulate so come up when needed only-->
+            <div class='logo' id='logo-{{topic.topic_id}}'>
+                
+            </div>
             <div class='results' id='topic-results-{{topic.topic_id}}'>
                 
             </div>

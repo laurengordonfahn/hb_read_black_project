@@ -457,7 +457,7 @@ def landing(landingname):
                         source_id = response['sources'][source_index]['id']
                         source_image_url = response['sources'][source_index]['urlsToLogos']['small']
                         #all_soucres_available dictionary is for the drop down list of source names on landing.html
-                        all_sources_available[source_id] = {source_id: [source_name, source_image_url]}
+                        all_sources_available[source_id] = [source_name, source_image_url]
 
                     story_dict[topic] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
                     print "(((((((((((((((((((((", story_dict[topic], story_dict[topic]['category'].category_name

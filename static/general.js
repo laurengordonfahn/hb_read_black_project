@@ -4,7 +4,10 @@
 var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
-function showStories(topic_id,response){
+function showStories(topic_id, source_logo_url, response){
+
+    $("#logo-" + topic_id).html("");
+    $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='' width=''>");
 
         var results_div = $("#topic-results-" + topic_id);
 
@@ -16,6 +19,11 @@ function showStories(topic_id,response){
         for (var i =0; i < response["articles"].length; i++){
              console.log(i);
              console.log(response["articles"][i]["url"])
+             // I believe this is put here by accident b/c no evt
+            //  var  btn= $(evt.currentTarget);
+            //  var form = btn.closest('form');
+            // var url=form.find('input[name="url"]').val();
+            
            results_div.append(
             //works but not what I want iframe killer for some impacts useage
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
@@ -53,6 +61,7 @@ function showStories(topic_id,response){
         var title=form.find('input[name="title"]').val();
         var author=form.find('input[name="author"]').val();
         var published_at=form.find('input[name="published_at"]').val();
+
 
     
         var formInputs={ 
@@ -139,9 +148,9 @@ $('.unsave_btn_class').on('click', unsaveStory);
 
         var sortby = form.find('select.sortby').val();
 
-
         var topic_id = form.attr('topic-id');
 
+        var source_logo_url=form.find('input.hidden_source_url_logo').val();
         // console.log($(".source_name").val())
         // console.log($("#sortby").val())
         var formInputs={
@@ -151,7 +160,7 @@ $('.unsave_btn_class').on('click', unsaveStory);
         };
 
         var handler = function(response) {
-            return showStories(topic_id,response);
+            return showStories(topic_id, source_logo_url, response);
         }
         console.log(formInputs);
         //QUESTION HOW DO I PUT VARIABLE IN BELOW
