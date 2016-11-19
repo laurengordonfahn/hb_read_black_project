@@ -17,12 +17,12 @@ function showStories(topic_id,response){
              console.log(i);
              console.log(response["articles"][i]["url"])
            results_div.append(
-            //works but not what I want iframe killer for some impacts useage change the height element!
+            //works but not what I want iframe killer for some impacts useage
            // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
             
-           "<form action='/saved_pages_catch'>"+
+           "<form action='/saved_pages_catch' method='POST'>"+
            "<image src=" + response["articles"][i]["urlToImage"]+ " height='125' width='175'>" +
-           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + ">" +
+           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "' height='35' width='35'>" +
             "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
             "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
             "<p> Author(s): </p>" +
@@ -32,17 +32,21 @@ function showStories(topic_id,response){
             "<p>" +response["articles"][i]["description"] +"</p>" +
             "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
             "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
-            "<input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>" +
+            "<div id='save_story_button_div'>" +
+            "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
+            "</div>"+
             "</form>" 
             );
         }
+
+        
     }
 
 
 //////////For  saving a story in yourlanding page //////////////
     function stopSaveForm(evt){
         evt.preventDefault();
-        debugger
+        // debugger
         var  btn= $(evt.currentTarget);
         var form = btn.closest('form');
         var url=form.find('input[name="url"]').val();
@@ -61,11 +65,20 @@ function showStories(topic_id,response){
             };
 
         var alertSaved = function(response) {
+            $('#save_story_button_div').html("");
+            $('#save_story_button_div').html(
+                "<p> Story Saved</p>" +
+                "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
 
-
+            $('.unsave_btn_class').on('click', unsaveStory);
+            console.log($('.unsave_btn_class'));
         };
+        // $('.unsave_btn_class').on('click', unsaveStory);
+        // console.log($('.unsave_btn_class'));
 
-        $.post("/saved_pages_catch",
+        
+
+        $.post("/saved_pages.json",
                 formInputs,
                 alertSaved
                 );
@@ -75,6 +88,42 @@ function showStories(topic_id,response){
     //$('.save_btn_class').on('click',stopSaveForm);
     $('body').on('click','.save_btn_class',stopSaveForm);
 
+    //////// unsave story on the landing page//////
+    function alertUnsaved(response){
+        $('#save_story_button_div').html("");
+        $('#save_story_button_div').html("<p> This Story has been removed from your saved stories page </p> <br> <input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>");
+    }
+
+    function unsaveStory(evt){
+        evt.preventDefault();
+        console.log('This means unsaveStory is running');
+
+
+        var  btn= $(evt.currentTarget);
+        var form = btn.closest('form');
+        var url=form.find('input[name="url"]').val();
+        var title=form.find('input[name="title"]').val();
+        var author=form.find('input[name="author"]').val();
+        var published_at=form.find('input[name="published_at"]').val();
+
+        var formInputs={ 
+            
+                'url': url,
+                'title':title,
+                'author': author,
+                'published_at': published_at
+            };
+
+        $.post("/unsaved_pages_catch",
+                formInputs,
+                alertUnsaved
+                );
+    }
+
+$('.unsave_btn_class').on('click', unsaveStory);
+        console.log($('.unsave_btn_class'));
+    /// this is in the function two above for acynronisty
+    // $('.unsave_btn_class').on('click', unsaveStory)
 
 
 ///////////for yourlanding page chose a source drop down //////////////
@@ -117,7 +166,7 @@ var STORY_COUNT = 0;
 function warnUniqueLandingName(response){
     if (response['landing_name_used'] === 'yes'){
         var landing_name =$('new_landing_name').val();
-        alert('You already have a news landing page named ' + landing_name + 'please make a unique landing name.');
+        $('#landing_name_musts').html("<p>'You already have a news landing page named '" + landing_name + "'please make a unique landing name. </p>");
     }
     else if(response['landing_name_used'] === 'no'){
         $('#new_landing_name').attr('readonly', true);
@@ -173,7 +222,7 @@ function warnUniqueLandingName(response){
         $("#add_story").on('click', checkStoryQuery);
     }
     else if(response['landing_name_needed'] === 'yes'){
-        alert('You must name this landing page');
+        $('#landing_name_musts').html("<p>You must name this landing page</p>");
 
     }
 
@@ -221,8 +270,7 @@ function addStoryHtml(response){
     console.log(response);
 
     if(response['status'] != "ok"){
-        
-        alert("The Story Query for "+ response['category'] +" " + response['media_type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        $('#stories_not_possible').append("The Story Query for "+ response['category'] +" " + response['media_type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
     }
 
     else{

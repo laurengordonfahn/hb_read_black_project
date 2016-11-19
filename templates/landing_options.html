@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %} Sign-In {% endblock %}
+{% block title %} News Pages {% endblock %}
 
 {% block content %}
 
 <h1> Your Saved Newspapers </h1>
 <br>
     {% for landingname in landingnames %}
-        <a href="/yourlanding/{{ landingname[0] }}"><button>{{ landingname[0] }}</button></a>
+        <a href="/yourlanding/{{ landingname.landing_name }}"><button>{{ landingname.landing_name }}</button></a>
     {% endfor %}
-
+    {% if landingnames|length == 0 %}
+        <p> You Do not have any News Pages at this time, Make a New One Below! </p>
+    {% endif %}
 
  <form action="#" method='POST'>
         <p> Name this News Landing Page </p>

@@ -89,9 +89,23 @@ def landing_options():
     print "starting landing options"
     print session
 
-    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
-    print "***************", landingnames, type(landingnames), current_user().user_id
+    landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
+    print "LANDING OBJECT?????????????", landingnames
+    for landing in landingnames:
+        print landing, "LANDING LANDING"
+        topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
+        print "TOPICS TOPICS TOPICS", topics_obj_list
+
+        
+        if not topics_obj_list:
+            Landing.query.filter_by(landing_id=landing.landing_id).delete()
+    
+    landingnames=Landing.query.filter_by(user_id=session['current_user']).all()      
+            
+
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
+       
+            
     
 
 @app.route('/sign_up', methods=['POST'])
@@ -200,7 +214,17 @@ def profile(username):
     age = user.age
     academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
-    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+
+
+    landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
+    
+    for landing in landingnames:
+        topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
+        
+        if len(topics_obj_list)==0:
+            Landing.query.filter_by(landing_id=landing.landing_id).delete()
+            landingnames.remove(landing)
+
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
 
 @app.route('/profile_catch', methods=['POST'])
@@ -387,13 +411,17 @@ def landing(landingname):
     landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
     
     if landing is None:
-        die("can't find landing with name %s" % landingname)
+        flash("The landing name %s does not have any topics and is being removed." % landing.landing_name)
+        return redirect('/landing/opitons')
     
     #gather all topic objects in a list for this landing
     topics = News_api_user_topics.query.filter_by(landing_id=landing.landing_id).all()
 
     if len(topics) == 0:
-        die("can't find topic with landing_id %d" % landing.landing_id)
+        flash("This Landing Name does Not have any stories and is being removed!")
+        Landing.query.filter_by(landing_id=landing.landing_id).delete()
+        return redirect('/landing/options')
+        
     # print "@@@@@@@@@@@@@@@@@", topics
     
 
@@ -427,10 +455,9 @@ def landing(landingname):
                         #take the dictionary at that index in the list of sources
                         source_name = response['sources'][source_index]['name']
                         source_id = response['sources'][source_index]['id']
-                        # ##########CHANGED THE NEXT TWO LINES ################
                         source_image_url = response['sources'][source_index]['urlsToLogos']['small']
                         #all_soucres_available dictionary is for the drop down list of source names on landing.html
-                        all_sources_available[source_id] = [source_name, source_image_url]
+                        all_sources_available[source_id] = {source_id: [source_name, source_image_url]}
 
                     story_dict[topic] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
                     print "(((((((((((((((((((((", story_dict[topic], story_dict[topic]['category'].category_name
@@ -555,11 +582,18 @@ def check_landing_name():
     if landing_name != "":
             
             #check if this landing name has already been used for this user
-        check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
-        print "$$$$$$$$$$$$$$$$$$$", check_landing_name
+        check_landing_name = Landing.query.filter(Landing.user_id==session['current_user'], Landing.landing_name==landing_name).first()
+        print "$$$$$$$$$$$$$$$$$$$", check_landing_name, check_landing_name.landing_name
+        
           #if this landing name is taken tell them to change it otherwise save it
         if check_landing_name:
-            response= {'landing_name_used': 'yes'} 
+            topics_obj_list=News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=check_landing_name.landing_id).first()
+
+            if not topics_obj_list:
+                Landing.query.filter_by(landing_id=check_landing_name.landing_id).delete()
+                response = {'landing_name_used': 'no'} 
+            else:
+                response= {'landing_name_used': 'yes'} 
         else:
             response = {'landing_name_used': 'no'} 
             landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
@@ -571,7 +605,7 @@ def check_landing_name():
     print "999999999999999999", response
     return jsonify(response)
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
-@app.route('/saved_pages_catch', methods=['POST'])
+@app.route('/saved_pages.json', methods=['POST'])
 def saved_pages_catch():
     url = request.form.get('url')
     title = request.form.get('title')
@@ -584,6 +618,21 @@ def saved_pages_catch():
     db.session.commit()
 
     return jsonify({'ok': True})
+
+
+@app.route('/unsaved_pages_catch', methods=['POST'])
+def unsave_pages_catch():
+    url = request.form.get('url')
+    title = request.form.get('title')
+    author = request.form.get('author')
+    published_at =request.form.get('published_at')
+
+    Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).delete()
+
+    response = {'removed': "Story Removed"}
+
+    return jsonify(response)
+
 
 @app.route('/saved_pages')
 def saved_pages():
