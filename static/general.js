@@ -7,7 +7,7 @@ var passwordtext = $('#explain_password').data('password');
 function showStories(topic_id, source_logo_url, response){
 
     $("#logo-" + topic_id).html("");
-    $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='' width=''>");
+    $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='65' width='65'>");
 
         var results_div = $("#topic-results-" + topic_id);
 
@@ -47,6 +47,7 @@ function showStories(topic_id, source_logo_url, response){
             );
         }
 
+
         
     }
 
@@ -55,7 +56,7 @@ function showStories(topic_id, source_logo_url, response){
     function stopSaveForm(evt){
         evt.preventDefault();
         // debugger
-        var  btn= $(evt.currentTarget);
+        var btn= $(evt.currentTarget);
         var form = btn.closest('form');
         var url=form.find('input[name="url"]').val();
         var title=form.find('input[name="title"]').val();
@@ -74,28 +75,52 @@ function showStories(topic_id, source_logo_url, response){
             };
 
         var alertSaved = function(response) {
-            $('#save_story_button_div').html("");
-            $('#save_story_button_div').html(
+
+            if (response['ok']){
+                console.log("AlertSaved line 78 running")
+                $('#save_story_button_div').html("");
+                $('#save_story_button_div').html(
                 "<p> Story Saved</p>" +
                 "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
+            }
+            else if(response['no']){
+                $('#save_story_button_div').html("");
+                $('#save_story_button_div').html("<p>This story is already in your saved folder. </p>" +
+                    "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
+            }
+            
 
+            // This works here and makes the pop up come that says it deletes the story and it works
             $('.unsave_btn_class').on('click', unsaveStory);
-            console.log($('.unsave_btn_class'));
         };
-        // $('.unsave_btn_class').on('click', unsaveStory);
-        // console.log($('.unsave_btn_class'));
-
         
+
+    
 
         $.post("/saved_pages.json",
                 formInputs,
                 alertSaved
                 );
 
+
     }
 
     //$('.save_btn_class').on('click',stopSaveForm);
     $('body').on('click','.save_btn_class',stopSaveForm);
+    /////////remove a saved story line from the saved page after clicking a button that should trigger stopsaveform above to remove it from the database /////
+
+    function removeSavedStoryFromSavedPage(evt){
+        var btn= $(evt.currentTarget);
+        var form = btn.closest('form');
+        console.log(form);
+        form.html("");
+
+
+        
+
+    }
+
+    $('#refresh_saved_without_removed').on('click', removeSavedStoryFromSavedPage);
 
     //////// unsave story on the landing page//////
     function alertUnsaved(response){
@@ -129,9 +154,8 @@ function showStories(topic_id, source_logo_url, response){
                 );
     }
 
-$('.unsave_btn_class').on('click', unsaveStory);
-        console.log($('.unsave_btn_class'));
-    /// this is in the function two above for acynronisty
+
+    /// this is in the function two above for acynronisty in alertSaved
     // $('.unsave_btn_class').on('click', unsaveStory)
 
 
@@ -143,6 +167,9 @@ $('.unsave_btn_class').on('click', unsaveStory);
         var btn = $(evt.currentTarget);
 
         var form = btn.closest('form');
+        var option= btn.closest('option');
+        console.log(form);
+        console.log(option);
 
         var id = form.find('select.source_name').val();
 
@@ -150,7 +177,8 @@ $('.unsave_btn_class').on('click', unsaveStory);
 
         var topic_id = form.attr('topic-id');
 
-        var source_logo_url=form.find('input.hidden_source_url_logo').val();
+        var source_logo_url=option.attr('source-logo-id');
+        console.log(source_logo_url);
         // console.log($(".source_name").val())
         // console.log($("#sortby").val())
         var formInputs={
@@ -174,8 +202,8 @@ $('.unsave_btn_class').on('click', unsaveStory);
 var STORY_COUNT = 0;
 function warnUniqueLandingName(response){
     if (response['landing_name_used'] === 'yes'){
-        var landing_name =$('new_landing_name').val();
-        $('#landing_name_musts').html("<p>'You already have a news landing page named '" + landing_name + "'please make a unique landing name. </p>");
+        var landing_name =response['landing_name']
+        $('#landing_name_musts').html("<p>'You already have a news page named '" + landing_name + "' please chose a unique news paper name. </p>");
     }
     else if(response['landing_name_used'] === 'no'){
         $('#new_landing_name').attr('readonly', true);
@@ -231,21 +259,24 @@ function warnUniqueLandingName(response){
         $("#add_story").on('click', checkStoryQuery);
     }
     else if(response['landing_name_needed'] === 'yes'){
-        $('#landing_name_musts').html("<p>You must name this landing page</p>");
+        $('#landing_name_musts').html("<p>Please, name your news paper before building its content.</p>");
 
     }
 
 }
 function mustNameLanding(evt){
     evt.preventDefault();
-    var landing_name =$('#new_landing_name').val();
+    var landing_name=$('#new_landing_name').val();
+
     var formInputs ={
         'new_landing_name': landing_name
     };
+
+    console.log(formInputs);
     $.post(
         '/check_landing_name.json',
         formInputs,
-        warnUniqueLandingName)
+        warnUniqueLandingName);
 }
 
 
@@ -279,7 +310,7 @@ function addStoryHtml(response){
     console.log(response);
 
     if(response['status'] != "ok"){
-        $('#stories_not_possible').append("The Story Query for "+ response['category'] +" " + response['media_type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        $('#stories_not_possible').append("The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
     }
 
     else{
@@ -288,17 +319,15 @@ function addStoryHtml(response){
 
         console.log("This is running addStoryHtml");
         console.log(window.STORY_COUNT +  " This is the count in addHTML");
+        $("#stories_you_have_so_far").append("<p> Your request for the following news has been saved to this new news page are: </p> <br>");
 
-        $("#stories_you_have_so_far").append("<p> Your Stories So Far on the News Landing</p> <br> <p> Your Story request for " + response['category'] + " " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page.</p>")
+        $("#stories_you_have_so_far").append(" <p> " + response['category'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page.</p>")
         $("#add_story_div").html(
             "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
                 "<option value='text'> Text </option> " +
                 "<!-- <option value='audio'> Audio </option>" +
                 "<option value='video'> Video </option> -->" +
             "</select>" +
-            "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
-            "<br>" +
-        
             "<p> Topic Category </p>" +
             "<select id='category-" + window.STORY_COUNT +"'name='category-"+ window.STORY_COUNT + "'>" +
                 "<option value='business'> Business </option>" +
@@ -340,8 +369,7 @@ function addStoryHtml(response){
 
         $("#add_story").on('click', checkStoryQuery);
             
-            //possibly not needed because of event handerl addToStoryCount
-            // window.STORY_COUNT++;
+           
     }
 }
 
@@ -358,7 +386,7 @@ function checkStoryQuery(evt){
     var count_of_story = $('#hidden_story_count').val();
     
     var formInputs = {
-            'type': type,
+            'media_type': type,
             'category': category,
             'country': country,
             'language': language,
@@ -429,6 +457,8 @@ function addStoryHtmlOnLanding(response){
     }
 
     else{
+
+           ///// IS there a better more dynamic way to run this ?////// 
         console.log(response['landingname']);
         $('#add_new_story_refill_div').html("");
         $('#add_new_story_refill_div').html(
@@ -455,14 +485,13 @@ function createNewStoryForm(evt){
         $('#add_new_story_refill_div').html("");
         $('#add_new_story_refill_div').html(
 
+            
             "<form>" + 
                 "<p>Type</p><select id = 'type-" + topic_count +"' name='type-"+ topic_count + "'> " +
                 "<option value='text'> Text </option> " +
                 "<!-- <option value='audio'> Audio </option>" +
                 "<option value='video'> Video </option> -->" +
             "</select>" +
-            "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
-            "<br>" +
         
             "<p> Topic Category </p>" +
             "<select id='category-" + topic_count +"'name='category-"+ topic_count + "'>" +
@@ -518,7 +547,7 @@ function createNewStoryForm(evt){
                             var count_of_story = $('#hidden_story_count').val();
                             
                             var formInputs = {
-                                    'type': type,
+                                    'media_type': type,
                                     'category': category,
                                     'country': country,
                                     'language': language,

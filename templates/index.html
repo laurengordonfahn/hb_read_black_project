@@ -4,22 +4,24 @@
 
 {% block content %}
 
-<h1> Read and Black </h1>
-<br>
 {% if 'current_user' in session %}
-
-<p>You are currently logged in as {{ current_user.username }}  </p>
-{% endif %}
-{%  if 'current_user' not in session %}
-<p> Log-In: </p>
-<form action='/login' method='POST'>
-    <input type='text' name='username' placeholder='username'>
-    <input type='password' name='password' placeholder='password'>
+    <p>You are currently logged in as {{ current_user.username }}  </p>
+    <a href='/landing/options'><button>Go To News Option Page</button></a>
     <br>
-    <input type='submit' name='login_btn' value='Log-in'>
-</form>
+    <br>
+    <a href='/profile/{{ current_user.username }}'><button>Go To Your Profile Page</button></a>
+{% endif %}
+
+{%  if 'current_user' not in session %}
+    <p> Log-In: </p>
+    <form action='/login' method='POST'>
+        <input type='text' name='username' placeholder='username'>
+        <input type='password' name='password' placeholder='password'>
+        <br>
+        <input type='submit' name='login_btn' value='Log-in'>
+    </form>
 <br>
-<h3> We search out great content so you can spend your time enjoying and reading. </h3>
+
 <br>
 
 
@@ -36,7 +38,10 @@
     <input type='password' name='password' placeholder='password'>
     <br>
     <input type='password' name='sec_password' placeholder='re-type password'>
-    <input id='sign_up_ btn' type='submit' name='sign_up_btn' value="Sign-Up"><button id='explain_password' data-password="Passwords must contain at least 6 characters."> Password Requirements </button>
+    <button id='explain_password' data-password="Passwords must contain at least 6 characters."> Password Requirements </button>
+    <br>
+    <input id='sign_up_ btn' type='submit' name='sign_up_btn' value="Sign-Up">
+
 </form>
 
 {% endif %}

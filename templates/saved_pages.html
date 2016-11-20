@@ -3,14 +3,18 @@
 {% block title %} Saved Pages {% endblock %}
 {% block content %}
 
-{{current_user.username}}'s, saved pages:
+<h4>Your Saved Stories:</h4>
 
 <ul>
 {% for saved_story in saved_stories %}
-    <li>  
+    <li> 
+
+    <form>
+        <button class='unsave_btn_class' id='refresh_saved_without_removed'>Remove Saved Story</button>
         <a href='{{ saved_story.story_url }}'>{{ saved_story.story_title }}</a>
-        {{ saved_story. story_author }}
+        {{ saved_story.story_author }}
         {{ saved_story.story_date}}
+    </form>
         
     </li>
 {% endfor %}

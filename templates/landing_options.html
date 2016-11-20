@@ -10,11 +10,11 @@
         <a href="/yourlanding/{{ landingname.landing_name }}"><button>{{ landingname.landing_name }}</button></a>
     {% endfor %}
     {% if landingnames|length == 0 %}
-        <p> You Do not have any News Pages at this time, Make a New One Below! </p>
+        <p> You Do not have any News Pages at this time. Make a New One Below! </p>
     {% endif %}
 
  <form action="#" method='POST'>
-        <p> Name this News Landing Page </p>
+        <p> Name this News Page </p>
         <input id='new_landing_name' type='text' name='new_landing_name' placeholder='add your new landing name'>
         <div id='add_first_story_div'> 
             <button id='add_first_story_btn' type='submit' >Add First Story</button>
@@ -27,7 +27,7 @@
 
     <form action='/landing/options'>
         <fieldset>
-            <legend>Go to Your News Landing Pages </legend>
+            <legend>Go to Your News Pages </legend>
             <input type='submit' id='take_to_landing' value='Get News'>
         </fieldset>
     </form>

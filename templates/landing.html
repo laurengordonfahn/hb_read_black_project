@@ -5,45 +5,41 @@
 
 {% block content %}
 <!--I NEED TO FIGURE OUT WHERE TO GET THIS BUTTONS ABILITY TO MAKE A NEW FORM ABOVE ON LANDING PAGE TOO-->
-    
-    {% for topic, story_info in story_dict.iteritems() %}
+   
 
-            <form topic-id="{{topic.topic_id}}">
-                <fieldset>
-                    <legend>Choose your source for {{ story_info['category'].category_name }} news from {{ story_info['country'].country_name }} in {{ story_info['language'].language_name }}:</legend>
-                     
-                    <!--- changed the id to value if impact occurs -->
-                        <select  class='source_name' name='sources'>
-                            {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
-                                <option  value='{{ source_id }}' > {{  source_name[0] }} </option>
-                            {% endfor %}
-                                
-                        </select> 
+<br>
+{% for topic, story_info in story_dict.iteritems() %}
+
+    <form topic-id="{{ topic.topic_id }}">
+        <fieldset>
+            <legend>Choose your source for {{ story_info['category'].category_name }} from {{ story_info['country'].country_name }} in {{ story_info['language'].language_name }}:</legend>
+                 
+                <select  class='source_name' name='sources'>
                     {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
-                    <input class='hidden_source_url_logo' type='hidden' name='{{ source_id }}' value='{{ source_name[1] }}'>
+                        <option  source-logo-id='{{ source_name[1] }}' value='{{ source_id }}' > {{  source_name[0] }} </option>
                     {% endfor %}
-
-                     <p>How to Sort</p>
-                <select class="sortby" name ='sortby'>
-                    <option value='top' checked="checked"> Top </option>
-                    <option value='latest'> Latest </option>
-                    <option value='popular'> Popular </option>
-                </select>
-                    <input class='chose_source_btn' type='submit' name='chose_source_btn' value='Submit'>     
-                </fieldset>
-            </form>
+                            
+                </select> 
+                    {% for source_id, source_name in story_info['all_sources_available'].iteritems() %}
+                        <input class='hidden_source_url_logo' type='hidden' name='{{ source_id }}' value='{{ source_name[1] }}'>
+                    {% endfor %}
+                 <p>How to Sort</p>
+            <select class="sortby" name ='sortby'>
+                <option value='top' checked="checked"> Top </option>
+                <option value='latest'> Latest </option>
+                <option value='popular'> Popular </option>
+            </select>
+            <input class='chose_source_btn' type='submit' name='chose_source_btn' value= 'Submit'>     
+        </fieldset>
+    </form>
             
         
-            <!--need to figure out how to dom manipulate so come up when needed only-->
-            <div class='logo' id='logo-{{topic.topic_id}}'>
-                
-            </div>
-            <div class='results' id='topic-results-{{topic.topic_id}}'>
-                
-            </div>
+    
+    <div class='logo' id='logo-{{topic.topic_id}}'></div>
+    <div class='results' id='topic-results-{{topic.topic_id}}'></div>
         
         
-    {% endfor %}
+{% endfor %}
     <div id='add_new_story_refill_div'></div>
     
    
@@ -53,11 +49,11 @@
             <legend>Add a new topic to this exhisting news landing page:</legend>
                 <input id='hidden_count_for_landingname' type='hidden' name='hidden_count_add_story' value='{{ story_dict|length }}'>
 
-                 <input id='hidden_landingname_add_story' type='hidden' name='hidden_landingname_add_story' value='{{ landing_name }}'>
+                <input id='hidden_landingname_add_story' type='hidden' name='hidden_landingname_add_story' value='{{ landing_name }}'>
 
                 <input id='add_story_to_exhisting_landing' type='submit' name='add_story' value='Add'>
         </fieldset>
     </form>
-
+<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>
     
 {% endblock %}

@@ -411,7 +411,7 @@ def landing(landingname):
     landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
     
     if landing is None:
-        flash("The landing name %s does not have any topics and is being removed." % landing.landing_name)
+        flash("The landing name %s does not have any topics and is being removed." % landingname)
         return redirect('/landing/opitons')
     
     #gather all topic objects in a list for this landing
@@ -460,7 +460,10 @@ def landing(landingname):
                         all_sources_available[source_id] = [source_name, source_image_url]
 
                     story_dict[topic] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
+
+                    print 
                     print "(((((((((((((((((((((", story_dict[topic], story_dict[topic]['category'].category_name
+
 
     return render_template('landing.html', landing_name=landing.landing_name, 
                                             current_user = current_user(),
@@ -468,6 +471,7 @@ def landing(landingname):
                                             country=country.country_name,
                                             language=language.language_name,
                                             all_sources_available=all_sources_available,
+                                            source_id=source_id,
                                             story_dict=story_dict)
                                             # story_url = article['url'], 
                                             # story_author=article['author'], 
@@ -510,7 +514,7 @@ def news_landing():
 def cautious_query_api():
     """ Check the status of a query from the API before letting the query be saved in the database from the new_landing creation page"""
     
-    media_type=request.form.get('type')
+    media_type=request.form.get('media_type')
     category=request.form.get('category')
     country=request.form.get('country')
     language=request.form.get('language')
@@ -543,7 +547,7 @@ def cautious_query_api():
 
             #gathering informaiton to create rows in our topic table. 
             landing_id = landing_add.landing_id
-            media_type = request.form.get('type')
+            media_type = request.form.get('media_type')
             # print "you created landing_id %d" % landing_id
             index = request.form.get('story_count')
             print "$$$$$$$$$$$$$", index, type(index)
@@ -557,13 +561,16 @@ def cautious_query_api():
             db.session.add(topic)
             db.session.commit()
             
-    print "RRRRRRRRRRRRRRRRRR", response
+    country = News_api_country.query.filter_by(country_code=country).first()
+    language = News_api_language.query.filter_by(language_code=language).first()
+
+    print "RRRRRRRRRRRRRRRRRR", country.country_name, response
     response_dict ={
         'status': response['status'],
         'category': category,
-        'country': country,
-        'type': media_type,
-        'language': language,
+        'country': country.country_name,
+        'media_type': media_type,
+        'language': language.language_name,
         'landingname': landing_name
     }
 
@@ -583,7 +590,7 @@ def check_landing_name():
             
             #check if this landing name has already been used for this user
         check_landing_name = Landing.query.filter(Landing.user_id==session['current_user'], Landing.landing_name==landing_name).first()
-        print "$$$$$$$$$$$$$$$$$$$", check_landing_name, check_landing_name.landing_name
+        print "$$$$$$$$$$$$$$$$$$$", check_landing_name
         
           #if this landing name is taken tell them to change it otherwise save it
         if check_landing_name:
@@ -593,7 +600,8 @@ def check_landing_name():
                 Landing.query.filter_by(landing_id=check_landing_name.landing_id).delete()
                 response = {'landing_name_used': 'no'} 
             else:
-                response= {'landing_name_used': 'yes'} 
+                response= {'landing_name_used': 'yes',
+                            'landing_name' : landing_name} 
         else:
             response = {'landing_name_used': 'no'} 
             landing_add = Landing(user_id=session['current_user'], landing_name=landing_name)
@@ -611,13 +619,15 @@ def saved_pages_catch():
     title = request.form.get('title')
     author = request.form.get('author')
     published_at =request.form.get('published_at')
-
+    check_saved_redundancy = Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).first()
     print "@@@@@@@@@@@@@@@@@@", author
-    saved_story_add = Saved_story(user_id=session['current_user'], story_url=url, story_title=title, story_author=author, story_date=published_at)
-    db.session.add(saved_story_add)
-    db.session.commit()
-
-    return jsonify({'ok': True})
+    if not check_saved_redundancy:
+        saved_story_add = Saved_story(user_id=session['current_user'], story_url=url, story_title=title, story_author=author, story_date=published_at)
+        db.session.add(saved_story_add)
+        db.session.commit()
+        return jsonify({'ok': True})
+    else:
+        return jsonify({'no': True})
 
 
 @app.route('/unsaved_pages_catch', methods=['POST'])
@@ -626,10 +636,13 @@ def unsave_pages_catch():
     title = request.form.get('title')
     author = request.form.get('author')
     published_at =request.form.get('published_at')
+    print url, title, author
 
     Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).delete()
-
+    db.session.commit()
     response = {'removed': "Story Removed"}
+
+    print response, "RESPONSE RESPONSE RESPONSE"
 
     return jsonify(response)
 
@@ -640,7 +653,7 @@ def saved_pages():
     saved_stories = Saved_story.query.filter_by(user_id=session['current_user']).all()
     return render_template('saved_pages.html', saved_stories=saved_stories, current_user=current_user())
 
-@app.route('/log_out_catch', methods=['POST'])
+@app.route('/log_out_catch')
 def log_out_catch():
     """ Delete 'current_user' from session and redirect homepage """
     del session['current_user']
