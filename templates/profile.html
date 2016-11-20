@@ -44,7 +44,7 @@
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
 <br>
 
-<p> Your registared Academic Level with us is: {{ academic_level.academic_name }} </p>
+<p> Your registered Academic Level with us is: {{ academic_level.academic_name }} </p>
 
 <form action='/profile_catch' method='POST'>
     <input type='hidden' name='field' value='academic'>
@@ -81,7 +81,7 @@
 <div id="update_your_landings">
     <p>Your Landing Pages: </p>
     {% for landingname in landingnames %}
-        <a href="/yourlanding/{{ landingname[0] }}"><button> {{ landingname[0] }} </button> </a> <form action='/delete_catch'><input class="delete_landing_btn" name="{{ landingname[0] }}" type="submit" value='Delete this Landing'></form>
+        <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{ landingname.landing_name }} </button> </a> <form action='/delete_catch'><input class="delete_landing_btn" name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'></form>
     {% endfor %}
     {% if landingnames|length == 0 %}
         <p>You do not have any saved Landing Names at this time. </p>

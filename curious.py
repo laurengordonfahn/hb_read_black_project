@@ -217,6 +217,7 @@ def profile(username):
 
 
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
+    print "$$$$$$$$$$$$$$", landingnames, landingnames[0]
     
     for landing in landingnames:
         topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()

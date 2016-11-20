@@ -40,7 +40,8 @@ function showStories(topic_id, source_logo_url, response){
             "<p>" +response["articles"][i]["description"] +"</p>" +
             "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
             "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
-            "<div id='save_story_button_div'>" +
+            "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index' value='" + i + "''>" +
+            "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
             "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
             "</div>"+
             "</form>" 
@@ -62,9 +63,10 @@ function showStories(topic_id, source_logo_url, response){
         var title=form.find('input[name="title"]').val();
         var author=form.find('input[name="author"]').val();
         var published_at=form.find('input[name="published_at"]').val();
+        /// gives me an i that is unique
+        var which_div=form.find('input[name="index"]').val();
+        console.log(which_div);
 
-
-    
         var formInputs={ 
             
                 'url': url,
@@ -73,19 +75,25 @@ function showStories(topic_id, source_logo_url, response){
                 'published_at': published_at
     
             };
-
+        var find_this = '#save_story_button_div-' + which_div;
         var alertSaved = function(response) {
+            // var targetDiv= form.find
+            // var values = form.find('div.save_story_button_div').val();
+            // $('.save_story_button_div').html
+            
+            
+            console.log(find_this);
 
             if (response['ok']){
                 console.log("AlertSaved line 78 running")
-                $('#save_story_button_div').html("");
-                $('#save_story_button_div').html(
+                $(find_this).html("");
+                $(find_this).html(
                 "<p> Story Saved</p>" +
                 "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
             }
             else if(response['no']){
-                $('#save_story_button_div').html("");
-                $('#save_story_button_div').html("<p>This story is already in your saved folder. </p>" +
+                $(find_this).html("");
+                $(find_this).html("<p>This story is already in your saved folder. </p>" +
                     "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
             }
             
@@ -94,39 +102,11 @@ function showStories(topic_id, source_logo_url, response){
             $('.unsave_btn_class').on('click', unsaveStory);
         };
         
-
-    
-
-        $.post("/saved_pages.json",
-                formInputs,
-                alertSaved
-                );
-
-
+        function alertUnsaved(response){
+        $(find_this).html("");
+        $(find_this).html("<p> This Story has been removed from your saved stories page </p> <br> <input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>");
     }
-
-    //$('.save_btn_class').on('click',stopSaveForm);
-    $('body').on('click','.save_btn_class',stopSaveForm);
-    /////////remove a saved story line from the saved page after clicking a button that should trigger stopsaveform above to remove it from the database /////
-
-    function removeSavedStoryFromSavedPage(evt){
-        var btn= $(evt.currentTarget);
-        var form = btn.closest('form');
-        console.log(form);
-        form.html("");
-
-
         
-
-    }
-
-    $('#refresh_saved_without_removed').on('click', removeSavedStoryFromSavedPage);
-
-    //////// unsave story on the landing page//////
-    function alertUnsaved(response){
-        $('#save_story_button_div').html("");
-        $('#save_story_button_div').html("<p> This Story has been removed from your saved stories page </p> <br> <input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>");
-    }
 
     function unsaveStory(evt){
         evt.preventDefault();
@@ -154,12 +134,43 @@ function showStories(topic_id, source_logo_url, response){
                 );
     }
 
+        $.post("/saved_pages.json",
+                formInputs,
+                alertSaved
+                );
+
+
+    }
+
+    //$('.save_btn_class').on('click',stopSaveForm);
+    $('body').on('click','.save_btn_class',stopSaveForm);
+    /////////remove a saved story line from the saved page after clicking a button that should trigger stopsaveform above to remove it from the database /////
+
+    function removeSavedStoryFromSavedPage(evt){
+        var btn= $(evt.currentTarget);
+        var form = btn.closest('form');
+        console.log(form);
+        form.html("");
+
+
+        
+
+    }
+
+    $('#refresh_saved_without_removed').on('click', removeSavedStoryFromSavedPage);
+
+    //////// unsave story on the landing page//////
+    
+
+    
+
 
     /// this is in the function two above for acynronisty in alertSaved
     // $('.unsave_btn_class').on('click', unsaveStory)
 
 
 ///////////for yourlanding page chose a source drop down //////////////
+//////////HOW DO I USE THIS HERE /////////////////////////
 
     function getRequestInfo(evt){
         evt.preventDefault();
@@ -171,13 +182,17 @@ function showStories(topic_id, source_logo_url, response){
         console.log(form);
         console.log(option);
 
-        var id = form.find('select.source_name').val();
-
+        var values = form.find('select.source_name').val();
+        console.log(values);
+        values_split= values.split(",");
+        console.log(values_split);
+        
+        var id = values_split[0]
+        var source_logo_url = values_split[1]
         var sortby = form.find('select.sortby').val();
 
         var topic_id = form.attr('topic-id');
-
-        var source_logo_url=option.attr('source-logo-id');
+        
         console.log(source_logo_url);
         // console.log($(".source_name").val())
         // console.log($("#sortby").val())
