@@ -18,8 +18,7 @@ import re
 import npr
 import news
 from server_functions import * #current_user()
-#import Random libary from python for new_landing_catch process 
-from random import shuffle
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -44,65 +43,47 @@ def login_catch():
     """ Process the Log-In form from Sign-In page"""
 
     # clear current user
-    if 'current_user' in session:
-        del session['current_user']
+    clear_old_session()
 
-    #pull username typed in to login
+    #pull username from login form
     pot_username = request.form.get('username')
-    #check the db for the typed in username
+    #check the db for the username  
     doesname = User.query.filter(User.username == pot_username).first()
-    print "444444444444444444", doesname.password
+
     #pull password typed in to login
     pot_password = request.form.get('password')
-
     #hash the pot_password and then compare it in the line after with the hash stored
-
     pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
 
     if doesname:
         if (doesname.username ==  pot_username) and (pw_hash_bool):
-        #pull primary landing name from db DO I NEED TO DO THIS HERE? OR JUST LEVAE VARIABLE
-        #TODONEED TO FIGURE HOW TO STORE IN DB/GATHER THE LANDING TO SEND HERE
+        #pull user_id from session as a tupl just to play with all the approaches
             user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
-
-            print user_id[0]
-
         #session will be instantiated with current_user set equal to the user_id
             session.setdefault('current_user', user_id[0])
-        #TODO HOW DO I SEND THEM TO THE PAGE THAT IS CORRECT
-        # topics = db.session.query(News_api_user_topics.topic_id).filter(News_api_user_topics.)
-
-            print "ending login"
-            print session
-
+        #session will be instantiated with current_user set equal to the user_id
             return redirect("/landing/options")
+
         else:
             flash('Your login information did not match.')
-            return redirect('/')   
+            return redirect('/') 
+
     else:
         flash('Your login information did not match.')
         return redirect('/')
-# MAKE THIS PART OF THE MAKE A NEW LANDING PAGE!!!!
+
+
 @app.route('/landing/options')
 def landing_options():
 
-    print "starting landing options"
-    print session
-
+    #grab all the users news pages
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
-    print "LANDING OBJECT?????????????", landingnames
-    for landing in landingnames:
-        print landing, "LANDING LANDING"
-        topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
-        print "TOPICS TOPICS TOPICS", topics_obj_list
-
-        
-        if not topics_obj_list:
-            Landing.query.filter_by(landing_id=landing.landing_id).delete()
     
+    ride_all_news_pages_without_stories()
+
+    #create a list of all the news paper page names
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()      
             
-
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
             
@@ -112,53 +93,67 @@ def landing_options():
 def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
     #pull email from sign-up form
+    # pull email from sign-up form
     email = request.form.get('email')
     sec_email = request.form.get('sec_email')
     regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
+
     #pull username from sign-up form
     pot_username = request.form.get('username')
-    # verifiy if username already exhists in our db
+    # verifiy if username already exhists in db
     doesname = User.query.filter(User.username == pot_username).first()
+
     #pull password from sign-up form
     pot_password = request.form.get('password')
     # verify if password is adequate.
     #pull second password from sign-up form
     pot2_password = request.form.get('sec_password')
-    if not regex_email_check:
-        flash('Your email cannot be verified, please retype your email.')
-        return redirect('/')
-    elif email != sec_email:
-        flash('Your second email does not match your first, please retype your email.')
-        return redirect('/')
-    elif doesname:
-        flash('The username ' + pot_username + ' is already taken, please try another one.')  
-        return redirect('/') 
-    elif len(pot_password) < 6:
-        flash('Your password is not long enough try something with at least 6 characters.')
-        return redirect('/')
-    elif pot_password !=pot2_password:
-        flash('Your second password does not match your first, please re-enter to verify.')
-        return redirect('/')
-    else:
-        pot_passwordhash = bcrypt.generate_password_hash(pot_password)
-        
-        user = User(email=email,username=pot_username, password=pot_passwordhash) 
-        db.session.add(user)
-        db.session.commit()
-        #session will be instantiated with current_user set equal to the user_id
-        
-        session.setdefault('current_user', user.user_id)
 
-        # return redirect('/registar/%s' % pot_username)
-        return render_template('registar.html', current_user=user)
+    email_check(email, sec_email, regex_email_check)    
+    # if not regex_email_check:
+    #     flash('Your email cannot be verified, please retype your email.')
+    #     return redirect('/')
+    
+    # elif email != sec_email:
+    #     flash('Your second email does not match your first, please retype your email.')
+    #     return redirect('/')
+
+    if username_check(pot_username, doesname):
+        pass
+    # elif doesname:
+    #     flash('The username ' + pot_username + ' is already taken, please try another one.')  
+    #     return redirect('/') 
+
+    elif password_check(pot_password, pot2_password):
+        pass
+    # elif len(pot_password) < 6:
+    #     flash('Your password is not long enough try something with at least 6 characters.')
+    #     return redirect('/')
+    # elif pot_password !=pot2_password:
+    #     flash('Your second password does not match your first, please re-enter to verify.')
+    #     return redirect('/')
+    # else:
+    
+    else:
+        add_approved_new_user(pot_password, email, pot_username)
+    # pot_passwordhash = bcrypt.generate_password_hash(pot_password)
+    
+    # user = User(email=email,username=pot_username, password=pot_passwordhash) 
+    # db.session.add(user)
+    # db.session.commit()
+    # #session will be instantiated with current_user set equal to the user_id
+    
+    # session.setdefault('current_user', user.user_id)
+    # # return redirect('/registar/%s' % pot_username)
+    # return render_template('registar.html', current_user=user)
         
     
 #TO DO THIS ROUTE MAY BE UNNECESSARY BUT IT LOOKS ODD TO HAVE THE OTHER ROUTE SHOW UP 
-@app.route('/registar/<username>')
-def registar(username):
-    """ Render Registar page after Sign-Up """
+# @app.route('/registar/<username>')
+# def registar(username):
+#     """ Render Registar page after Sign-Up """
     
-    return render_template('registar.html', current_user= current_user())
+#     return render_template('registar.html', current_user= current_user())
     
                                             
 
