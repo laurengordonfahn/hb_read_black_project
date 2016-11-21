@@ -56,12 +56,13 @@ def login_catch():
     pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
 
     if doesname:
-        if (doesname.username ==  pot_username) and (pw_hash_bool):
-        #pull user_id from session as a tupl just to play with all the approaches
-            user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
-        #session will be instantiated with current_user set equal to the user_id
-            session.setdefault('current_user', user_id[0])
-        #session will be instantiated with current_user set equal to the user_id
+        if afirmed_user_add_session(doesname, pot_username, pw_hash_bool):
+        # if (doesname.username ==  pot_username) and (pw_hash_bool):
+        # #pull user_id from session as a tupl just to play with all the approaches
+        #     user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
+        # #session will be instantiated with current_user set equal to the user_id
+        #     session.setdefault('current_user', user_id[0])
+        # #session will be instantiated with current_user set equal to the user_id
             return redirect("/landing/options")
 
         else:
@@ -79,10 +80,10 @@ def landing_options():
     #grab all the users news pages
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    ride_all_news_pages_without_stories()
+    ride_all_news_pages_without_stories(landingnames)
 
-    #create a list of all the news paper page names
-    landingnames=Landing.query.filter_by(user_id=session['current_user']).all()      
+    # #create a list of all the news paper page names
+    # landingnames=Landing.query.filter_by(user_id=session['current_user']).all()      
             
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
@@ -96,7 +97,7 @@ def sign_up_catch():
     # pull email from sign-up form
     email = request.form.get('email')
     sec_email = request.form.get('sec_email')
-    regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
+    # regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
 
     #pull username from sign-up form
     pot_username = request.form.get('username')
@@ -109,7 +110,16 @@ def sign_up_catch():
     #pull second password from sign-up form
     pot2_password = request.form.get('sec_password')
 
-    email_check(email, sec_email, regex_email_check)    
+    if email_check(email, sec_email) == True and username_check(pot_username, doesname) ==True and password_check(pot_password, pot2_password)== True:
+        user = add_approved_new_user(pot_password, email, pot_username)
+        return render_template('registar.html', current_user=user)
+    elif email_check(email, sec_email) != True:
+        flash(email_check(email, sec_email, regex_email_check))
+    elif username_check(pot_username, doesname) !=True:
+        flash(username_check(pot_username, doesname))
+    elif password_check(pot_password, pot2_password)!= True:
+        flash(password_check(pot_password, pot2_password))
+    return redirect('/')
     # if not regex_email_check:
     #     flash('Your email cannot be verified, please retype your email.')
     #     return redirect('/')
@@ -118,14 +128,12 @@ def sign_up_catch():
     #     flash('Your second email does not match your first, please retype your email.')
     #     return redirect('/')
 
-    if username_check(pot_username, doesname):
-        pass
+    
     # elif doesname:
     #     flash('The username ' + pot_username + ' is already taken, please try another one.')  
     #     return redirect('/') 
 
-    elif password_check(pot_password, pot2_password):
-        pass
+    
     # elif len(pot_password) < 6:
     #     flash('Your password is not long enough try something with at least 6 characters.')
     #     return redirect('/')
@@ -134,8 +142,7 @@ def sign_up_catch():
     #     return redirect('/')
     # else:
     
-    else:
-        add_approved_new_user(pot_password, email, pot_username)
+
     # pot_passwordhash = bcrypt.generate_password_hash(pot_password)
     
     # user = User(email=email,username=pot_username, password=pot_passwordhash) 
