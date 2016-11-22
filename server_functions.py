@@ -125,7 +125,7 @@ def gender_check(gender):
     if not gender:
         return('Please select a gender descriptor that most closely matches for you.')
 
-def add_registar_db(user):
+def add_registar_db(user, age, academic_code, gender_code):
     """ If registar filled in adds infromation to user's db row """
     user.age = age
     user.academic_code = academic_code.academic_code

@@ -140,16 +140,16 @@ def registar_catch():
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
 
-    if age_check(age) and academic_check(academic) and gender_chek(gender):
-        flash(add_registar_db)
-        return redirect('/register/%s' % user.username)
+    if not (age_check(age) and academic_check(academic) and gender_chek(gender)):
+        flash(add_registar_db(user, age, academic_code, gender_code))
+        return redirect('/new_landing/%s' % user.username)
     elif age_check(age):
         flash(age_check(age))
     elif academic_check(academic):
         flash(academic_check(academic))
     elif gender_check(gender):
         flash(gender_check(gender))
-    return redirect('/registar_catch')
+    return redirect('/register/%s' % user.username)
     
     
 
