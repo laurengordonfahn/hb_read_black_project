@@ -5,47 +5,96 @@ var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
 function showStories(topic_id, source_logo_url, response){
+    if ('never') in response{
+        $("#logo-" + topic_id).html("");
+        $("#logo-" + topic_id).html("<p>" + response['never'] + "</p>")
+    }
+    else if ('not ok' in response){
+        $("#logo-" + topic_id).html("");
+        $("#logo-" + topic_id).html("<p>" + response['not ok'] + "</p><image src='" + source_logo_url + "' height='65'  width='65'>");
+    
+            var results_div = $("#topic-results-" + topic_id);
+    
+            results_div.html("");
+    
+            console.log(response);
+           
+               //figure out how to make this image just appear
+            for (var i =0; i < response['ok']['headlines_response']["articles"].length; i++){
+                 console.log(i);
+                 console.log(response["articles"][i]["url"])
+                 // I believe this is put here by accident b/c no evt
+                //  var  btn= $(evt.currentTarget);
+                //  var form = btn.closest('form');
+                // var url=form.find('input[name="url"]').val();
+                
+               results_div.append(
+                //works but not what I want iframe killer for some impacts useage
+               // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] +    "'"+ "style='width:100%;'frameborder='0'></iframe>" +
+                
+               "<form action='/saved_pages_catch' method='POST'>"+
+               "<image src=" + response["articles"][i]["urlToImage"]+ " height='125'    width='175'>" +
+               "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "   ' height='35' width='35'>" +
+                "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
+                "<input type='hidden' name='title' value='" + response["articles"][i]["title"   ] + "'>" +
+                "<p> Author(s): </p>" +
+                "<input type='hidden' name='author' value='"+ response["articles"][i]['author   '] +"' >"+
+                "<p>" + response["articles"][i]['author'] + "</p>" + 
+                "<p> Description: </p>" +
+                "<p>" +response["articles"][i]["description"] +"</p>" +
+                "<input type='hidden' name='published_at' value='" +response["articles"][i]["   publishedAt"] +"'>"+
+                "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
+                "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
+                "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
+                "<input type='submit' class='save_btn_class' action='submit' value='Save    Story'> </input>" +
+                "</div>"+
+                "</form>" 
+                );
+            }
 
-    $("#logo-" + topic_id).html("");
-    $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='65' width='65'>");
-
-        var results_div = $("#topic-results-" + topic_id);
-
-        results_div.html("");
-
-        console.log(response);
-       
-           //figure out how to make this image just appear
-        for (var i =0; i < response["articles"].length; i++){
-             console.log(i);
-             console.log(response["articles"][i]["url"])
-             // I believe this is put here by accident b/c no evt
-            //  var  btn= $(evt.currentTarget);
-            //  var form = btn.closest('form');
-            // var url=form.find('input[name="url"]').val();
-            
-           results_div.append(
-            //works but not what I want iframe killer for some impacts useage
-           // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] + "'"+ "style='width:100%;'frameborder='0'></iframe>" +
-            
-           "<form action='/saved_pages_catch' method='POST'>"+
-           "<image src=" + response["articles"][i]["urlToImage"]+ " height='125' width='175'>" +
-           "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "' height='35' width='35'>" +
-            "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+ response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400'); return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
-            "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
-            "<p> Author(s): </p>" +
-            "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
-            "<p>" + response["articles"][i]['author'] + "</p>" + 
-            "<p> Description: </p>" +
-            "<p>" +response["articles"][i]["description"] +"</p>" +
-            "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
-            "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
-            "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index' value='" + i + "''>" +
-            "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
-            "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
-            "</div>"+
-            "</form>" 
-            );
+    }
+    else{
+        $("#logo-" + topic_id).html("");
+        $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='65'  width='65'>");
+    
+            var results_div = $("#topic-results-" + topic_id);
+    
+            results_div.html("");
+    
+            console.log(response);
+           
+               //figure out how to make this image just appear
+            for (var i =0; i < response["articles"].length; i++){
+                 console.log(i);
+                 console.log(response["articles"][i]["url"])
+                 // I believe this is put here by accident b/c no evt
+                //  var  btn= $(evt.currentTarget);
+                //  var form = btn.closest('form');
+                // var url=form.find('input[name="url"]').val();
+                
+               results_div.append(
+                //works but not what I want iframe killer for some impacts useage
+               // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] +    "'"+ "style='width:100%;'frameborder='0'></iframe>" +
+                
+               "<form action='/saved_pages_catch' method='POST'>"+
+               "<image src=" + response["articles"][i]["urlToImage"]+ " height='125'    width='175'>" +
+               "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "   ' height='35' width='35'>" +
+                "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
+                "<input type='hidden' name='title' value='" + response["articles"][i]["title"   ] + "'>" +
+                "<p> Author(s): </p>" +
+                "<input type='hidden' name='author' value='"+ response["articles"][i]['author   '] +"' >"+
+                "<p>" + response["articles"][i]['author'] + "</p>" + 
+                "<p> Description: </p>" +
+                "<p>" +response["articles"][i]["description"] +"</p>" +
+                "<input type='hidden' name='published_at' value='" +response["articles"][i]["   publishedAt"] +"'>"+
+                "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
+                "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
+                "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
+                "<input type='submit' class='save_btn_class' action='submit' value='Save    Story'> </input>" +
+                "</div>"+
+                "</form>" 
+                );
+            }
         }
 
 
