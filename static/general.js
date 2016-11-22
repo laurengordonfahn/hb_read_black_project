@@ -483,17 +483,17 @@ console.log($("#add_story"));
 
 /////////Function Logic for Deleting a Landing from the profile page/////////////
 function deleteLandingOnScreen(result){
+    var html_string =  "<p>Your Landing Pages: </p>" ;
     var landingnames = result.landings;
     console.log(landingnames);
 
-    // $('#update_your_landings').html("");
 
-    var html_string =  "<p>Your Landing Pages: </p>" ;
-    if(landingnames.length === 0){
+    if(results.length === 0){
         html_string += "You have no News Pages at this time, create a new one: <a  href='/new_landing/{{ current_user.username }}'><button>Add A New News Page</button></a>";
         $('#update_your_landings').html(html_string);
     }
-    else{
+    
+    else {
         for(var i=0; i < landingnames.length; i++){
             console.log(landingnames[i]); console.log("xxxxx");
             html_string += "<a href=\"/yourlanding/" + landingnames[i] + "\"><button>" + landingnames[i] + " </button> </a>" + 

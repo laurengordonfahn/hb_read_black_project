@@ -171,7 +171,6 @@ def profile(username):
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
     landingnames = rid_news_pages_with_no_topics(landingnames)
-    print "XXXXXXXXXXXXX", landingnames
 
 
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
@@ -209,29 +208,29 @@ def delete_landing():
     topic_rows = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing_row.landing_id).all()
     print topic_rows
     # delete all topic rows associated with the removed landing recursively
-    for row in topic_rows:
-        print "deleting topic", row
-        db.session.delete(row)
-        db.session.commit()
+    # for row in topic_rows:
+    #     print "deleting topic", row
+    #     db.session.delete(row)
+    #     db.session.commit()
 
-        #delte the landingname row in the landing table
-        db.session.delete(landing_row)
-        #commit all changes to the database
-        db.session.commit()
-        # grab all the landing names that still exhist for this user as a list of names
-        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+    #     #delte the landingname row in the landing table
+    #     db.session.delete(landing_row)
+    #     #commit all changes to the database
+    #     db.session.commit()
+    #     # grab all the landing names that still exhist for this user as a list of names
+    #     landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
 
-        response = {
-            'landings': landingnames
-        }
+    #     response = {
+    #         'landings': landingnames
+    #     }
 
-        print response
-    return jsonify(response)
+    #     print response
+    # return jsonify(response)
 
     #call a funciton that deletes a newspage and all topics in db and returns a dictionary of remaining newspage with value a list 
-    # response = delete_a_newspapers(topic_rows, landingname)
-    # print response
-    # return jsonify(response)
+    response = delete_a_newspapers(topic_rows, landingname)
+    print response
+    return jsonify(response)
     
 #TODO WHERE DOES THE USERNAME COME FROM!!!
 @app.route('/new_landing/<username>')
