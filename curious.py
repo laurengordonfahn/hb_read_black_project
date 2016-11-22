@@ -403,6 +403,8 @@ def news_landing():
             headlines_response = news.newstextrequest(source_id, 'top')
             if headlines_response['status'] == "ok":
                 return jsonify({ "not ok" : "Your request had to be processed using the sortby 'top'", "ok": headlines_response})
+            else:
+                return jsonify({'never': "Your request could not be fufilled"})
         else:
             print "************** RESPONSE: ", headlines_response
             return jsonify(headlines_response)
