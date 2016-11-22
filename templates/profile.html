@@ -93,12 +93,12 @@
 <!-- FINISHE THIS PEICE WHEN MORE THAN ONE LANDING NOT YET! -->
 <div id="update_your_landings">
     <p>Your Landing Pages: </p>
-    {% if landingnames != None %}
+    {% if landingnames|length != 0 %}
         {% for landingname in landingnames %}
-            <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{   landingname.landing_name }} </button> </a> <form action='/delete_catch'   ><input class="delete_landing_btn" name="{{ landingname.landing_name }}    " type="submit" value='Delete this Landing'></form>
+            <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{   landingname.landing_name }} </button></a> <br> <button class="delete_landing_btn" name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'>Delete this News Page</button><br>
         {% endfor %}
     {% else %}
-            <p>You do not have any saved Landing Names at this time. </p>
+            <p>You do not have any saved News Pages at this time. <a  href='/new_landing/{{ current_user.username }}'><button>Add A New News Page</button></a> </p>
     {% endif %}
 </div>
  

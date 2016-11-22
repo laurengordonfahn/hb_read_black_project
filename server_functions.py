@@ -134,7 +134,7 @@ def add_registar_db(user):
     return('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
 
 
-######### Profile ########
+######### '/profile/<username>' ########
 
 def rid_news_pages_with_no_topics(landingnames):
     """ Take the list argument of landingnames for a user from the database and delete from db any landings with no topics associated with it. Return landingnames  """
@@ -145,5 +145,90 @@ def rid_news_pages_with_no_topics(landingnames):
             Landing.query.filter_by(landing_id=landing.landing_id).delete()
             landingnames.remove(landing)
     return landingnames
+
+######## '/profile_catch' #######
+def email_change_db(user):
+    """ Take email change form on profile page and check if acceptable input and update database. Return None or a flash message """
+    #pull email from profile form
+    email = request.form.get('email')
+    #pull second email from profile form
+    sec_email = request.form.get('sec_email')
+    regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
+    
+    if not regex_email_check:
+        return('Your email cannot be verified, please retype your email.')
         
+    elif email != sec_email:
+        return('Your second email does not match your first, please retype your email.')
+    else:
+        
+        user.email  = email
+       
+        db.session.commit()
+    return
+
+def password_change_db(user):
+    """Take password change form on profile page and check if acceptable input and update database. Return None  or a flash message """
+    pot_password = request.form.get('password')
+    # verify if password is adequate.
+    #pull second password from profile form
+    pot2_password = request.form.get('sec_password')
+
+    if len(pot_password) < 6:
+        return('Your password is not long enough try something with at least 6 characters.')
+        
+    elif pot_password != pot2_password:
+        return('Your second password does not match your first, please re-enter to verify.')
+        
+    else:
+        user.password=pot_password
+        db.session.commit()
+    return
+
+def academic_change_db(user):
+    """ Take academic form form profile page update database return None"""
+    # pull academic from profile form
+    academic = request.form.get('academic')
+    academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
+    # if academic:
+            
+    user.academic_code = academic_code
+            
+    db.session.commit()
+
+    return
+            
+def gender_change_db(user):
+    """ Take gender form form profile page update database return None"""
+    #pull gender from profile form
+    gender = request.form.get('gender')
+    gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
+    
+    # if gender: 
+    user.gender_code=gender_code[0]
+    
+    db.session.commit()
+    return 
+
+####### '/delete_landing_json' ######### CHECK THIS ONE ONCE JAVASCRIPT FIXED
+def delete_a_newspapers(topic_rows, landing_row):
+    """ Delete newspage and all news topic querys associated with the newspage in db. Return dictionary of (newspages remaining) landings: landingnames (a list of objects) """
+    for row in topic_rows:
+            
+        db.session.delete(row)
+        db.session.commit()
+    
+        #delte the landingname row in the landing table
+        db.session.delete(landing_row)
+        #commit all changes to the database
+        db.session.commit()
+        # grab all the landing names that still exhist for this user as a list of names
+        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['   current_user']).all()
+    
+        response = {
+            'landings': landingnames
+        }
+        return response
+
+######## '/delete'
 

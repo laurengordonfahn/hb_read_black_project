@@ -5,11 +5,11 @@ var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
 function showStories(topic_id, source_logo_url, response){
-    if ('never' in response){
+    if('never' in response){
         $("#logo-" + topic_id).html("");
         $("#logo-" + topic_id).html("<p>" + response['never'] + "</p>")
     }
-    else if ('not ok' in response){
+    else if('not ok' in response){
         $("#logo-" + topic_id).html("");
         $("#logo-" + topic_id).html("<p>" + response['not ok'] + "</p><image src='" + source_logo_url + "' height='65'  width='65'>");
     
@@ -20,9 +20,9 @@ function showStories(topic_id, source_logo_url, response){
             console.log(response);
            
                //figure out how to make this image just appear
-            for (var i =0; i < response['ok']['headlines_response']["articles"].length; i++){
+            for(var i =0; i < response['ok']['headlines_response']["articles"].length; i++){
                  console.log(i);
-                 console.log(response["articles"][i]["url"])
+                 console.log(response["articles"][i]["url"]);
                  // I believe this is put here by accident b/c no evt
                 //  var  btn= $(evt.currentTarget);
                 //  var form = btn.closest('form');
@@ -64,9 +64,9 @@ function showStories(topic_id, source_logo_url, response){
             console.log(response);
            
                //figure out how to make this image just appear
-            for (var i =0; i < response["articles"].length; i++){
+            for(var i =0; i < response["articles"].length; i++){
                  console.log(i);
-                 console.log(response["articles"][i]["url"])
+                 console.log(response["articles"][i]["url"]);
                  // I believe this is put here by accident b/c no evt
                 //  var  btn= $(evt.currentTarget);
                 //  var form = btn.closest('form');
@@ -125,7 +125,7 @@ function showStories(topic_id, source_logo_url, response){
     
             };
         var find_this = '#save_story_button_div-' + which_div;
-        var alertSaved = function(response) {
+        var alertSaved = function(response){
             // var targetDiv= form.find
             // var values = form.find('div.save_story_button_div').val();
             // $('.save_story_button_div').html
@@ -133,8 +133,8 @@ function showStories(topic_id, source_logo_url, response){
             
             console.log(find_this);
 
-            if (response['ok']){
-                console.log("AlertSaved line 78 running")
+            if(response['ok']){
+                console.log("AlertSaved line 78 running");
                 $(find_this).html("");
                 $(find_this).html(
                 "<p> Story Saved</p>" +
@@ -153,7 +153,7 @@ function showStories(topic_id, source_logo_url, response){
 
         };
 
-        function testClick(evt) {
+        function testClick(evt){
 
             console.log(evt);
         }
@@ -245,8 +245,8 @@ function showStories(topic_id, source_logo_url, response){
         values_split= values.split(",");
         console.log(values_split);
         
-        var id = values_split[0]
-        var source_logo_url = values_split[1]
+        var id = values_split[0];
+        var source_logo_url = values_split[1];
         var sortby = form.find('select.sortby').val();
 
         var topic_id = form.attr('topic-id');
@@ -260,7 +260,7 @@ function showStories(topic_id, source_logo_url, response){
             "sortby":sortby,
         };
 
-        var handler = function(response) {
+        var handler = function(response){
             return showStories(topic_id, source_logo_url, response);
         }
         console.log(formInputs);
@@ -388,7 +388,7 @@ function addStoryHtml(response){
 
     else{
 
-        $("#add_story_div").html("")
+        $("#add_story_div").html("");
 
         console.log("This is running addStoryHtml");
         console.log(window.STORY_COUNT +  " This is the count in addHTML");
@@ -484,28 +484,39 @@ console.log($("#add_story"));
 /////////Function Logic for Deleting a Landing from the profile page/////////////
 function deleteLandingOnScreen(result){
     var landingnames = result.landings;
+    console.log(landingnames);
+
+    // $('#update_your_landings').html("");
 
     var html_string =  "<p>Your Landing Pages: </p>" ;
-
-    for(var i=0; i < landingnames.length; i++){
-        html_string += "<a href=\"/yourlanding/" + landingnames[i] + "\"><button>" + landingnames[i] + " </button> </a>" + 
-                "<form action='/delete_catch'>" +
-                    "<input class='delete_landing_btn' name='" + landingnames[i] +"' type='submit'value='Delete this Landing'>" +
-                "</form>" 
-            
+    if(landingnames.length === 0){
+        html_string += "You have no News Pages at this time, create a new one: <a  href='/new_landing/{{ current_user.username }}'><button>Add A New News Page</button></a>";
+        $('#update_your_landings').html(html_string);
+    }
+    else{
+        for(var i=0; i < landingnames.length; i++){
+            console.log(landingnames[i]); console.log("xxxxx");
+            html_string += "<a href=\"/yourlanding/" + landingnames[i] + "\"><button>" + landingnames[i] + " </button> </a>" + 
+                    // "<form action=\"/delete_catch\">" +
+                        "<button> class=\"delete_landing_btn\" name=\"" + landingnames[i] +"\" type=\"submit\" value=\"Delete this Landing\" ></button> " 
+                    //+ "</form>" 
+        $('#update_your_landings').html(html_string);
+             
         }
-
-
+    }
     $('#update_your_landings').html(html_string);
 
+    $('.delete_landing_btn').on('click', deleteRequest);
 }
 
 function deleteRequest(evt){
+    console.log(evt);
     evt.preventDefault();
 
     var btn = $(evt.currentTarget);
 
     var name = btn.attr('name');
+    console.log(name);
     
     var formInputs={ 
         "landingname": name
@@ -516,7 +527,7 @@ function deleteRequest(evt){
                 deleteLandingOnScreen);
 }
 
-$('.delete_landing_btn').on('click', deleteRequest)
+$('.delete_landing_btn').on('click', deleteRequest);
 
 ///////////////Add a new story to an exhisting landing ////////////
 
@@ -609,7 +620,7 @@ function createNewStoryForm(evt){
         
         $("#add_story_to_a_landing").on('click', function(evt){
                             evt.preventDefault();
-                            console.log("Inline function getting thrown too soon!")
+                            console.log("Inline function getting thrown too soon!");
                             var type=$('#type-' + topic_count).val();
                             var category = $('#category-' + topic_count).val();
                             var country = $('#country-' + topic_count).val();

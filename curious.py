@@ -170,7 +170,8 @@ def profile(username):
 
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    landingnames = ride_all_news_pages_without_stories(landingnames)
+    landingnames = rid_news_pages_with_no_topics(landingnames)
+    print "XXXXXXXXXXXXX", landingnames
 
 
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
@@ -183,92 +184,54 @@ def profile_catch():
     which_form= request.form.get('field')
 
     if which_form == 'email':
-        #pull email from profile form
-        email = request.form.get('email')
-        #pull second email from profile form
-        sec_email = request.form.get('sec_email')
-
-        regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
-        print "#####@@@@@@@######", regex_email_check
-        if not regex_email_check:
-            flash('Your email cannot be verified, please retype your email.')
-            return redirect('/profile/%s' % user.username)
-        elif email != sec_email:
-            flash('Your second email does not match your first, please retype your email.')
-            return redirect('/profile/%s' % user.username)
-        else:
-            
-            user.email  = email
-           
-            db.session.commit()
-            return redirect('/profile/%s' % user.username)
+        if not email_change_db(user):
+            flash(email_change_db(user))
     elif which_form == 'password':
-        #pull password from profile form
-        pot_password = request.form.get('password')
-        # verify if password is adequate.
-        #pull second password from profile form
-        pot2_password = request.form.get('sec_password')
-        if len(pot_password) < 6:
-            flash('Your password is not long enough try something with at least 6 characters.')
-            return redirect('/profile/%s' % user.username)
-        elif pot_password != pot2_password:
-            flash('Your second password does not match your first, please re-enter to verify.')
-            return redirect('/profile/%s' % user.username)
-        else:
-           
-            user.password=pot_password
-            
-            db.session.commit()
-            return redirect('/profile/%s' % user.username)
+        if not password_change_db(user):
+            flash(password_change_db(user))
     elif which_form == 'academic':
-        #pull academic from profile form
-        academic = request.form.get('academic')
-        academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
-        if academic:
-            
-            user.academic_code = academic_code
-            
-            db.session.commit()
-            return redirect('/profile/%s'  % user.username)
+        academic_change_db(user)
     elif which_form == 'gender':
-        #pull gender from profile form
-        gender = request.form.get('gender')
-        gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
-        print "$$$$$$$$$$$$$$$$$$", gender, gender_code[0]
-        if gender: 
-            user.gender_code=gender_code[0]
-            
-            db.session.commit()
-            return redirect('/profile/%s' % user.username)
+        gender_change_db(user)
+    return redirect('/profile/%s' % user.username)
+
 
 @app.route('/delete_landing.json', methods=['POST'])
 def delete_landing():
     #get the landing name to be deleted from the jquery dictionary
     landingname = request.form.get('landingname')
-    print "@@@@@@@@@@@@@@@@@@@@@@@@", landingname
+    print landingname, "XXXXXXX"
+    
     #grab the object for the landing name from the landings table
     landing_row = Landing.query.filter_by(landing_name=landingname, user_id=session['current_user']).first()
-    print landing_row
+    print " $$$$$$$$$$$$$$", landing_row
     #grab a list of objects of all the topics associated with the landing page to be delted
     topic_rows = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing_row.landing_id).all()
-    #delete all topic rows associated with the removed landing recursively
+    print topic_rows
+    # delete all topic rows associated with the removed landing recursively
     for row in topic_rows:
         print "deleting topic", row
         db.session.delete(row)
-    db.session.commit()
+        db.session.commit()
 
-    #delte the landingname row in the landing table
-    db.session.delete(landing_row)
-    #commit all changes to the database
-    db.session.commit()
-    # grab all the landing names that still exhist for this user as a list of names
-    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+        #delte the landingname row in the landing table
+        db.session.delete(landing_row)
+        #commit all changes to the database
+        db.session.commit()
+        # grab all the landing names that still exhist for this user as a list of names
+        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
 
-    response = {
-        'landings': landingnames
-    }
+        response = {
+            'landings': landingnames
+        }
 
+        print response
     return jsonify(response)
+
+    #call a funciton that deletes a newspage and all topics in db and returns a dictionary of remaining newspage with value a list 
+    # response = delete_a_newspapers(topic_rows, landingname)
+    # print response
+    # return jsonify(response)
     
 #TODO WHERE DOES THE USERNAME COME FROM!!!
 @app.route('/new_landing/<username>')
@@ -297,7 +260,6 @@ def landing(landingname):
     #its a table queried with these parameters to get the object equal to it its OBJECT with all attributes/parameters
     #landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
 
-    # print "*******************",landingname, user_id
     #This query returns an object with all attributes "dotable"
     landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
     
