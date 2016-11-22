@@ -99,8 +99,8 @@ function showStories(topic_id, source_logo_url, response){
             
 
             // This works here and makes the pop up come that says it deletes the story and it works
-            // $('.unsave_btn_class').on('click', unsaveStory);
-            $('.unsave_btn_class').on('click', testClick);
+            $('.unsave_btn_class').on('click', unsaveStory);
+            
 
         };
 
