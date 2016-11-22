@@ -116,8 +116,12 @@ def sign_up_catch():
         flash(password_check(pot_password, pot2_password))
 
     return redirect('/')
+
     
-                                            
+@app.route('/register/<username>')
+def register(username):
+
+    return render_template('new_landing.html', username=current_user().username, current_user=current_user())                                            
 
 @app.route('/registar_catch', methods=['POST'])
 def registar_catch():
@@ -148,10 +152,6 @@ def registar_catch():
     return redirect('/registar_catch')
     
     
-@app.route('/register/<username>')
-def register(username):
-
-    return render_template('new_landing.html', username=current_user().username, current_user=current_user())
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -170,13 +170,8 @@ def profile(username):
 
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    
-    for landing in landingnames:
-        topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
-        
-        if len(topics_obj_list)==0:
-            Landing.query.filter_by(landing_id=landing.landing_id).delete()
-            landingnames.remove(landing)
+    landingnames = ride_all_news_pages_without_stories(landingnames)
+
 
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
 

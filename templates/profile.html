@@ -44,7 +44,14 @@
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
 <br>
 
-<p> Your registered Academic Level with us is: {{ academic_level.academic_name }} </p>
+<p> Your registered Academic Level with us is: 
+    {% if academic_level == None %}
+        None
+    {% else %}
+    {{ academic_level.academic_name }} 
+    {% endif %}
+
+</p>
 
 <form action='/profile_catch' method='POST'>
     <input type='hidden' name='field' value='academic'>
@@ -61,7 +68,13 @@
 
 <br>
 
-<p> Your gender on file is: {{ gender.gender_name }} </p>
+<p> Your gender on file is: 
+    {% if gender == None %}
+        None
+    {% else %}
+    {{ gender.gender_name }} 
+    {% endif %}
+</p>
 
 <form action='/profile_catch' method='POST'>
     <input type='hidden' name='field' value='gender'>
@@ -80,11 +93,12 @@
 <!-- FINISHE THIS PEICE WHEN MORE THAN ONE LANDING NOT YET! -->
 <div id="update_your_landings">
     <p>Your Landing Pages: </p>
-    {% for landingname in landingnames %}
-        <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{ landingname.landing_name }} </button> </a> <form action='/delete_catch'><input class="delete_landing_btn" name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'></form>
-    {% endfor %}
-    {% if landingnames|length == 0 %}
-        <p>You do not have any saved Landing Names at this time. </p>
+    {% if landingnames != None %}
+        {% for landingname in landingnames %}
+            <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{   landingname.landing_name }} </button> </a> <form action='/delete_catch'   ><input class="delete_landing_btn" name="{{ landingname.landing_name }}    " type="submit" value='Delete this Landing'></form>
+        {% endfor %}
+    {% else %}
+            <p>You do not have any saved Landing Names at this time. </p>
     {% endif %}
 </div>
  

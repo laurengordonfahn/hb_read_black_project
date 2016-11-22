@@ -105,6 +105,8 @@ def add_approved_new_user(pot_password, email, pot_username):
     # return redirect('/registar/%s' % pot_username)
     return user
 
+####### registar_catch ########
+
 def age_check(age):
     """Check if age if in acceptable range else return message """
     if age < 1 and age > 113:
@@ -130,3 +132,18 @@ def add_registar_db(user):
     user.gender_code= gender_code.gender_code
     db.session.commit()
     return('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
+
+
+######### Profile ########
+
+def rid_news_pages_with_no_topics(landingnames):
+    """ Take the list argument of landingnames for a user from the database and delete from db any landings with no topics associated with it. Return landingnames  """
+    for landing in landingnames:
+        topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
+        
+        if len(topics_obj_list)==0:
+            Landing.query.filter_by(landing_id=landing.landing_id).delete()
+            landingnames.remove(landing)
+    return landingnames
+        
+
