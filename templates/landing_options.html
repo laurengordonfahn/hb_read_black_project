@@ -12,9 +12,10 @@
     {% if landingnames|length == 0 %}
         <p> You Do not have any News Pages at this time. Make a New One Below! </p>
     {% endif %}
-
+<div id='add_new_story_refill_div'> </div>
  <form action="#" method='POST'>
         <p> Name this News Page </p>
+        <div id="landing_name_musts"> </div>
         <input id='new_landing_name' type='text' name='new_landing_name' placeholder='add your new landing name'>
         <div id='add_first_story_div'> 
             <button id='add_first_story_btn' type='submit' >Add First Story</button>

@@ -99,8 +99,15 @@ function showStories(topic_id, source_logo_url, response){
             
 
             // This works here and makes the pop up come that says it deletes the story and it works
-            $('.unsave_btn_class').on('click', unsaveStory);
+            // $('.unsave_btn_class').on('click', unsaveStory);
+            $('.unsave_btn_class').on('click', testClick);
+
         };
+
+        function testClick(evt) {
+
+            console.log(evt);
+        }
         
         function alertUnsaved(response){
         $(find_this).html("");
@@ -127,6 +134,8 @@ function showStories(topic_id, source_logo_url, response){
                 'author': author,
                 'published_at': published_at
             };
+
+        console.log(formInputs);
 
         $.post("/unsaved_pages_catch",
                 formInputs,
@@ -468,7 +477,7 @@ function addStoryHtmlOnLanding(response){
 
     if(response['status'] != "ok"){
         
-        $('#add_new_story_refill_div').prepend("The Story Query for "+ response['category'] +" " + response['media_type'] + " news from" + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        $('#add_new_story_refill_div').prepend("<br> The Story Query for "+ response['category'] +" " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.<br> ");
     }
 
     else{
@@ -476,8 +485,7 @@ function addStoryHtmlOnLanding(response){
            ///// IS there a better more dynamic way to run this ?////// 
         console.log(response['landingname']);
         $('#add_new_story_refill_div').html("");
-        $('#add_new_story_refill_div').html(
-            "<a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a>"
+        $('#add_new_story_refill_div').html( "<p> Press Refresh to Add New Story </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a> <br>"
             );
 
     }      
@@ -584,10 +592,26 @@ function createNewStoryForm(evt){
 
 $('#add_story_to_exhisting_landing').on('click', createNewStoryForm);
 
+function changeButton(response){
+
+    $('#remove-'+ response['id_btn']).html("");
+    $('story_removed_flash').prepend("<p> The story " + response['title'] + " has been removed </p>");
+
+}
+function removeStoryFromSavedPages2(evt){
+    //// I need help because this doesn't have the attributes?
+    var id = $(this).attr("id");
+    var url = $(this).next().attr("href");
+    var title = $(this).next().attr('title');
+
+    $(this).closest('li').remove();
 
 
+    console.log(url);
+    $.post('/unsaved_pages_two_catch',{'id_btn': id, 'url': url , 'title': title }, changeButton);
+}
 
-
+$('.unsave_btn_class_two').on('click', removeStoryFromSavedPages2);
 
 
 

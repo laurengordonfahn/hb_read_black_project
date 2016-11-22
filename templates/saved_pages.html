@@ -6,15 +6,23 @@
 <h4>Your Saved Stories:</h4>
 
 <ul>
-{% for saved_story in saved_stories %}
-    <li> 
 
-    <form>
-        <button class='unsave_btn_class' id='refresh_saved_without_removed'>Remove Saved Story</button>
-        <a href='{{ saved_story.story_url }}'>{{ saved_story.story_title }}</a>
+<div id="story_removed_flash"> </div>
+{% set count =0 %}
+{% for saved_story in saved_stories %}
+
+    <li> 
+ <!-- id='refresh_saved_without_removed' -->
+    <div id="story_removed_flash"> </div>
+    <div id='remove-{{count}}'>
+        <button class='unsave_btn_class_two' id={{ count }} > Remove Saved Story</button>
+        <a href='{{ saved_story.story_url }}' value='{{ saved_story.story_title }}' >{{ saved_story.story_title }}</a>
         {{ saved_story.story_author }}
         {{ saved_story.story_date}}
-    </form>
+        {% set count = count + 1 %}
+        
+    </div>
+    
         
     </li>
 {% endfor %}

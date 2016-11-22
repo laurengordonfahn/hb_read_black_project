@@ -3,12 +3,12 @@
 {% block title %} Profile {% endblock %}
 
 {% block content %}
-<p> Your Profile </p>
+
 <br>
 <!-- Add username to jina for this page -->
-<p> You are signed in as: {{ current_user.username }}. <br> 
-    Your email is {{ current_user.email }}. <br>
-    The following information is needed to complete your profile with us.  </p>
+<h2> Welcome: {{ current_user.username }},  </h2> <br> 
+<h4> Your email is {{ current_user.email }}. <br>
+    The following information is needed to complete your profile with us:  </h4>
 <br>
 
 <!-- This should only be able to be set once what do I do about content not proper for age?-->

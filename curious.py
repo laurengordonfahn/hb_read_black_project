@@ -57,12 +57,7 @@ def login_catch():
 
     if doesname:
         if afirmed_user_add_session(doesname, pot_username, pw_hash_bool):
-        # if (doesname.username ==  pot_username) and (pw_hash_bool):
-        # #pull user_id from session as a tupl just to play with all the approaches
-        #     user_id = db.session.query(User.user_id).filter(User.username==pot_username).first()
-        # #session will be instantiated with current_user set equal to the user_id
-        #     session.setdefault('current_user', user_id[0])
-        # #session will be instantiated with current_user set equal to the user_id
+        
             return redirect("/landing/options")
 
         else:
@@ -80,10 +75,7 @@ def landing_options():
     #grab all the users news pages
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    ride_all_news_pages_without_stories(landingnames)
-
-    # #create a list of all the news paper page names
-    # landingnames=Landing.query.filter_by(user_id=session['current_user']).all()      
+    ride_all_news_pages_without_stories(landingnames)     
             
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
@@ -114,53 +106,12 @@ def sign_up_catch():
         user = add_approved_new_user(pot_password, email, pot_username)
         return render_template('registar.html', current_user=user)
     elif email_check(email, sec_email) != True:
-        flash(email_check(email, sec_email, regex_email_check))
+        flash(email_check(email, sec_email))
     elif username_check(pot_username, doesname) !=True:
         flash(username_check(pot_username, doesname))
     elif password_check(pot_password, pot2_password)!= True:
         flash(password_check(pot_password, pot2_password))
     return redirect('/')
-    # if not regex_email_check:
-    #     flash('Your email cannot be verified, please retype your email.')
-    #     return redirect('/')
-    
-    # elif email != sec_email:
-    #     flash('Your second email does not match your first, please retype your email.')
-    #     return redirect('/')
-
-    
-    # elif doesname:
-    #     flash('The username ' + pot_username + ' is already taken, please try another one.')  
-    #     return redirect('/') 
-
-    
-    # elif len(pot_password) < 6:
-    #     flash('Your password is not long enough try something with at least 6 characters.')
-    #     return redirect('/')
-    # elif pot_password !=pot2_password:
-    #     flash('Your second password does not match your first, please re-enter to verify.')
-    #     return redirect('/')
-    # else:
-    
-
-    # pot_passwordhash = bcrypt.generate_password_hash(pot_password)
-    
-    # user = User(email=email,username=pot_username, password=pot_passwordhash) 
-    # db.session.add(user)
-    # db.session.commit()
-    # #session will be instantiated with current_user set equal to the user_id
-    
-    # session.setdefault('current_user', user.user_id)
-    # # return redirect('/registar/%s' % pot_username)
-    # return render_template('registar.html', current_user=user)
-        
-    
-#TO DO THIS ROUTE MAY BE UNNECESSARY BUT IT LOOKS ODD TO HAVE THE OTHER ROUTE SHOW UP 
-# @app.route('/registar/<username>')
-# def registar(username):
-#     """ Render Registar page after Sign-Up """
-    
-#     return render_template('registar.html', current_user= current_user())
     
                                             
 
@@ -219,7 +170,7 @@ def profile(username):
 
 
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
-    print "$$$$$$$$$$$$$$", landingnames, landingnames[0]
+    
     
     for landing in landingnames:
         topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
@@ -632,6 +583,20 @@ def saved_pages_catch():
     else:
         return jsonify({'no': True})
 
+
+@app.route('/unsaved_pages_two_catch', methods=['POST'])
+def unsave_pages_catch_two():
+    url = request.form.get('url')
+    id_btn = request.form.get('id_btn')
+    title = request.form.get('story_title')
+
+    Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).delete()
+    db.session.commit()
+    response = {'removed': "Story Removed", 'id': id_btn, "what_removed": url, 'title': title }
+
+    print response, "RESPONSE RESPONSE RESPONSE"
+
+    return jsonify(response)
 
 @app.route('/unsaved_pages_catch', methods=['POST'])
 def unsave_pages_catch():
