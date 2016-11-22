@@ -105,12 +105,16 @@ def sign_up_catch():
     if email_check(email, sec_email) == True and username_check(pot_username, doesname) ==True and password_check(pot_password, pot2_password)== True:
         user = add_approved_new_user(pot_password, email, pot_username)
         return render_template('registar.html', current_user=user)
+
     elif email_check(email, sec_email) != True:
         flash(email_check(email, sec_email))
+
     elif username_check(pot_username, doesname) !=True:
         flash(username_check(pot_username, doesname))
+
     elif password_check(pot_password, pot2_password)!= True:
         flash(password_check(pot_password, pot2_password))
+
     return redirect('/')
     
                                             
@@ -118,42 +122,37 @@ def sign_up_catch():
 @app.route('/registar_catch', methods=['POST'])
 def registar_catch():
     """ Process the Profile form from Profile page """
-    #TODO ON PAGES WHERE USER IS TO BE LOGGED IN
-    # user = current_user()
 
-    # if user is None:
-    #     return redirect("/")
-
+    if not is_logged_in():
+        return redirect("/")
 
     age = int(request.form.get('age'))
     academic = request.form.get('academic')
     gender = request.form.get('gender')
 
-    
     #pull information from signup from db
     user = User.query.get(session['current_user'])
     
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
-    if age < 1 and age > 113:
-    # if not re.search(^\d{2,3}$, age):
-        flash('Please type in a number for your age.')
-        return redirect('/registar/%s' % user.username)
-    elif not academic:
-        flash('Please select an academic level that most closely matches for you.')
-        return redirect('/registar/%s' % user.username)
-    elif not gender:
-        flash('Please select a gender descriptor that most closely matches for you.')
-        return redirect('/registar/%s' % user.username)
-    else:
-        user.age = age
-        user.academic_code = academic_code.academic_code
-        user.gender_code= gender_code.gender_code
-        db.session.commit()
-        flash('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
-        return render_template('new_landing.html', username=user.username, current_user=current_user())
 
-#TODO CHECK IF PROFILE WORKS AFTER THE LANDING CAN BE RENDERED
+    if age_check(age) and academic_check(academic) and gender_chek(gender):
+        flash(add_registar_db)
+        return redirect('/register/%s' % user.username)
+    elif age_check(age):
+        flash(age_check(age))
+    elif academic_check(academic):
+        flash(academic_check(academic))
+    elif gender_check(gender):
+        flash(gender_check(gender))
+    return redirect('/registar_catch')
+    
+    
+@app.route('/register/<username>')
+def register(username):
+
+    return render_template('new_landing.html', username=current_user().username, current_user=current_user())
+
 @app.route('/profile/<username>')
 def profile(username):
     """ Render Profile page after Sign-Up """
@@ -391,6 +390,7 @@ def news_landing():
     if sortby=="top":
         headlines_response = news.newstextrequest(source_id, sortby)
         if headlines_response['status'] != 'ok':
+            print headlines_response
             die("response for this source and sortby not coming through")
         else:
             print "************** RESPONSE: ", headlines_response

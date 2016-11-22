@@ -5,7 +5,7 @@ var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
 function showStories(topic_id, source_logo_url, response){
-    if ('never') in response{
+    if ('never' in response){
         $("#logo-" + topic_id).html("");
         $("#logo-" + topic_id).html("<p>" + response['never'] + "</p>")
     }
@@ -80,17 +80,17 @@ function showStories(topic_id, source_logo_url, response){
                "<image src=" + response["articles"][i]["urlToImage"]+ " height='125'    width='175'>" +
                "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "   ' height='35' width='35'>" +
                 "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
-                "<input type='hidden' name='title' value='" + response["articles"][i]["title"   ] + "'>" +
+                "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
                 "<p> Author(s): </p>" +
-                "<input type='hidden' name='author' value='"+ response["articles"][i]['author   '] +"' >"+
+                "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
                 "<p>" + response["articles"][i]['author'] + "</p>" + 
                 "<p> Description: </p>" +
                 "<p>" +response["articles"][i]["description"] +"</p>" +
-                "<input type='hidden' name='published_at' value='" +response["articles"][i]["   publishedAt"] +"'>"+
+                "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
                 "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
                 "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
                 "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
-                "<input type='submit' class='save_btn_class' action='submit' value='Save    Story'> </input>" +
+                "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
                 "</div>"+
                 "</form>" 
                 );

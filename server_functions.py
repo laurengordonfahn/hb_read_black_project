@@ -8,6 +8,7 @@ bcrypt = Bcrypt(app)
 app.secret_key = "dry monday"
 ####### Used for General Purpose ############
 def current_user():
+    """ Return the user object if in session """
     if 'current_user' in session:
         return User.query.get(session['current_user'])
     else:
@@ -16,17 +17,17 @@ def current_user():
         #TODO THIS HAS A BUG IF NONE
 
 def die(message):
+    """ Raise exception with personalized message if no API response"""
     raise Exception, message
 
 
 def is_logged_in():
+    """ Return False if user not in database"""
     if 'current_user' in session:
         return True
     else:
         return False
 
-
-# def 
 
 ######### '/login' helper functions #######
 
@@ -104,5 +105,28 @@ def add_approved_new_user(pot_password, email, pot_username):
     # return redirect('/registar/%s' % pot_username)
     return user
 
-
+def age_check(age):
+    """Check if age if in acceptable range else return message """
+    if age < 1 and age > 113:
+        return("Please type in a number for your age.")
     
+        
+
+def academic_check(academic):
+    """ Check if academic filled in else return message"""
+    if not academic:
+        return('Please select an academic level that most closely matches for you.')
+
+
+def gender_check(gender):
+    """Check if gender filled in else return message """
+    if not gender:
+        return('Please select a gender descriptor that most closely matches for you.')
+
+def add_registar_db(user):
+    """ If registar filled in adds infromation to user's db row """
+    user.age = age
+    user.academic_code = academic_code.academic_code
+    user.gender_code= gender_code.gender_code
+    db.session.commit()
+    return('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
