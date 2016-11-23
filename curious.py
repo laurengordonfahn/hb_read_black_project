@@ -49,13 +49,14 @@ def login_catch():
     pot_username = request.form.get('username')
     #check the db for the username  
     doesname = User.query.filter(User.username == pot_username).first()
+    print "XXXXX", doesname
 
-    #pull password typed in to login
-    pot_password = request.form.get('password')
-    #hash the pot_password and then compare it in the line after with the hash stored
-    pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
-
-    if doesname:
+    if doesname != None:
+        #pull password typed in to login
+        pot_password = request.form.get('password')
+        #hash the pot_password and then compare it in the line after with the hash stored
+        pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
+        
         if afirmed_user_add_session(doesname, pot_username, pw_hash_bool):
         
             return redirect("/landing/options")
@@ -75,7 +76,9 @@ def landing_options():
     #grab all the users news pages
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    ride_all_news_pages_without_stories(landingnames)     
+    landingnames = ride_all_news_pages_without_stories(landingnames) 
+
+
             
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
@@ -139,7 +142,7 @@ def registar_catch():
     
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
-
+    print academic_code, "XXXXXXXX"
     if not (age_check(age) and academic_check(academic) and gender_chek(gender)):
         flash(add_registar_db(user, age, academic_code, gender_code))
         return redirect('/new_landing/%s' % user.username)
@@ -381,9 +384,10 @@ def cautious_query_api():
 
     # make the api call
     response = news.newssourcesrequest(category,language,country)
+    # if not is_logged_in():
+    #         return redirect("/")
     if response['status'] == "ok":
-        if not is_logged_in():
-            return redirect("/")
+        
             #not needed any more because handled in a different route due to jquery
             #check if this landing name has already been used for this user
             # check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
@@ -394,40 +398,44 @@ def cautious_query_api():
             #     # print "####*****#####", user, user.username
 
             #     return redirect('/new_landing/%s' % user.username)
-        else:
+       
             #adding the new landing name to the database
-            landing_add = Landing.query.filter_by(user_id=session['current_user'], landing_name=landing_name).first()
-            #Note: removed landing_primary from the above line.
-            print landing_add
+        landing_add = Landing.query.filter_by(user_id=session['current_user'], landing_name=landing_name).first()
+        #Note: removed landing_primary from the above line.
+        print landing_add
 
-            #gathering informaiton to create rows in our topic table. 
-            landing_id = landing_add.landing_id
-            media_type = request.form.get('media_type')
-            # print "you created landing_id %d" % landing_id
-            index = request.form.get('story_count')
-            print "$$$$$$$$$$$$$", index, type(index)
+        #gathering informaiton to create rows in our topic table. 
+        landing_id = landing_add.landing_id
+        media_type = request.form.get('media_type')
+        # print "you created landing_id %d" % landing_id
+        index = request.form.get('story_count')
+        print "$$$$$$$$$$$$$", index, type(index)
 
-            #beging loop over all the different query/topic requests for news stories
-            index = int(index)
-            
-            category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
+        #beging loop over all the different query/topic requests for news stories
+        index = int(index)
+        
+        category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # add to database
-            topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
-            db.session.add(topic)
-            db.session.commit()
+        topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
+        db.session.add(topic)
+        db.session.commit()
             
-    country = News_api_country.query.filter_by(country_code=country).first()
-    language = News_api_language.query.filter_by(language_code=language).first()
+        country = News_api_country.query.filter_by(country_code=country).first()
+        language = News_api_language.query.filter_by(language_code=language).first()
 
-    print "RRRRRRRRRRRRRRRRRR", country.country_name, response
-    response_dict ={
-        'status': response['status'],
-        'category': category,
-        'country': country.country_name,
-        'media_type': media_type,
-        'language': language.language_name,
-        'landingname': landing_name
-    }
+        print "RRRRRRRRRRRRRRRRRR", country.country_name, response
+        response_dict ={
+            'status': response['status'],
+            'category': category,
+            'country': country.country_name,
+            'media_type': media_type,
+            'language': language.language_name,
+            'landingname': landing_name
+        }
+    else:
+        response_dict = {
+            'status': response['status']
+        }
 
     print response_dict
     # show exception if api returns error

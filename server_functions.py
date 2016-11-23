@@ -128,8 +128,8 @@ def gender_check(gender):
 def add_registar_db(user, age, academic_code, gender_code):
     """ If registar filled in adds infromation to user's db row """
     user.age = age
-    user.academic_code = academic_code.academic_code
-    user.gender_code= gender_code.gender_code
+    user.academic_code = academic_code
+    user.gender_code= gender_code
     db.session.commit()
     return('Welcome, you have successfully signed in to Read&Black with the username %s, start creating your newspaper here on our new landing page!' % user.username)
 
@@ -140,10 +140,11 @@ def rid_news_pages_with_no_topics(landingnames):
     """ Take the list argument of landingnames for a user from the database and delete from db any landings with no topics associated with it. Return landingnames  """
     for landing in landingnames:
         topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
-        
+        print landingnames, "YYYYYYYYYYYYYYY"
         if len(topics_obj_list)==0:
             Landing.query.filter_by(landing_id=landing.landing_id).delete()
             landingnames.remove(landing)
+    print landingnames
     return landingnames
 
 ######## '/profile_catch' #######

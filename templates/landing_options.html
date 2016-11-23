@@ -6,12 +6,14 @@
 
 <h1> Your Saved Newspapers </h1>
 <br>
-    {% for landingname in landingnames %}
-        <a href="/yourlanding/{{ landingname.landing_name }}"><button>{{ landingname.landing_name }}</button></a>
-    {% endfor %}
-    {% if landingnames|length == 0 %}
+    {% if landingnames == None %}
         <p> You Do not have any News Pages at this time. Make a New One Below! </p>
+    {% else %}
+        {% for landingname in landingnames %}
+            <a href="/yourlanding/{{ landingname.landing_name }}"><button>{{ landingname.landing_name }}</button></a>
+        {% endfor %}
     {% endif %}
+    
 <div id='add_new_story_refill_div'> </div>
  <form action="#" method='POST'>
         <p> Name this News Page </p>
