@@ -56,7 +56,7 @@ def login_catch():
         pot_password = request.form.get('password')
         #hash the pot_password and then compare it in the line after with the hash stored
         pw_hash_bool = bcrypt.check_password_hash(doesname.password, pot_password)
-        
+
         if afirmed_user_add_session(doesname, pot_username, pw_hash_bool):
         
             return redirect("/landing/options")
@@ -417,10 +417,12 @@ def cautious_query_api():
         category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # add to database
         topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
+        print "topic: ", topic
         db.session.add(topic)
         db.session.commit()
             
         country = News_api_country.query.filter_by(country_code=country).first()
+        print "country: ", country
         language = News_api_language.query.filter_by(language_code=language).first()
 
         print "RRRRRRRRRRRRRRRRRR", country.country_name, response
@@ -433,8 +435,18 @@ def cautious_query_api():
             'landingname': landing_name
         }
     else:
+        print "COUNTRY", country
+        country = News_api_country.query.filter_by(country_code=country).first()
+        print "COUNTRY object", country
+        language = News_api_language.query.filter_by(language_code=language).first()
+
         response_dict = {
-            'status': response['status']
+            'status': response['status'],
+            'category': category,
+            'country': country.country_name,
+            'media_type': media_type,
+            'language': language.language_name,
+            'landingname': landing_name
         }
 
     print response_dict

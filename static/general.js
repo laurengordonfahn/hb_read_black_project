@@ -383,7 +383,9 @@ function addStoryHtml(response){
     console.log(response);
 
     if(response['status'] != "ok"){
-        $('#stories_not_possible').append("The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        console.log("WE have error in addstoryhtml");
+        // $('#stories_not_possible').html('hello');
+        $('#stories_you_have_so_far').prepend("The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
     }
 
     else{
@@ -536,7 +538,8 @@ function addStoryHtmlOnLanding(response){
 
 
     if(response['status'] != "ok"){
-        
+
+        console.log('in not ok conditional block');
         $('#add_new_story_refill_div').prepend("<br> The Story Query for "+ response['category'] +" " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.<br> ");
     }
 
