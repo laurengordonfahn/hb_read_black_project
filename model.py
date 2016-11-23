@@ -10,11 +10,11 @@ db = SQLAlchemy()
 
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app,url='postgresql:///readandblack'):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///readandblack'
+    app.config['SQLALCHEMY_DATABASE_URI'] = url
     # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.app = app
     db.init_app(app)

@@ -1,5 +1,6 @@
 from unittest import TestCase
 from curious import app 
+from model import connect_to_db, db, example_user_data
 
 class MyAppUnitTestCaseLoggedOut(TestCase):
     """ Flask tests for routes. """
@@ -12,7 +13,7 @@ class MyAppUnitTestCaseLoggedOut(TestCase):
         app.config['TESTING'] = True
 
          # Connect to test database
-        connect_to_db(app, 'postgresql:///readandblack')
+        connect_to_db(app, 'postgresql:///readandblack_test')
 
         #Create tables and add sample data
         db.create_all()
@@ -99,26 +100,18 @@ class MyAppUnitTestCaseLoggedIn(TestCase):
         db.session.close()
         db.drop_all()
 
-     def test_index_render_pass(self):
-        """ tests for correct word content index.html render in route '/' """
+    def test_index_render_pass(self):
+       """ tests for correct word content index.html render in route '/' """
 
-        result= self.client.get("/")
-        self.assertIn("You are currently logged in as a", result.data)
-
-
-     def test_index_render_pass(self):
-        """ tests for correct word content index.html render in route '/' """
-
-        result= self.client.get("/")
-        self.assertIn("Log-Out", result.data)
+       result= self.client.get("/")
+       self.assertIn("You are currently logged in as a", result.data)
+       self.assertIn("Log-Out", result.data)
 
     def test_current_user(self):
         """ """
         current_user()
-    
-
-
 
 
 if __name__=='__main__':
+    import unittest
     unittest.main()

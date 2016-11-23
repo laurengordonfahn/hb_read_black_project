@@ -6,6 +6,7 @@ import re
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.secret_key = "dry monday"
+
 ####### Used for General Purpose ############
 def current_user():
     """ Return the user object if in session """
@@ -13,8 +14,6 @@ def current_user():
         return User.query.get(session['current_user'])
     else:
         return None
-
-        #TODO THIS HAS A BUG IF NONE
 
 def die(message):
     """ Raise exception with personalized message if no API response"""
