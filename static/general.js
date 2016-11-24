@@ -4,6 +4,28 @@
 var passwordtext = $('#explain_password').data('password');
 //"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
+
+
+function renderArticle(index,article) {
+    return "<form action='/saved_pages_catch' method='POST'>"+
+           "<image src=" + article.urlToImage + " height='125'    width='175'>" +
+           "<input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
+           "<a href='" + article.url + "'onclick=\"window.open(' "+     article.url + "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + article.title  + "</p></a>" +
+           "<input type='hidden' name='title' value='" + article.title + "'>" +
+           "<p> Author(s): </p>" +
+           "<input type='hidden' name='author' value='"+ article.author +"' >"+
+           "<p>" + article.author + "</p>" + 
+           "<p> Description: </p>" +
+           "<p>" +article.description +"</p>" +
+           "<input type='hidden' name='published_at' value='" +article.publishedAt +"'>"+
+           "<p>" +article.publishedAt+ "</p>"+ 
+           "<input type ='hidden' class='save_story_button_div-"+ index +"' name='index'   value='" + index + "''>" +
+           "<div id='save_story_button_div-"+ index +"' name='index' value='" + index + "''>"+
+           "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
+           "</div>"+
+           "</form>" ;
+}
+
 function showStories(topic_id, source_logo_url, response){
     if('never' in response){
         $("#logo-" + topic_id).html("");
@@ -19,37 +41,11 @@ function showStories(topic_id, source_logo_url, response){
         console.log(response);
 
         //figure out how to make this image just appear
-        for(var i =0; i < response['ok']['headlines_response']["articles"].length; i++){
-            console.log(i);
-            console.log(response["articles"][i]["url"]);
-            // I believe this is put here by accident b/c no evt
-            //  var  btn= $(evt.currentTarget);
-            //  var form = btn.closest('form');
-            // var url=form.find('input[name="url"]').val();
-
-            results_div.append(
-                    //works but not what I want iframe killer for some impacts useage
-                    // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] +    "'"+ "style='width:100%;'frameborder='0'></iframe>" +
-
-                    "<form action='/saved_pages_catch' method='POST'>"+
-                    "<image src=" + response["articles"][i]["urlToImage"]+ " height='125'    width='175'>" +
-                    "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "   ' height='35' width='35'>" +
-                    "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
-                    "<input type='hidden' name='title' value='" + response["articles"][i]["title"   ] + "'>" +
-                    "<p> Author(s): </p>" +
-                    "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
-                    "<p>" + response["articles"][i]['author'] + "</p>" + 
-                    "<p> Description: </p>" +
-                    "<p>" +response["articles"][i]["description"] +"</p>" +
-                    "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
-                    "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
-                    "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
-                    "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
-                    "<input type='submit' class='save_btn_class' action='submit' value='Save    Story'> </input>" +
-                    "</div>"+
-                    "</form>" 
-            );
-        }
+        $.each(response.ok.articles,function(index,article){
+            console.log(index);
+            console.log(article.url)
+            results_div.append(renderArticle(index,article));
+        })
 
     } else{
         $("#logo-" + topic_id).html("");
@@ -61,42 +57,12 @@ function showStories(topic_id, source_logo_url, response){
 
         console.log(response);
 
-        //figure out how to make this image just appear
-        for(var i =0; i < response["articles"].length; i++){
-            console.log(i);
-            console.log(response["articles"][i]["url"]);
-            // I believe this is put here by accident b/c no evt
-            //  var  btn= $(evt.currentTarget);
-            //  var form = btn.closest('form');
-            // var url=form.find('input[name="url"]').val();
-
-            results_div.append(
-                    //works but not what I want iframe killer for some impacts useage
-                    // "<iframe id=\"theFrame\" src= "+ "'"+ response["articles"][i]["url"] +    "'"+ "style='width:100%;'frameborder='0'></iframe>" +
-
-                    "<form action='/saved_pages_catch' method='POST'>"+
-                    "<image src=" + response["articles"][i]["urlToImage"]+ " height='125'    width='175'>" +
-                    "<input type='hidden' name='url' value='" + response["articles"][i]["url"] + "   ' height='35' width='35'>" +
-                    "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
-                    "<input type='hidden' name='title' value='" + response["articles"][i]["title"] + "'>" +
-                    "<p> Author(s): </p>" +
-                    "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
-                    "<p>" + response["articles"][i]['author'] + "</p>" + 
-                    "<p> Description: </p>" +
-                    "<p>" +response["articles"][i]["description"] +"</p>" +
-                    "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
-                    "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
-                    "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
-                    "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
-                    "<input type='submit' class='save_btn_class' action='submit' value='Save Story'> </input>" +
-                    "</div>"+
-                    "</form>" 
-            );
-        }
+        $.each(response.articles,function(index,article){
+            console.log(index);
+            console.log(article.url)
+            results_div.append(renderArticle(index,article));
+        })
     }
-
-
-
 }
 
 
@@ -246,11 +212,14 @@ $("input.chose_source_btn").on("click", getRequestInfo);
 var STORY_COUNT = 0;
 function warnUniqueLandingName(response){
     if (response['landing_name_used'] === 'yes'){
-        var landing_name =response['landing_name']
-            $('#landing_name_musts').html("<p>'You already have a news page named '" + landing_name + "' please chose a unique news paper name. </p>");
+        var landing_name =response['landing_name'];
+
+        showAlertWarn($('#landing_name_musts'), "You already have a news page named '" + landing_name + "' please chose a unique news paper name.");
+
     } else if(response['landing_name_used'] === 'no'){
         $('#new_landing_name').attr('readonly', true);
         $('#add_first_story_div').html("");
+        $('#landing_name_musts').html("");
 
         $("#add_story_div").html(
                 "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
@@ -301,7 +270,7 @@ function warnUniqueLandingName(response){
         $('#add_story').on('click', addHiddenCount);
         $("#add_story").on('click', checkStoryQuery);
     } else if(response['landing_name_needed'] === 'yes'){
-        $('#landing_name_musts').html("<p>Please, name your news paper before building its content.</p>");
+        showAlertWarn($('#landing_name_musts'), "Please, name your news paper before building its content");
     }
 
 }
@@ -348,17 +317,15 @@ function addStoryHtml(response){
 
     if(response['status'] != "ok"){
         console.log("WE have error in addstoryhtml");
-        // $('#stories_not_possible').html('hello');
-        $('#stories_you_have_so_far').prepend("The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
+        showAlertWarn($("#add_stories_alert"),"The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
     } else {
 
         $("#add_story_div").html("");
 
         console.log("This is running addStoryHtml");
         console.log(window.STORY_COUNT +  " This is the count in addHTML");
-        $("#stories_you_have_so_far").append("<p> Your request for the following news has been saved to this new news page are: </p> <br>");
 
-        $("#stories_you_have_so_far").append(" <p> " + response['category'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page.</p>");
+        showAlertSuccess($("#add_stories_alert"),response['category'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page");
         $("#add_story_div").html(
                 "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
                 "<option value='text'> Text </option> " +
@@ -482,20 +449,35 @@ $('.delete_landing_btn').on('click', deleteRequest);
 
 ///////////////Add a new story to an exhisting landing ////////////
 
+function showAlertWarn($el,msg) {
+    $el.html(
+        '<div class="alert alert-warning alert-dismissible" role="alert">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+          msg +
+        '</div>'
+    );
+}
+
+function showAlertSuccess($el,msg) {
+    $el.html(
+        '<div class="alert alert-success alert-dismissible" role="alert">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+          msg +
+        '</div>'
+    );
+}
 
 function addStoryHtmlOnLanding(response){
 
-
     if(response['status'] != "ok"){
-
-        console.log('in not ok conditional block');
-        $('#add_new_story_refill_div').prepend("<br> The Story Query for "+ response['category'] +" " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.<br> ");
+        var msg = "The Story Query for "+ response['category'] +" " + response['media_type'] + " news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.";
+        showAlertWarn($('#add_new_story_refill_alert'), msg);
     } else{
 
         ///// IS there a better more dynamic way to run this ?////// 
         console.log(response['landingname']);
-        $('#add_new_story_refill_div').html("");
-        $('#add_new_story_refill_div').html( "<p> Press Refresh to Add New Story </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a> <br>"
+        $('#add_new_story_refill_alert').html("");
+        $('#add_new_story_refill_options').html( "<p> Press Refresh to Add New Story </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a> <br>"
         );
 
     }      
@@ -508,8 +490,9 @@ function createNewStoryForm(evt){
     var landingname= form.find('input[name="hidden_landingname_add_story"]').val(); 
     var topic_count = form.find('input[name="hidden_count_add_story"]').val();
 
-    $('#add_new_story_refill_div').html("");
-    $('#add_new_story_refill_div').html(
+    $('#add_new_story_refill_alert').html("");
+    $('#add_new_story_refill_options').html("");
+    $('#add_new_story_refill_options').html(
         "<form>" + 
         "<p>Type</p><select id = 'type-" + topic_count +"' name='type-"+ topic_count + "'> " +
         "<option value='text'> Text </option> " +

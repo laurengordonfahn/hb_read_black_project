@@ -159,12 +159,38 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
         self.assertEqual('no',jresult['landing_name_used'])
 
     def test_check_landing_name_empty(self):
-        """ Check and create new landing name """
+        """ Check empty landing name """
         result = self.client.post('/check_landing_name.json',data={'new_landing_name':''})
         self.assertSuccess(result)
         jresult = json.loads(result.data)
         self.assertEqual('yes',jresult['landing_name_needed'])
 
+    def test_check_used_landing_name(self):
+        pass
+
+    # CAUTIOUS QUERY
+
+    # error:
+    #
+    # media_type:text
+    # category:business
+    # country:au
+    # language:en
+    # new_landing_name:cars
+    # story_count:0
+
+
+    # OK:
+
+    # media_type:text
+    # category:business
+    # country:us
+    # language:en
+    # new_landing_name:cars
+    # story_count:0
+
+
+    # LANDING OPTIONS
 if __name__=='__main__':
     import unittest
     unittest.main()
