@@ -103,7 +103,7 @@ def sign_up_catch():
 
     if email_check(email, sec_email) == True and username_check(pot_username, doesname) ==True and password_check(pot_password, pot2_password)== True:
         user = add_approved_new_user(app,pot_password, email, pot_username)
-        return render_template('registar.html', current_user=user)
+        return render_template('register.html', current_user=user)
 
     elif email_check(email, sec_email) != True:
         flash(email_check(email, sec_email))
@@ -122,8 +122,8 @@ def register(username):
 
     return render_template('new_landing.html', username=current_user().username, current_user=current_user())                                            
 
-@app.route('/registar_catch', methods=['POST'])
-def registar_catch():
+@app.route('/register_catch', methods=['POST'])
+def register_catch():
     """ Process the Profile form from Profile page """
 
     if not is_logged_in():
@@ -140,7 +140,7 @@ def registar_catch():
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
     print academic_code, "XXXXXXXX"
     if not (age_check(age) and academic_check(academic) and gender_chek(gender)):
-        flash(add_registar_db(user, age, academic_code, gender_code))
+        flash(add_register_db(user, age, academic_code, gender_code))
         return redirect('/new_landing/%s' % user.username)
     elif age_check(age):
         flash(age_check(age))

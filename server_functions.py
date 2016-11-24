@@ -97,10 +97,10 @@ def add_approved_new_user(app,pot_password, email, pot_username):
     #session will be instantiated with current_user set equal to the user_id
     
     session.setdefault('current_user', user.user_id)
-    # return redirect('/registar/%s' % pot_username)
+    # return redirect('/register/%s' % pot_username)
     return user
 
-####### registar_catch ########
+####### register_catch ########
 
 def age_check(age):
     """Check if age if in acceptable range else return message """
@@ -120,8 +120,8 @@ def gender_check(gender):
     if not gender:
         return('Please select a gender descriptor that most closely matches for you.')
 
-def add_registar_db(user, age, academic_code, gender_code):
-    """ If registar filled in adds infromation to user's db row """
+def add_register_db(user, age, academic_code, gender_code):
+    """ If register filled in adds infromation to user's db row """
     user.age = age
     user.academic_code = academic_code
     user.gender_code= gender_code

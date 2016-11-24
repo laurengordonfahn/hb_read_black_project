@@ -34,6 +34,12 @@ class TestCaseBase(TestCase):
         db.session.close()
         db.drop_all()
 
+    def assertRedirect(self,response):
+        self.assertEqual(response.status_code,302)
+
+    def assertRedirectTo(self,response,location):
+        self.assertRedirect(response)
+        self.assertEqual(response.headers['Location'],'http://localhost' + location)
 
 class MyAppUnitTestCaseLoggedOut(TestCaseBase):
     """ Flask tests for routes. """
@@ -80,6 +86,13 @@ class MyAppUnitTestCaseLoggedOut(TestCaseBase):
         result=self.client.post('/sign_up', data={"email": 'f@gmail.com' , "sec_email": 'f@gmail.com', "username":"f" , "password": "12345" , "sec_password": "12345"}, follow_redirects=True)
         self.assertIn("Your password is not long enough try something with at least 6 characters.", result.data)
 
+
+    # REGISTER WRONG
+    def test_register_catch_not_logged_in(self):
+        """ Failing due to not being logged in """
+        result = self.client.post('/register_catch',data={'age':'20','academic':'none','gender':'f'}, follow_redirects=False)
+        self.assertRedirectTo(result,"/")
+
     #??????? HOW DO I TEST THAT HTML POPSUP
 
 class MyAppUnitTestCaseLoggedIn(TestCaseBase):
@@ -100,6 +113,9 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
        result= self.client.get("/")
        self.assertIn("You are currently logged in as a", result.data)
        self.assertIn("/log_out_catch", result.data)
+
+    def test_register_catch_no_age(self):
+        pass
 
     def test_current_user(self):
         """ """
