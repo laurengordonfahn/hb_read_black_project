@@ -76,7 +76,9 @@ def landing_options():
     #grab all the users news pages
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
-    landingnames = ride_all_news_pages_without_stories(landingnames) 
+    ride_all_news_pages_without_stories(landingnames)
+
+    landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
             
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
@@ -483,6 +485,7 @@ def check_landing_name():
     print "999999999999999999", response
     return jsonify(response)
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
+
 @app.route('/saved_pages.json', methods=['POST'])
 def saved_pages_catch():
     url = request.form.get('url')
@@ -557,7 +560,5 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-
-
     
     app.run(host="0.0.0.0",port=5000)
