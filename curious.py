@@ -456,7 +456,7 @@ def check_landing_name():
     landing_name = request.form.get('new_landing_name')
     print "##############", landing_name
 
-    if landing_name != "":
+    if landing_name and landing_name != "":
             
             #check if this landing name has already been used for this user
         check_landing_name = Landing.query.filter(Landing.user_id==session['current_user'], Landing.landing_name==landing_name).first()

@@ -2,6 +2,7 @@ from curious import app, bcrypt
 from model import connect_to_db, db, example_user_data
 import seed
 import unittest
+import json
 
 
 class TestCaseBase(unittest.TestCase):
@@ -120,6 +121,8 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
        self.assertIn("You are currently logged in as " + self.userName, result.data)
        self.assertIn("/log_out_catch", result.data)
 
+    # REGISTER CATCH
+
     def test_register_catch_complete(self):
         """ Finish registration """
         result = self.client.post('/register_catch',data={'age':'20','academic':'ba','gender':'Female'}, follow_redirects=True)
@@ -140,6 +143,27 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
         """ Error finishing registration with no gender """
         result = self.client.post('/register_catch',data={'age':'20','academic':'ba'}, follow_redirects=False)
         self.assertRedirectTo(result,'/register/%s' % self.userName)
+
+    # CHECK LANDING NAME
+
+    def test_check_landing_name_not_used(self):
+        """ Check and create new landing name """
+        result = self.client.post('/check_landing_name.json',data={'new_landing_name':'foo'})
+        self.assertSuccess(result)
+        jresult = json.loads(result.data)
+        self.assertEqual('no',jresult['landing_name_used'])
+
+        result = self.client.post('/check_landing_name.json',data={'new_landing_name':'foo'})
+        self.assertSuccess(result)
+        jresult = json.loads(result.data)
+        self.assertEqual('no',jresult['landing_name_used'])
+
+    def test_check_landing_name_empty(self):
+        """ Check and create new landing name """
+        result = self.client.post('/check_landing_name.json',data={'new_landing_name':''})
+        self.assertSuccess(result)
+        jresult = json.loads(result.data)
+        self.assertEqual('yes',jresult['landing_name_needed'])
 
 if __name__=='__main__':
     import unittest
