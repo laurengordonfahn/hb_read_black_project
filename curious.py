@@ -4,7 +4,7 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from flask.ext.bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 
 #Need to create and import Classes in Database model.py
 #ADD ALL CLASSES FROM MODELS!

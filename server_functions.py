@@ -1,6 +1,6 @@
 from model import *
 from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
-from flask.ext.bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 # to access regex for pattern matching for verifcation of email etc
 import re
 
