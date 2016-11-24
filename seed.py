@@ -36,8 +36,6 @@ def load_gender():
 def load_academic():
     """Load academic from code below."""
 
-   
-
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
     Academic_level.query.delete()

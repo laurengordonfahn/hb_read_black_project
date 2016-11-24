@@ -1,10 +1,10 @@
-from unittest import TestCase
 from curious import app, bcrypt
 from model import connect_to_db, db, example_user_data
 import seed
+import unittest
 
 
-class TestCaseBase(TestCase):
+class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.doSetUp()
 
@@ -35,7 +35,10 @@ class TestCaseBase(TestCase):
         db.drop_all()
 
     def assertRedirect(self,response):
-        self.assertEqual(response.status_code,302)
+        self.assertIn(response.status_code,[301,302])
+
+    def assertSuccess(self,response):
+        self.assertIn(response.status_code,[200])
 
     def assertRedirectTo(self,response,location):
         self.assertRedirect(response)
@@ -90,7 +93,7 @@ class MyAppUnitTestCaseLoggedOut(TestCaseBase):
     # REGISTER WRONG
     def test_register_catch_not_logged_in(self):
         """ Failing due to not being logged in """
-        result = self.client.post('/register_catch',data={'age':'20','academic':'none','gender':'f'}, follow_redirects=False)
+        result = self.client.post('/register_catch',data={'age':'20','academic':'ba','gender':'Female'}, follow_redirects=False)
         self.assertRedirectTo(result,"/")
 
     #??????? HOW DO I TEST THAT HTML POPSUP
@@ -102,24 +105,41 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
         """ Stuff to do before every test."""
         self.doSetUp()
 
+        self.userName = 'a'
+        self.userID   = 1
+
         #user_id = 1 in session called 'current_user'
         with self.client as c:
             with c.session_transaction() as sess:
-                sess['current_user'] = 1
+                sess['current_user'] = self.userID
 
     def test_index_render_pass(self):
        """ tests for correct word content index.html render in route '/' """
 
        result= self.client.get("/")
-       self.assertIn("You are currently logged in as a", result.data)
+       self.assertIn("You are currently logged in as " + self.userName, result.data)
        self.assertIn("/log_out_catch", result.data)
 
-    def test_register_catch_no_age(self):
-        pass
+    def test_register_catch_complete(self):
+        """ Finish registration """
+        result = self.client.post('/register_catch',data={'age':'20','academic':'ba','gender':'Female'}, follow_redirects=True)
+        self.assertSuccess(result)
+        self.assertIn("Welcome, you have successfully signed in to Read&amp;Black",result.data)
 
-    def test_current_user(self):
-        """ """
-        pass
+    def test_register_catch_no_age(self):
+        """ Error finishing registration with no age """
+        result = self.client.post('/register_catch',data={'academic':'ba','gender':'Female'}, follow_redirects=False)
+        self.assertRedirectTo(result,'/register/%s' % self.userName)
+
+    def test_register_catch_no_academic(self):
+        """ Error finishing registration with no academic history """
+        result = self.client.post('/register_catch',data={'age': '20', 'gender':'Female'}, follow_redirects=False)
+        self.assertRedirectTo(result,'/register/%s' % self.userName)
+
+    def test_register_catch_no_gender(self):
+        """ Error finishing registration with no gender """
+        result = self.client.post('/register_catch',data={'age':'20','academic':'ba'}, follow_redirects=False)
+        self.assertRedirectTo(result,'/register/%s' % self.userName)
 
 if __name__=='__main__':
     import unittest

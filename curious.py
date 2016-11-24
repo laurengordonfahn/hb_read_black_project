@@ -129,7 +129,7 @@ def register_catch():
     if not is_logged_in():
         return redirect("/")
 
-    age = int(request.form.get('age'))
+    age = request.form.get('age')
     academic = request.form.get('academic')
     gender = request.form.get('gender')
 
@@ -139,18 +139,17 @@ def register_catch():
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
     print academic_code, "XXXXXXXX"
-    if not (age_check(age) and academic_check(academic) and gender_chek(gender)):
-        flash(add_register_db(user, age, academic_code, gender_code))
+    if not (age_check(age) or academic_check(academic_code) or gender_check(gender_code)):
+        flash(add_register_db(user, int(age), academic_code, gender_code))
         return redirect('/new_landing/%s' % user.username)
     elif age_check(age):
         flash(age_check(age))
-    elif academic_check(academic):
-        flash(academic_check(academic))
-    elif gender_check(gender):
-        flash(gender_check(gender))
+    elif academic_check(academic_code):
+        flash(academic_check(academic_code))
+    elif gender_check(gender_code):
+        flash(gender_check(gender_code))
     return redirect('/register/%s' % user.username)
-    
-    
+
 
 @app.route('/profile/<username>')
 def profile(username):
