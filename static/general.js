@@ -37,11 +37,11 @@ function showStories(topic_id, source_logo_url, response){
                     "<a href='" + response["articles"][i]["url"] + "'onclick=\"window.open(' "+     response["articles"][i]["url"]+ "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + response['articles'][i]['title']  + "</p></a>" +
                     "<input type='hidden' name='title' value='" + response["articles"][i]["title"   ] + "'>" +
                     "<p> Author(s): </p>" +
-                    "<input type='hidden' name='author' value='"+ response["articles"][i]['author   '] +"' >"+
+                    "<input type='hidden' name='author' value='"+ response["articles"][i]['author'] +"' >"+
                     "<p>" + response["articles"][i]['author'] + "</p>" + 
                     "<p> Description: </p>" +
                     "<p>" +response["articles"][i]["description"] +"</p>" +
-                    "<input type='hidden' name='published_at' value='" +response["articles"][i]["   publishedAt"] +"'>"+
+                    "<input type='hidden' name='published_at' value='" +response["articles"][i]["publishedAt"] +"'>"+
                     "<p>" +response["articles"][i]["publishedAt"]+ "</p>"+ 
                     "<input type ='hidden' class='save_story_button_div-"+ i +"' name='index'   value='" + i + "''>" +
                     "<div id='save_story_button_div-"+ i +"' name='index' value='" + i + "''>"+
