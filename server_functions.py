@@ -3,9 +3,6 @@ from flask import (Flask, render_template, redirect, request, flash, session, js
 from flask.ext.bcrypt import Bcrypt
 # to access regex for pattern matching for verifcation of email etc
 import re
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.secret_key = "dry monday"
 
 ####### Used for General Purpose ############
 def current_user():
@@ -26,7 +23,6 @@ def is_logged_in():
         return True
     else:
         return False
-
 
 ######### '/login' helper functions #######
 
@@ -91,9 +87,9 @@ def password_check(pot_password, pot2_password):
         return 'Your second password does not match your first, please re-enter to verify.'
     return True
 
-def add_approved_new_user(pot_password, email, pot_username):
+def add_approved_new_user(app,pot_password, email, pot_username):
     """ Hash password and send approved user info to db return user to be used in render_templete"""
-    pot_passwordhash = bcrypt.generate_password_hash(pot_password)
+    pot_passwordhash = Bcrypt(app).generate_password_hash(pot_password)
     
     user = User(email=email,username=pot_username, password=pot_passwordhash) 
     db.session.add(user)
@@ -167,7 +163,7 @@ def email_change_db(user):
         db.session.commit()
     return
 
-def password_change_db(user):
+def password_change_db(app,user):
     """Take password change form on profile page and check if acceptable input and update database. Return None  or a flash message """
     pot_password = request.form.get('password')
     # verify if password is adequate.
@@ -181,7 +177,7 @@ def password_change_db(user):
         return('Your second password does not match your first, please re-enter to verify.')
         
     else:
-        user.password=pot_password
+        user.password=Bcrypt(app).generage_password_hash(pot_password)
         db.session.commit()
     return
 

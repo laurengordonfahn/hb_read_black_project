@@ -1,33 +1,43 @@
 from unittest import TestCase
-from curious import app 
+from curious import app, bcrypt
 from model import connect_to_db, db, example_user_data
+import seed
 
-class MyAppUnitTestCaseLoggedOut(TestCase):
-    """ Flask tests for routes. """
 
+class TestCaseBase(TestCase):
     def setUp(self):
-        """ Stuff to do before every test."""
+        self.doSetUp()
 
+    def doSetUp(self):
+        """ Stuff to do before every test."""
         #Get the Flask test client
         self.client = app.test_client()
         app.config['TESTING'] = True
 
          # Connect to test database
-        connect_to_db(app, 'postgresql:///readandblack_test')
+        connect_to_db(app, url='postgresql:///readandblack_test')
+
+        db.drop_all()
 
         #Create tables and add sample data
         db.create_all()
-        #*********** MAKE THIS ************
-        example_user_data()
 
-        
+        # seed the database.
+        seed.load_all()
+
+        #*********** MAKE THIS ************
+        example_user_data(app)
 
     def tearDown(self):
         """ Do at end of every test. """
 
         db.session.close()
         db.drop_all()
-    
+
+
+class MyAppUnitTestCaseLoggedOut(TestCaseBase):
+    """ Flask tests for routes. """
+
     #RENDER NORMAL
    
     def test_index_render_pass(self):
@@ -35,6 +45,7 @@ class MyAppUnitTestCaseLoggedOut(TestCase):
 
         result= self.client.get("/")
         self.assertIn("Password Requirements", result.data)
+
     #LOGIN NORMAL
     def test_log_in_right(self):
         """ Becoming logged in """
@@ -71,46 +82,28 @@ class MyAppUnitTestCaseLoggedOut(TestCase):
 
     #??????? HOW DO I TEST THAT HTML POPSUP
 
-class MyAppUnitTestCaseLoggedIn(TestCase):
+class MyAppUnitTestCaseLoggedIn(TestCaseBase):
     """ Flask tests for routes. """
 
     def setUp(self):
         """ Stuff to do before every test."""
-
-        #Get the Flask test client
-        self.client = app.test_client()
-        app.config['TESTING'] = True
-
-        # Connect to test database
-        connect_to_db(app, 'postgresql:///readandblack')
-
-        #Create tables and add sample data
-        db.create_all()
-        #*********** MAKE THIS ************
-        example_user_data()
+        self.doSetUp()
 
         #user_id = 1 in session called 'current_user'
         with self.client as c:
             with c.session_transaction() as sess:
                 sess['current_user'] = 1
 
-    def tearDown(self):
-        """ Do at end of every test. """
-
-        db.session.close()
-        db.drop_all()
-
     def test_index_render_pass(self):
        """ tests for correct word content index.html render in route '/' """
 
        result= self.client.get("/")
        self.assertIn("You are currently logged in as a", result.data)
-       self.assertIn("Log-Out", result.data)
+       self.assertIn("/log_out_catch", result.data)
 
     def test_current_user(self):
         """ """
-        current_user()
-
+        pass
 
 if __name__=='__main__':
     import unittest

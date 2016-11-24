@@ -77,14 +77,10 @@ def landing_options():
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
     landingnames = ride_all_news_pages_without_stories(landingnames) 
-
-
             
     return render_template("landing_options.html", landingnames=landingnames, current_user=current_user())
        
             
-    
-
 @app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
@@ -106,7 +102,7 @@ def sign_up_catch():
     pot2_password = request.form.get('sec_password')
 
     if email_check(email, sec_email) == True and username_check(pot_username, doesname) ==True and password_check(pot_password, pot2_password)== True:
-        user = add_approved_new_user(pot_password, email, pot_username)
+        user = add_approved_new_user(app,pot_password, email, pot_username)
         return render_template('registar.html', current_user=user)
 
     elif email_check(email, sec_email) != True:

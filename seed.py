@@ -10,16 +10,10 @@ from model import Npr_api_topic_source
 from model import Type
 
 from model import connect_to_db, db
-from curious import app
-
-
-
-
+from curious import app, bcrypt
 
 def load_gender():
     """Load genders from code below."""
-
-   
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate genders/ error due to primary key redundancy
@@ -233,14 +227,7 @@ def load_type():
 # db.session.execute(gendersql,{'academic_code' : 'bs', 'academic_name' : 'B.S.'}) 
 # db.session.execute(gendersql,{'academic_code' : 'hr', 'academic_name' : 'Higher'})  
 
-
-
-if __name__ == "__main__":
-    connect_to_db(app)
-
-    # In case tables haven't been created, create them
-    db.create_all()
-
+def load_all():
     # Import different types of data
     load_gender()
     load_academic()
@@ -252,4 +239,10 @@ if __name__ == "__main__":
     load_npr_api_topic_sources()
     load_news_api_sources()
 
+if __name__ == "__main__":
+    connect_to_db(app)
 
+    # In case tables haven't been created, create them
+    db.create_all()
+
+    load_all()

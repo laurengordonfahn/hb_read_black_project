@@ -1,12 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask.ext.bcrypt import Bcrypt
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
 # object, where we do most of our interactions (like committing, etc.)
 
 db = SQLAlchemy()
-
-
 
 # Helper functions
 
@@ -29,11 +28,10 @@ class User(db.Model):
     #maybe add email check unique in server code because of the unique requirement here
     email=db.Column(db.String(100), nullable=False)
     username=db.Column(db.String(50), nullable=False, unique=True)
-    password=db.Column(db.String(95), nullable=False, unique=False)
+    password=db.Column(db.String(128), nullable=False, unique=False)
     age=db.Column(db.Integer)
     gender_code=db.Column(db.String(10), db.ForeignKey('genders.gender_code'))
     academic_code=db.Column(db.String(10), db.ForeignKey('academic_levels.academic_code'))
-
 
 
 class Landing(db.Model):
@@ -137,48 +135,49 @@ class Npr_api_topic_source(db.Model):
     source_keyword=db.Column(db.String(79), nullable=False)
     source_description=db.Column(db.Text)
 
-def example_user_data():
+def example_user_data(app, purge = False):
     """ Create some sample data."""
 
-    #In case this is run more than once, empty out existing data
-    User.query.delete()
-    Landing.query.delete()
-    News_api_user_topics.query.delete()
-    Saved_story.query.delete()
+    bcrypt = Bcrypt(app)
 
+    #In case this is run more than once, empty out existing data
+    # todo: delete this.
+    if purge:
+        News_api_user_topics.query.delete()
+        Landing.query.delete()
+        User.query.delete()
+        Saved_story.query.delete()
+
+    password = bcrypt.generate_password_hash('123456')
 
     #Add sample users,landings, topics, saved stories
-    a = User(email='a@gmail.com', username='a', password='123456', age='18', gender_code='f', academic_code='hs')
-    b = User(email='b@gmail.com', username='b', password='123456', age='18', gender_code='m', academic_code='ts')
-    c = User(email='c@gmail.com', username='c', password='123456', age='18', gender_code='o', academic_code='ba')
-    d = User(email='d@gmail.com', username='d', password='123456', age='18', gender_code='f', academic_code='bs')
-    e = User(email='e@gmail.com', username='e', password='123456', age='18', gender_code='m', academic_code='hr')
+    a = User(email='a@gmail.com', username='a', password=password, age='18', gender_code='f', academic_code='hs')
+    b = User(email='b@gmail.com', username='b', password=password, age='18', gender_code='m', academic_code='ts')
+    c = User(email='c@gmail.com', username='c', password=password, age='18', gender_code='o', academic_code='ba')
+    d = User(email='d@gmail.com', username='d', password=password, age='18', gender_code='f', academic_code='bs')
+    e = User(email='e@gmail.com', username='e', password=password, age='18', gender_code='m', academic_code='hr')
 
-    landing_a=Landing(user_id=1, landing_name='a')
-    landing_aa=Landing(user_id=1, landing_name='a\'s')
-    landing_b=Landing(user_id=2, landing_name='b')
-    landing_c=Landing(user_id=3, landing_name='c')
-    landing_d=Landing(user_id=4, landing_name='d')
-    landing_e=Landing(user_id=5, landing_name='e')
+    landing_a=Landing(user_id=a.user_id, landing_name='a')
+    landing_aa=Landing(user_id=a.user_id, landing_name='a\'s')
+    landing_b=Landing(user_id=b.user_id, landing_name='b')
+    landing_c=Landing(user_id=c.user_id, landing_name='c')
+    landing_d=Landing(user_id=d.user_id, landing_name='d')
+    landing_e=Landing(user_id=e.user_id, landing_name='e')
 
-    topic_a=News_api_user_topics(user_id=1, landing_id=1, media_type='text', category_code='gnrl', language_code='en', country_code='us')
-    topic_aa=News_api_user_topics(user_id=1, landing_id=2, media_type='text', category_code='bsns', language_code='de', country_code='gb')
-    topic_aaa=News_api_user_topics(user_id=1, landing_id=3, media_type='text', category_code='sprt', language_code='en', country_code='it')
-    topic_b=News_api_user_topics(user_id=2, landing_id=4, media_type='text', category_code='tech', language_code='de', country_code='gb')
-    topic_c=News_api_user_topics(user_id=3, landing_id=5, media_type='text', category_code='gnrl', language_code='fr', country_code='de')
-    topic_d=News_api_user_topics(user_id=4, landing_id=6, media_type='text', category_code='bsns', language_code='en', country_code='in')
-    topic_e=News_api_user_topics(user_id=5, landing_id=7, media_type='text', category_code='bsns', language_code='en', country_code='au')
+    topic_a=News_api_user_topics(   user_id=a.user_id, landing_id=landing_a.landing_id, media_type='text', category_code='gnrl', language_code='en', country_code='us')
+    topic_aa=News_api_user_topics(  user_id=a.user_id, landing_id=landing_a.landing_id, media_type='text', category_code='bsns', language_code='de', country_code='gb')
+    topic_aaa=News_api_user_topics( user_id=a.user_id, landing_id=landing_aa.landing_id, media_type='text', category_code='sprt', language_code='en', country_code='it')
+    topic_b=News_api_user_topics(   user_id=b.user_id, landing_id=landing_b.landing_id, media_type='text', category_code='tech', language_code='de', country_code='gb')
+    topic_c=News_api_user_topics(   user_id=c.user_id, landing_id=landing_c.landing_id, media_type='text', category_code='gnrl', language_code='fr', country_code='de')
+    topic_d=News_api_user_topics(   user_id=d.user_id, landing_id=landing_d.landing_id, media_type='text', category_code='bsns', language_code='en', country_code='in')
+    topic_e=News_api_user_topics(   user_id=e.user_id, landing_id=landing_e.landing_id, media_type='text', category_code='bsns', language_code='en', country_code='au')
 
-    saved_a=Saved_story(user_id=1,story_url='www.a.com', story_title='ahaha', story_author='aaron', story_date='1-1-2011')
-    saved_aa=Saved_story(user_id=1,story_url='www.aa.com', story_title='aaaaa', story_author='arthor', story_date='1-1-2111')
-    saved_b=Saved_story(user_id=2,story_url='www.b.com', story_title='blllahhal', story_author='bambi', story_date='1-1-1111')
+    saved_a=Saved_story(user_id=a.user_id,story_url='www.a.com', story_title='ahaha', story_author='aaron', story_date='1-1-2011')
+    saved_aa=Saved_story(user_id=a.user_id,story_url='www.aa.com', story_title='aaaaa', story_author='arthor', story_date='1-1-2111')
+    saved_b=Saved_story(user_id=b.user_id,story_url='www.b.com', story_title='blllahhal', story_author='bambi', story_date='1-1-1111')
 
     db.session.add_all([a, b, c, d, e, landing_a, landing_aa, landing_b, landing_c, landing_d, landing_e, topic_a, topic_aa, topic_aaa, topic_b, topic_c, topic_d, topic_e, saved_a, saved_aa, saved_b])
     db.session.commit()
-
-
-
-
 
 
 if __name__ == "__main__":
