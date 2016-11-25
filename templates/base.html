@@ -13,18 +13,19 @@
 </head>
 <body>
     {% if 'current_user' in session %}
+
         <nav class= "navbar navbar-default">
             <div class= "countainer-fuid">
                 <div class="navbar-header">
                     <div class="navbar-brand" >Read&amp;Black </div>
-                    <ul class="nav nav-tabs">
-                        <li class="active" role="presentation"><a href="/landing/options">Change News Page</a></li>
-                        <li role="presentation"><a href="/new_landing/{{ current_user.username }}">Add A New News Page</a></li>
-                        <li role="presentation"><a href="/profile/{{ current_user.username }}">Profile</a></li> 
-                        <li role="presentation"><a href="/saved_pages">See Saved Stories</a></li>
-                        <li role="presentation"><a href="/log_out_catch">Log Out</a></li> 
-                        
-                    </ul>
+                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active" role="presentation"><a href="/landing/options">Change News Page</a></li>
+                    <li role="presentation"><a href="/new_landing/{{ current_user.username }}">Add A New News Page</a></li>
+                    <li role="presentation"><a href="/profile/{{ current_user.username }}">Profile</a></li> 
+                    <li role="presentation"><a href="/saved_pages">See Saved Stories</a></li>
+                    <li role="presentation"><a href="/log_out_catch">Log Out</a></li> 
+                </ul>
                 </div>
             </div>
         </nav>
