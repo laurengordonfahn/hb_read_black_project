@@ -13,20 +13,22 @@
 </head>
 <body>
     {% if 'current_user' in session %}
-        <!-- ADD username to jinja -->
-        <!--Show only if signed in-->
-        <!-- IS IT bootstrap that puts things in the hamburger? or is is it a form HOW DO I MAKE FORM A LINK THAT LOG OUTS-->
-        <!-- DO NOT SHOW PROFILE IF ALREADY ON PROFILE PAGE -->
-        <a  href='/profile/{{ current_user.username }}'>Profile</a>
-        <br>
-        <a  href='/new_landing/{{ current_user.username }}'>Add A New News Page</a>
-        <br>
-        <!--CREATE LOG OUT CATCH and get ride of logout if not signed in-->
-        <a href='/log_out_catch'> Log Out </a>
-        <br>
-        <a href='/landing/options'>Change Landing </a>
-        <br>
-        <a href='/saved_pages'> See Saved Stories </a>
+        <nav class= "navbar navbar-default">
+            <div class= "countainer-fuid">
+                <div class="navbar-header">
+                    <div class="navbar-brand" >Read&amp;Black </div>
+                    <ul class="nav nav-tabs">
+                        <li class="active" role="presentation"><a href="/landing/options">Change News Page</a></li>
+                        <li role="presentation"><a href="/new_landing/{{ current_user.username }}">Add A New News Page</a></li>
+                        <li role="presentation"><a href="/profile/{{ current_user.username }}">Profile</a></li> 
+                        <li role="presentation"><a href="/saved_pages">See Saved Stories</a></li>
+                        <li role="presentation"><a href="/log_out_catch">Log Out</a></li> 
+                        
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
     {% endif %}
 
     <h1> Read and Black </h1>
