@@ -218,7 +218,7 @@ def delete_a_newspapers(topic_rows, landing_row):
         #commit all changes to the database
         db.session.commit()
         # grab all the landing names that still exhist for this user as a list of names
-        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['   current_user']).all()
+        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
     
         response = {
             'landings': landingnames
