@@ -104,9 +104,11 @@ def add_approved_new_user(app,pot_password, email, pot_username):
 
 def age_check(age):
     """Check if age if in acceptable range else return message """
-    if age is None or int(age) < 1 or int(age) > 113:
-        return("Please type in a number for your age.")
-        
+    try:
+        if age is None or age == '' or int(age) < 1 or int(age) > 113:
+            return("Please type in a number for your age.")
+    except ValueError:
+            return("Please type in a number for your age.")
 
 def academic_check(academic):
     """ Check if academic filled in else return message"""

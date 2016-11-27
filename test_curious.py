@@ -77,7 +77,7 @@ class MyAppUnitTestCaseLoggedOut(TestCaseBase):
     def test_sign_up_right(self):
         """ Becoming signed up correctly"""
         result=self.client.post('/sign_up', data={"email": 'f@gmail.com' , "sec_email": 'f@gmail.com', "username":"f" , "password": "123456" , "sec_password": "123456"}, follow_redirects=True)
-        self.assertIn("Your email is f@gmail.com.", result.data)
+        self.assertIn("Complete your registration by filling out the information below.", result.data)
 
     #SIGNUP WRONG
     def test_sign_up_wrong_username(self):
@@ -118,7 +118,7 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
        """ tests for correct word content index.html render in route '/' """
 
        result= self.client.get("/")
-       self.assertIn("You are currently logged in as " + self.userName, result.data)
+       self.assertIn("You are currently logged in as user &ldquo;" + self.userName, result.data)
        self.assertIn("/log_out_catch", result.data)
 
     # REGISTER CATCH
@@ -132,6 +132,11 @@ class MyAppUnitTestCaseLoggedIn(TestCaseBase):
     def test_register_catch_no_age(self):
         """ Error finishing registration with no age """
         result = self.client.post('/register_catch',data={'academic':'ba','gender':'Female'}, follow_redirects=False)
+        self.assertRedirectTo(result,'/register/%s' % self.userName)
+
+    def test_register_catch_empty_age(self):
+        """ Error finishing registration with no age """
+        result = self.client.post('/register_catch',data={'age': '','academic':'ba','gender':'Female'}, follow_redirects=False)
         self.assertRedirectTo(result,'/register/%s' % self.userName)
 
     def test_register_catch_no_academic(self):
