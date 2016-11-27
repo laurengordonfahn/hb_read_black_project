@@ -1,41 +1,53 @@
+{% set navtab = "" %}
 {% extends 'base.html' %}
 
-{% block title %} Profile {% endblock %}
+{% block title %} Compete Registration {% endblock %}
 
 {% block content %}
 
-<br>
-<!-- Add username to jina for this page -->
-<h2> Welcome: {{ current_user.username }},  </h2> <br> 
-<h4> Your email is {{ current_user.email }}. <br>
-    The following information is needed to complete your profile with us:  </h4>
-<br>
-
-<!-- This should only be able to be set once what do I do about content not proper for age?-->
-<form action='/register_catch' method='POST'>
-    <input type='number' min= 0 max= 113 name='age' placeholder='age'>
-    <br>
-
-    <p> Academic Level: </p>
-    <select name='academic'>
-        <option value='highschool'> High School </option>
-        <option value='tradeschool'> Trade School </option>
-        <option value='ba'> B.A. </option>
-        <option value='bs'> B.S. </option>
-        <option value='higher'> Higher Degree </option>
-    </select>
-    
+<div class="row">
+    <h3>Welcome, {{ current_user.username }}!</h5>
+    <p>
+    Complete your registration by filling out the information below.  This
+    helps find just find just the right news for you
+    </p>
+</div>
 
 
-    <p>Gender:</p>
-    <select name='gender'>
-        <option value='Female'> Female </option>
-        <option value='Male'> Male </option>
-        <option value='Other'> Other </option>
-    </select>
-    <input type='submit' name='register_btn' value='Submit'>
-</form>
-<br>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <form class="form-horizontal" action='/register_catch' method='POST'>
 
+            <div class="form-group">
+                <label for="input_age" class="control-label">Age</label>
+                <input class="form-control" type="number" id="input_age" min="0" max="113" name="age" placeholder="35">
+            </div>
+
+            <div class="form-group">
+                <label for="input_academic" class="control-label">Academic Level</label>
+                <select id="input_academic" name="academic" class="form-control col-md-5">
+                    <option value="highschool"> High School </option>
+                    <option value="tradeschool"> Trade School </option>
+                    <option value="ba"> B.A. </option>
+                    <option value="bs"> B.S. </option>
+                    <option value="higher"> Higher Degree </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="input_gender" class="control-label">Gender</label>
+                <select id="input_gender" name="gender" class="form-control">
+                    <option value="Female"> Female </option>
+                    <option value="Male"> Male </option>
+                    <option value="Other"> Other </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type='submit' name='register_btn' value='Submit' class="btn btn-default btn-large">
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
