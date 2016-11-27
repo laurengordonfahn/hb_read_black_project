@@ -1,9 +1,13 @@
 // global variables don't run with strict mode
 // "use strict";
 
-var passwordtext = $('#explain_password').data('password');
-//"Passwords must contain at least 6 characters."
 ////////////For yourlanding page /////////
+$(document).ready(function(){
+    $('body').on('click','#explain_password_trigger',function(evt){
+        evt.preventDefault();
+        $('#explain_password_message').toggleClass('hidden');
+    });
+});
 
 
 function renderArticle(index,article) {
