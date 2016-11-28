@@ -1,10 +1,12 @@
-READ&BLACK
+#READ&BLACK
 
-Project Decription:
+##Project Decription:
 
-Read&Black is a news article aggregator. Enabling users to get news at their finger tips without having to scour the internet themselves. This site offers easy access to news from 70 + news sources from around the world. Source access is powered through a third party API, News API. Users can search for news by country, language,  and by major news topics, such as business, general, music, sports, and gaming.  Features offered to the user are the ability to build out multiple news pages allowing users to have pages that have specially grouped content. News sources can for a particular topic search can be changed dynamically at the click of a button. Articles of interest can be saved and deleted by choice. 
+Read&Black is a news article aggregator, which enables users to get news at their fingertips without having to scour the internet themselves. This site offers easy access to news from 70 + news sources from around the world. Source access is powered through a third party API, News API. Users can search for news by country, language and by major news topics, such as business, general, music, sports and gaming.  Features offered to the user are the ability to build out multiple newspapers allowing users to have specially grouped content. News sources for a  particular topic search can be changed dynamically at the click of a button. Articles of interest can be saved and deleted by choice. 
 
-Prerequesits:
+## Getting Started:
+
+##Prerequesits:
 1) Pip install will enable installation of the project requriements
 If you are uncertain if you have this website can help : https://pip.pypa.io/en/stable/installing/
 
@@ -36,5 +38,25 @@ requests==2.11.1
 six==1.10.0
 SQLAlchemy==1.1.3
 Werkzeug==0.11.11
+
+## Installing:
+
+## Running the tests:
+
+## Built With:
+*Python- Backend Language
+*Flask - Python web frame work
+*SqlAlchemy- Database Toolkit for python
+*PostgreSQL- Object Relational Database System
+*Unittest- Testing Framework
+*Javascript- Front end language
+*JQuery- Javascript Library
+
+## Authors:
+*Lauren Gordon-Fahn
+
+## Acknowledgements:
+*Hackbright Instruction Team
+
 
 
