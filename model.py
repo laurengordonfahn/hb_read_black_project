@@ -42,6 +42,7 @@ class Landing(db.Model):
                         autoincrement=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     landing_name= db.Column(db.String(95), nullable=False)
+    topics = db.relationship("News_api_user_topics")
     
 class Type(db.Model):
     __tablename__="types"

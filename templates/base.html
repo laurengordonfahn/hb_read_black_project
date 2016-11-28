@@ -21,27 +21,22 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Read&amp;Black </a>
             </div>
-            <div class="collapse navbar-collapse">
-                {% if 'current_user' in session %}
-                    <ul class="nav navbar-nav navbar-left">
-                        <li {% if navtab == "landing_options" %}class="active"{% endif %}>
-                            <a href="/landing/options">Change News</a>
-                        </li>
-                        <li {% if navtab == "new_landing"  %}class="active"{% endif %} >
-                            <a href="/new_landing/{{ current_user.username }}">Add News</a>
-                        </li>
-                        <li {% if navtab == "profile"  %}class="active"{% endif %} >
-                            <a href="/profile/{{ current_user.username }}">Profile</a>
-                        </li>
-                        <li {% if navtab == "saved_pages"  %}class="active"{% endif %} >
-                            <a href="/saved_pages">Saved Stories</a>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/log_out_catch">Log Out</a></li>
-                    </ul>
-                {% endif %}
-            </div>
+            {% if 'current_user' in session %}
+                <ul class="nav navbar-nav navbar-left">
+                    <li {% if navtab == "landing_options" %}class="active"{% endif %}>
+                        <a href="/landing/options">Newspapers</a>
+                    </li>
+                    <li {% if navtab == "profile"  %}class="active"{% endif %} >
+                        <a href="/profile/{{ current_user.username }}">Profile</a>
+                    </li>
+                    <li {% if navtab == "saved_pages"  %}class="active"{% endif %} >
+                        <a href="/saved_pages">Saved Stories</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/log_out_catch">Log Out</a></li>
+                </ul>
+            {% endif %}
         </div>
     </nav>
 
@@ -68,5 +63,4 @@
 <script src="/static/general.js" type="text/javascript"> </script>
 
 </body>
-
 </html>

@@ -105,7 +105,7 @@ def sign_up_catch():
 
     if email_check(email, sec_email) == True and username_check(pot_username, doesname) ==True and password_check(pot_password, pot2_password)== True:
         user = add_approved_new_user(app,pot_password, email, pot_username)
-        return render_template('register.html', current_user=user)
+        return redirect('/register/%s' % user.username)
 
     elif email_check(email, sec_email) != True:
         flash(email_check(email, sec_email))
@@ -118,11 +118,9 @@ def sign_up_catch():
 
     return redirect('/')
 
-    
 @app.route('/register/<username>')
 def register(username):
-
-    return render_template('new_landing.html', username=current_user().username, current_user=current_user())                                            
+    return render_template('register.html', current_user=current_user())
 
 @app.route('/register_catch', methods=['POST'])
 def register_catch():
@@ -143,7 +141,7 @@ def register_catch():
     print academic_code, "XXXXXXXX"
     if not (age_check(age) or academic_check(academic_code) or gender_check(gender_code)):
         flash(add_register_db(user, int(age), academic_code, gender_code))
-        return redirect('/new_landing/%s' % user.username)
+        return redirect('/landing/options')
     elif age_check(age):
         flash(age_check(age))
     elif academic_check(academic_code):
@@ -151,7 +149,6 @@ def register_catch():
     elif gender_check(gender_code):
         flash(gender_check(gender_code))
     return redirect('/register/%s' % user.username)
-
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -231,18 +228,6 @@ def delete_landing():
     response = delete_a_newspapers(topic_rows, landingname)
     print response
     return jsonify(response)
-    
-#TODO WHERE DOES THE USERNAME COME FROM!!!
-@app.route('/new_landing/<username>')
-def new_landing(username):
-    """ Render new landing page after sign-up and profile page """
-
-    if not is_logged_in():
-        return redirect("/")
-
-    user = User.query.get(session['current_user'])
-    return render_template('new_landing.html', username=user.username, current_user=current_user())
-
 
 @app.route('/yourlanding/<landingname>')
 def landing(landingname):
@@ -274,8 +259,6 @@ def landing(landingname):
         Landing.query.filter_by(landing_id=landing.landing_id).delete()
         return redirect('/landing/options')
         
-    # print "@@@@@@@@@@@@@@@@@", topics
-    
 
     # fetch the category row for this landing
     story_dict = {} 
@@ -385,18 +368,6 @@ def cautious_query_api():
     #         return redirect("/")
     if response['status'] == "ok":
         
-            #not needed any more because handled in a different route due to jquery
-            #check if this landing name has already been used for this user
-            # check_landing_name = db.session.query(Landing.landing_name).filter(Landing.landing_name==landing_name and Landing.user_id==session['current_user']).first()
-            # #if this landing name is taken tell them to change it otherwise save it
-            # if check_landing_name:
-            #     flash("Your landing name must be unique please label this something other than %s" % landing_name)
-            #     user = current_user() 
-            #     # print "####*****#####", user, user.username
-
-            #     return redirect('/new_landing/%s' % user.username)
-       
-            #adding the new landing name to the database
         landing_add = Landing.query.filter_by(user_id=session['current_user'], landing_name=landing_name).first()
         #Note: removed landing_primary from the above line.
         print landing_add
@@ -405,11 +376,6 @@ def cautious_query_api():
         landing_id = landing_add.landing_id
         media_type = request.form.get('media_type')
         # print "you created landing_id %d" % landing_id
-        index = request.form.get('story_count')
-        print "$$$$$$$$$$$$$", index, type(index)
-
-        #beging loop over all the different query/topic requests for news stories
-        index = int(index)
         
         category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # add to database

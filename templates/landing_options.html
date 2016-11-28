@@ -1,40 +1,126 @@
 {% set navtab = "landing_options" %}
 {% extends 'base.html' %}
 
-{% block title %} News Pages {% endblock %}
+{% block title %} Newspapers {% endblock %}
 
 {% block content %}
 
-<h1> Your Saved Newspapers </h1>
-<br>
-    {% if landingnames == None %}
+<div class="row center-text">
+    <h3>Your Saved Newspapers</h3>
+</div>
+
+{% if landingnames == None %}
+    <div class="row center-text">
         <p> You Do not have any News Pages at this time. Make a New One Below! </p>
-    {% else %}
-        {% for landingname in landingnames %}
-            <a href="/yourlanding/{{ landingname.landing_name }}"><button>{{ landingname.landing_name }}</button></a>
-        {% endfor %}
-    {% endif %}
-
-<div id='add_new_story_refill_div'> </div>
- <form action="#" method='POST'>
-        <p> Name this News Page </p>
-        <div id="landing_name_musts"> </div>
-        <input id='new_landing_name' type='text' name='new_landing_name' placeholder='add your new landing name'>
-        <div id='add_first_story_div'> 
-            <button id='add_first_story_btn' type='submit' >Add First Story</button>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table table-hover center-text">
+                {% for landingname in landingnames %}
+                    <tr>
+                        <td>
+                            <a href="/yourlanding/{{ landingname.landing_name }}">{{ landingname.landing_name }}</a>
+                        </td>
+                        <td>
+                            <strong>{{ landingname.topics | length }}</strong> topics
+                        </td>
+                        <td>
+                            <a href="/yourlanding/{{ landingname.landing_name }}">view</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
-        <div id="add_stories_alert"></div>
-        <div id="add_story_div">
-        </div>
-    </form>
-    <br>
+    </div>
+{% endif %}
 
-    <form action='/landing/options'>
-        <fieldset>
-            <legend>Go to Your News Pages </legend>
-            <input type='submit' id='take_to_landing' value='Get News'>
-        </fieldset>
-    </form>
+<hr />
 
-    
+<div class="row center-text">
+    <h4>Create a new newspaper</h4>
+</div>
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2 center-text">
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Newspaper name" />
+            </div>
+            <button type="submit" class="btn btn-default create_new_newspaper">Create</button>
+            <span class="help-block"></span>
+        </form>
+    </div>
+</div>
+
+<div class="row create_new_newspaper_new_topic hidden">
+    <div class="col-sm-8 col-sm-offset-2 center-text">
+        <form class="form-inline">
+            <input type="hidden" name="landing_name" />
+            <p>
+
+            Show me articles on
+
+            <select name="topic-category" class="form-control input-large">
+                <option value="business">Business</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="gaming">Gaming</option>
+                <option value="general">General</option>
+                <option value="music">Music</option>
+                <option value="science-and-nature">Science and Nature</option>
+                <option value="technology">Technology</option>
+            </select>
+
+            in
+
+            <select name="topic-language" class="form-control input-large">
+                <option value="en">English</option>
+                <option value="de">German</option>
+                <option value="fr">French</option>
+                <option value="all">All</option>
+            </select>
+
+            from
+
+            <select name="topic-country" class="form-control input-large">
+                <option value="au">Australia</option>
+                <option value="de">Germany</option>
+                <option value="gb">Great Britian</option>
+                <option value="in">India</option>
+                <option value="it">Italy</option>
+                <option value="us">United States</option>
+            </select>
+
+            <button class="btn btn-default">Add Topic</button>
+
+            </p>
+
+            <span class="help-block">
+            </span>
+        </form>
+    </div>
+</div>
+
+<div class="row create_new_newspaper_topics hidden">
+    <div class="col-sm-8 col-sm-offset-2 center-text">
+        <table class="table table-hover center-text">
+            <caption class="center-text">Current Topics</caption>
+            <thead>
+                <th class="center-text">Category</th>
+                <th class="center-text">Language</th>
+                <th class="center-text">Country</th>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <a href="/landing/options" class="btn btn-default">Complete</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

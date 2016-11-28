@@ -205,7 +205,6 @@ function getRequestInfo(evt){
         return showStories(topic_id, source_logo_url, response);
     }
     console.log(formInputs);
-    //QUESTION HOW DO I PUT VARIABLE IN BELOW
     $.get("/news-landing.json",
             formInputs,
             handler);
@@ -214,88 +213,69 @@ $("input.chose_source_btn").on("click", getRequestInfo);
 
 //////////////Runs on new_landing page when need to make the landig name unique for user and need to be named/////
 var STORY_COUNT = 0;
-function warnUniqueLandingName(response){
-    if (response['landing_name_used'] === 'yes'){
-        var landing_name =response['landing_name'];
 
-        showAlertWarn($('#landing_name_musts'), "You already have a news page named '" + landing_name + "' please chose a unique news paper name.");
-
-    } else if(response['landing_name_used'] === 'no'){
-        $('#new_landing_name').attr('readonly', true);
-        $('#add_first_story_div').html("");
-        $('#landing_name_musts').html("");
-
-        $("#add_story_div").html(
-                "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
-                "<option value='text'> Text </option> " +
-                "<!-- <option value='audio'> Audio </option>" +
-                "<option value='video'> Video </option> -->" +
-                "</select>" +
-                "<p> ALL OF OUR TEXT IS SOURCED BY NEWS API *** FINISH THE INFO THEY ASK FOR HERE***</p>" +
-                "<br>" +
-
-                "<p> Topic Category </p>" +
-                "<select id='category-" + window.STORY_COUNT +"'name='category-"+ window.STORY_COUNT + "'>" +
-                "<option value='business'> Business </option>" +
-                "<option value='entertainment'> Entertainment </option>" +
-                "<option value='gaming'>Gaming </option>" +
-                "<option value='general'>General </option>" +
-                "<option value='music'> Music</option>" +
-                "<option value='science-and-nature'> Science-and-Nature </option>" +
-                "<option value='technology'> Technology</option>" +
-                "</select>" +
-                "<br>" +
-
-                "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
-                "<p>Language</p>"+
-                "<select id='language-" + window.STORY_COUNT + "'name='language-" + window.STORY_COUNT + "'>"+
-                "<option value = 'en'>English</option>" +
-                "<option value = 'de'>German</option>"+
-                "<option value = 'fr'>French</option>"+
-                "<option value = 'all'> All</option>"+
-                " </select>" +
-                " <br> "+
-                "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
-                "<p>Country</p>" +
-                "<select id='country-" + window.STORY_COUNT + "' name='country-" + window.STORY_COUNT + "'>"+
-                "<option value = 'au'> Australia</option>"+
-                "<option value = 'de'>Germany</option>" +
-                "<option value = 'gb'>Great Britian</option>" +
-                "<option value = 'in'>India</option>" +
-                "<option value = 'it'>Italy</option>" +
-                "<option value = 'us'>United States</option>" +
-                "</select>" +
-                "<br>" +
-                "<p>Add A Story</p>" +
-                "<input id='hidden_story_count' type='hidden' name='window.STORY_COUNT' value='"+(window.STORY_COUNT)+"'>" +       
-                "<input id='add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>"    +
-                "</form>" +
-                "<br>");
-        $('#add_story').on('click', addHiddenCount);
-        $("#add_story").on('click', checkStoryQuery);
-    } else if(response['landing_name_needed'] === 'yes'){
-        showAlertWarn($('#landing_name_musts'), "Please, name your news paper before building its content");
-    }
-
-}
-function mustNameLanding(evt){
+function createNewNewspaper(evt) {
     evt.preventDefault();
-    var landing_name=$('#new_landing_name').val();
+    var form  = $(evt.currentTarget).closest('form');
+    var input = form.find('input[type="text"]');
+    var name  = input.val();
+    var data  = {'new_landing_name': name};
+    var warn  = form.find('span.help-block');
 
-    var formInputs ={
-        'new_landing_name': landing_name
+    var handler = function(response) {
+        if (response['landing_name_used'] === 'yes') {
+            warn.html("You already have a news page named '" + name + "'");
+        } else if (response['landing_name_needed'] === 'yes') {
+            warn.html("Please name your newspaper before building its content");
+        } else if (response['landing_name_used'] === 'no') {
+            warn.html('')
+            $('.create_new_newspaper_new_topic form input[name="landing_name"]').val(name);
+            $('.create_new_newspaper_new_topic').removeClass('hidden');
+        }
     };
 
-    console.log(formInputs);
-    $.post(
-        '/check_landing_name.json',
-        formInputs,
-        warnUniqueLandingName);
+    $.post('/check_landing_name.json',data,handler);
 }
 
+function createNewNewspaperAddTopic(evt) {
+    evt.preventDefault();
+    var form = $(evt.currentTarget).closest('form');
 
-$('#add_first_story_btn').on('click', mustNameLanding);
+    var help = form.find('span.help-block');
 
+    var data = {
+        'media_type': 'text',
+        'category': form.find('select[name="topic-category"]').val(),
+        'country': form.find('select[name="topic-country"]').val(),
+        'language': form.find('select[name="topic-language"]').val(),
+        'new_landing_name': form.find('input[name="landing_name"]').val()
+    };
+
+    console.log(data);
+
+    handler = function(response) {
+
+        if (response['status'] != "ok") {
+            help.html('Sorry, that topic is unsupported right now');
+            return
+        }
+
+        $('.create_new_newspaper_topics').removeClass('hidden');
+
+        $('.create_new_newspaper_topics table tbody').append(
+            "<tr><td>" + response['category'] + "</td>" +
+                "<td>" + response['language'] + "</td>" +
+                "<td>" + response['country']  + "</td></tr>"
+        );
+    };
+
+    $.post('/cautious_query_api.json', data, handler);
+}
+
+$(document).ready(function(){
+    $('body').on('click','.create_new_newspaper',createNewNewspaper);
+    $('body').on('click','.create_new_newspaper_new_topic button',createNewNewspaperAddTopic);
+});
 
 ///////////////new_landing page creation button click counter/ id and name attribute counter/////////////
 
@@ -307,105 +287,6 @@ function addToStoryCount(evt){
 $('#add_story').on('click', addToStoryCount);
 
 console.log("This is makeing sure javascript is running" + window.STORY_COUNT);
-
-////// newlanding page add a counter for the number new stories added to a landing page////////
-function addHiddenCount(){
-    console.log("This is testing that addHiddenCount is running");
-    $('#hidden_story_count').val(window.STORY_COUNT.toString());
-}
-
-////////// Add a new story to the new_landing//////
-function addStoryHtml(response){
-
-    console.log(response);
-
-    if(response['status'] != "ok"){
-        console.log("WE have error in addstoryhtml");
-        showAlertWarn($("#add_stories_alert"),"The Story search for "+ response['category'] +" news from " + response['country'] + " in the language " + response['language'] +" is not supported right now.");
-    } else {
-
-        $("#add_story_div").html("");
-
-        console.log("This is running addStoryHtml");
-        console.log(window.STORY_COUNT +  " This is the count in addHTML");
-
-        showAlertSuccess($("#add_stories_alert"),response['category'] + " news from " + response['country'] + " in the language " + response['language'] + " has been saved to your landing page");
-        $("#add_story_div").html(
-                "<p>Type</p><select id = 'type-" + window.STORY_COUNT+"' name='type-"+ window.STORY_COUNT + "'> " +
-                "<option value='text'> Text </option> " +
-                "<!-- <option value='audio'> Audio </option>" +
-                "<option value='video'> Video </option> -->" +
-                "</select>" +
-                "<p> Topic Category </p>" +
-                "<select id='category-" + window.STORY_COUNT +"'name='category-"+ window.STORY_COUNT + "'>" +
-                "<option value='business'> Business </option>" +
-                "<option value='entertainment'> Entertainment </option>" +
-                "<option value='gaming'>Gaming </option>" +
-                "<option value='general'>General </option>" +
-                "<option value='music'> Music</option>" +
-                "<option value='science-and-nature'> Science-and-Nature </option>" +
-                "<option value='technology'> Technology</option>" +
-                "</select>" +
-                "<br>" +
-
-                "<!-- TEST OUT SOME DAY HAVING MORE THAN ONE can also add country -->"+
-                "<p>Language</p>"+
-                "<select id='language-" + window.STORY_COUNT + "'name='language-" + window.STORY_COUNT + "'>"+
-                "<option value = 'en'>English</option>" +
-                "<option value = 'de'>German</option>"+
-                "<option value = 'fr'>French</option>"+
-                "<option value = 'all'> All</option>"+
-                " </select>" +
-                " <br> "+
-                "<!-- AT SOME POINT CHOSE MULTIPLE PLACES -->"+
-                "<p>Country</p>" +
-                "<select id='country-" + window.STORY_COUNT + "' name='country-" + window.STORY_COUNT + "'>"+
-                "<option value = 'au'> Australia</option>"+
-                "<option value = 'de'>Germany</option>" +
-                "<option value = 'gb'>Great Britian</option>" +
-                "<option value = 'in'>India</option>" +
-                "<option value = 'it'>Italy</option>" +
-                "<option value = 'us'>United States</option>" +
-                "</select>" +
-                "<br>" +
-                "<p>Add A Story</p>" +
-                "<input id='hidden_story_count' type='hidden' name='story_count' value='"+(window.STORY_COUNT)+"'>" +       
-                "<input id='add_story' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add Story'>"  +
-                "</form>" +
-                "<br>"
-                );
-
-        $("#add_story").on('click', checkStoryQuery);
-    }
-}
-
-function checkStoryQuery(evt){
-    evt.preventDefault();
-    console.log("checkStoryQuery is running");
-    console.log(window.STORY_COUNT +  " This is the count in checkStoryQuery");
-    var type=$('#type-' + window.STORY_COUNT).val();
-    console.log(type);
-    var category = $('#category-' + window.STORY_COUNT).val();
-    var country = $('#country-' + window.STORY_COUNT).val();
-    var language = $('#language-'+ window.STORY_COUNT).val();
-    var landing_name = $('#new_landing_name').val();
-    var count_of_story = $('#hidden_story_count').val();
-
-    var formInputs = {
-        'media_type': type,
-        'category': category,
-        'country': country,
-        'language': language,
-        'new_landing_name': landing_name,
-        'story_count': count_of_story
-    };
-
-    console.log(formInputs)
-    $.post(
-        '/cautious_query_api.json', 
-        formInputs,
-        addStoryHtml);
-}
 
 /////////Function Logic for Deleting a Landing from the profile page/////////////
 function deleteLandingOnScreen(result){
@@ -471,6 +352,7 @@ function showAlertSuccess($el,msg) {
     );
 }
 
+// landing.html
 function addStoryHtmlOnLanding(response){
 
     if(response['status'] != "ok"){
@@ -487,6 +369,7 @@ function addStoryHtmlOnLanding(response){
     }      
 }
 
+// landing.html
 function createNewStoryForm(evt){
     evt.preventDefault();
     var btn= $(evt.currentTarget);
@@ -498,12 +381,6 @@ function createNewStoryForm(evt){
     $('#add_new_story_refill_options').html("");
     $('#add_new_story_refill_options').html(
         "<form>" + 
-        "<p>Type</p><select id = 'type-" + topic_count +"' name='type-"+ topic_count + "'> " +
-        "<option value='text'> Text </option> " +
-        "<!-- <option value='audio'> Audio </option>" +
-        "<option value='video'> Video </option> -->" +
-        "</select>" +
-
         "<p> Topic Category </p>" +
         "<select id='category-" + topic_count +"'name='category-"+ topic_count + "'>" +
         "<option value='business'> Business </option>" +
@@ -556,7 +433,7 @@ function createNewStoryForm(evt){
         var count_of_story = $('#hidden_story_count').val();
 
         var formInputs = {
-            'media_type': type,
+            'media_type': 'text',
             'category': category,
             'country': country,
             'language': language,
