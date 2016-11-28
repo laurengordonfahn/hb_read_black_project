@@ -18,10 +18,11 @@
 <body>
     <nav class= "navbar navbar-default">
         <div class= "container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">Read&amp;Black </a>
-            </div>
+
             {% if 'current_user' in session %}
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/landing/options">Read&amp;Black </a>
+                </div>
                 <ul class="nav navbar-nav navbar-left">
                     <li {% if navtab == "landing_options" %}class="active"{% endif %}>
                         <a href="/landing/options">Newspapers</a>
@@ -36,6 +37,10 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/log_out_catch">Log Out</a></li>
                 </ul>
+            {% else %}
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Read&amp;Black </a>
+                </div>
             {% endif %}
         </div>
     </nav>
