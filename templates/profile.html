@@ -4,12 +4,15 @@
 {% block title %} Profile {% endblock %}
 
 {% block content %}
-<p> Your Profile </p>
+<h3> Your Profile </h3>
 <br>
 <!-- Add username to jina for this page -->
-<p> You are signed in as: {{ username }} </p>
+<div class='need_border'>
+<h4> You are signed in as: {{ username }} </h4>
+
+<h4> Your current email associated with this account: {{ email }} </h4>
+</div>
 <br>
-<p> Your current email associated with this account: {{ email }}
 
 <form action='/profile_catch' method='POST'>
     <input type ='hidden' name='field' value='email'>
@@ -20,7 +23,7 @@
         <br>
         <input type='text' name='sec_email' placeholder='re-type email'>
         <br>
-        <input type='submit' name='change_email_btn' value='Submit'>
+        <input class='submit_btn' type='submit' name='change_email_btn' value='Submit'>
     </feildset>
 </form>
 <br>
@@ -35,28 +38,28 @@
         <br>
         <input type='password' name='sec_password' placeholder='re-type password'>
         <br>
-        <input type='submit' name='change_password_btn' value='Submit'>
+        <input class='submit_btn' type='submit' name='change_password_btn' value='Submit'>
     </feildset>
 </form>
 
 <br>
 
-<p> Your age: {{ age }} </p>
+<h4> Your age: {{ age }} </h4>
 <!-- This should only be able to be set once what do I do about content not proper for age?-->
 <br>
 
-<p> Your registered Academic Level with us is: 
+<h4> Your registered Academic Level with us is: 
     {% if academic_level == None %}
         None
     {% else %}
     {{ academic_level.academic_name }} 
     {% endif %}
 
-</p>
+</h4>
 
 <form action='/profile_catch' method='POST'>
     <input type='hidden' name='field' value='academic'>
-    <p> Academic Level: </p>
+    <h4> Academic Level: </h4>
     <select name='academic'>
         <option value='highschool'> High School </option>
         <option value='tradeschool'> Trade School </option>
@@ -64,28 +67,28 @@
         <option value='bs'> B.S. </option>
         <option value='higher'> Higher Degree </option>
     </select>
-    <input type='submit' name='academic_btn' value='Submit'>
+    <input class='submit_btn' type='submit' name='academic_btn' value='Submit'>
 </form>
 
 <br>
 
-<p> Your gender on file is: 
+<h4> Your gender on file is: 
     {% if gender == None %}
         None
     {% else %}
     {{ gender.gender_name }} 
     {% endif %}
-</p>
+</h4>
 
 <form action='/profile_catch' method='POST'>
     <input type='hidden' name='field' value='gender'>
-    <p>Gender:</p>
+    <h4>Gender:</h4>
     <select name='gender'>
         <option value='Female'> Female </option>
         <option value='Male'> Male </option>
         <option value='Other'> Other </option>
     </select>
-    <input type='submit' name='gender_btn' value='Submit'>
+    <input  class='submit_btn' type='submit' name='gender_btn' value='Submit'>
 </form>
 
 <br>
@@ -93,13 +96,13 @@
 <!-- create a list of the landing names this person has  AND DO radio buttons need submit?-->
 <!-- FINISHE THIS PEICE WHEN MORE THAN ONE LANDING NOT YET! -->
 <div id="update_your_landings">
-    <p>Your Landing Pages: </p>
+    <h4>Your Landing Pages: </h4>
     {% if landingnames|length != 0 %}
         {% for landingname in landingnames %}
-            <a href="/yourlanding/{{ landingname.landing_name }}"><button> {{   landingname.landing_name }} </button></a> <br> <button class="delete_landing_btn" name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'>Delete this News Page</button><br>
+            <div class='need_border' <a href="/yourlanding/{{ landingname.landing_name }}"><button class='submit_btn'> {{   landingname.landing_name }} </button></a> &nbsp;&nbsp; <button class='submit_btn' class="delete_landing_btn" name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'>Delete this News Page</button><br><br></div><br>
         {% endfor %}
     {% else %}
-            <p>You do not have any saved News Pages at this time. <a  href='/new_landing/{{ current_user.username }}'><button>Add A New News Page</button></a> </p>
+            <p>You do not have any saved News Pages at this time. <a  href='/new_landing/{{ current_user.username }}'><button class='submit_btn' >Add A New News Page</button></a> </p>
     {% endif %}
 </div>
  

@@ -48,5 +48,25 @@ input.chose_source_btn{
 
 }
 
+.submit_btn{
+    border-radius: 4px;
+    background: #e3e3e3;
+    color: black;
+    border: solid #777777 .25px;
+    font-size: 12px;
+    padding: 6px 8px 6px 8px;
+    margin: 10px 0px 10px 0px;
+    display: inline-block;
+
+}
+
+.need_border{
+    border: solid 1px;
+    border-radius: 4px;
+    padding: 3px 10px 3px 10px;
+   
+
+}
+
 
 
