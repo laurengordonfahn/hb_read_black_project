@@ -11,9 +11,9 @@ $(document).ready(function(){
 
 
 function renderArticle(index,article) {
-    return "<form id='boarder_this_form' action='/saved_pages_catch' method='POST'>"+
-           "<div class='image_div_news' > <image src=" + article.urlToImage + " height='125'    width='175'> </div>" +
-           "<div class='text_div_news'> <input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
+    return "<form class='container-fluid' id='boarder_this_form' action='/saved_pages_catch' method='POST'> <div class='row'>"+
+           "<div class='col-sm-12 col-md-3' class='image_div_news' > <image src=" + article.urlToImage + " height='125'    width='175'> </div>" +
+           "<div class='col-sm-12 col-md-9' class='text_div_news'> <input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
            "<a href='" + article.url + "' target='_blank'><p>" + article.title  + "</p></a>" +
            "<input type='hidden' name='title' value='" + article.title + "'>" +
            "<p> Author(s): </p>" +
@@ -24,7 +24,7 @@ function renderArticle(index,article) {
            "<input type='hidden' name='published_at' value='" +article.publishedAt +"'>"+
            "<p>" +article.publishedAt+ "</p>"+ 
            "<input type ='hidden' class='save_story_button_div-"+ index +"' name='index'   value='" + index + "''>" +
-           "<div id='save_story_button_div-"+ index +"' name='index' value='" + index + "'' </div>"+
+           "<div id='save_story_button_div-"+ index +"' name='index' value='" + index + "'' </div></div>"+
            "<input type='submit' class=\"btn btn-default btn-sm\"class='save_btn_class' action='submit' value='Save Story'>" +
            "</input> <br>" +
            "</div>"+

@@ -14,6 +14,7 @@ body {
 
 #boarder_this_form { 
     border: double;
+    border-color: #b3b3b3;
     padding: 10px;
     margin: 10px;
 
@@ -24,9 +25,28 @@ body {
 /*button {
 
     border-radius: 4px;
-}
+    background-color: ; 
+    #428bca
+    #e6e6e6
+    this one #215e96 #1c63a5  #2f618e #376996  #206aad
+    border #1d4d7a
+    #225a8e
 
-input {
+    #1d5384
+
+    #f8ffff text color
+}*/
+
+input.chose_source_btn{
 
     border-radius: 4px;
-}*/
+    background: #2d6ca2;
+    color: white;
+    border: solid #245580.25px;
+    font-size: 12px;
+    padding: 6px 8px 6px 8px;
+
+}
+
+
+
