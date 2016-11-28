@@ -16,10 +16,18 @@
  <!-- id='refresh_saved_without_removed' -->
     <div id="story_removed_flash"> </div>
     <div id='remove-{{count}}'>
-        <button class='unsave_btn_class_two' id={{ count }} > Remove Saved Story</button>
         <a href='{{ saved_story.story_url }}' value='{{ saved_story.story_title }}' >{{ saved_story.story_title }}</a>
         {{ saved_story.story_author }}
         {{ saved_story.story_date}}
+
+        <button
+            class='unsave_btn_class_two btn btn-default btn-xs'
+            id="{{ count }}"
+            data-href="{{saved_story.story_url}}"
+            data-title="{{saved_story.story_title}}">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+
         {% set count = count + 1 %}
         
     </div>

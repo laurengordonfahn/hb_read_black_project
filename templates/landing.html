@@ -49,7 +49,7 @@
 
     <form action='/new_landing/{{ current_user.username }}' method='GET'>
         <fieldset>
-            <legend>Add a new topic to this exhisting news landing page:</legend>
+            <legend>Add a new topic to this newspaper:</legend>
                 <input id='hidden_count_for_landingname' type='hidden' name='hidden_count_add_story' value='{{ story_dict|length }}'>
 
                 <input id='hidden_landingname_add_story' type='hidden' name='hidden_landingname_add_story' value='{{ landing_name }}'>

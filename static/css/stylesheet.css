@@ -1,11 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
 ul {
   list-style-type: none;
 }
 
 body {
-    font-family: 'Libre Franklin', sans-serif;
+    font-family: 'Railway', sans-serif;
 }
-
 
 .center-text {
     text-align:center;

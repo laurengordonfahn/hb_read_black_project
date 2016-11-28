@@ -366,7 +366,7 @@ function addStoryHtmlOnLanding(response){
         ///// IS there a better more dynamic way to run this ?////// 
         console.log(response['landingname']);
         $('#add_new_story_refill_alert').html("");
-        $('#add_new_story_refill_options').html( "<p> Press Refresh to Add New Story </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new Story</button></a> <br>"
+        $('#add_new_story_refill_options').html( "<p> Press refresh to add new topic </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new topic</button></a> <br>"
         );
 
     }      
@@ -416,10 +416,10 @@ function createNewStoryForm(evt){
         "<option value = 'us'>United States</option>" +
         "</select>" +
         "<br>" +
-        "<p>Add this Story</p>" +
+        "<p>Add this Topic</p>" +
         "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
         "<input id='new_landing_name' type='hidden' name='new_landing_name' value= \""+ landingname +"\">" +      
-        "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Story'>"    +
+        "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Topic'>"    +
         "</form>" +
         "<br>"
     );
@@ -463,8 +463,8 @@ function changeButton(response){
 function removeStoryFromSavedPages2(evt){
     //// I need help because this doesn't have the attributes?
     var id = $(this).attr("id");
-    var url = $(this).next().attr("href");
-    var title = $(this).next().attr('title');
+    var url = $(this).attr("data-href");
+    var title = $(this).attr('data-title');
 
     $(this).closest('li').remove();
 
