@@ -1,4 +1,5 @@
 {% set navtab = "landing_options" %}
+
 {% extends 'base.html' %}
 
 {% block title %} Newspapers {% endblock %}
@@ -9,9 +10,9 @@
     <h3>Your Saved Newspapers</h3>
 </div>
 
-{% if landingnames == None %}
+{% if not landingnames %}
     <div class="row center-text">
-        <p> You Do not have any News Pages at this time. Make a New One Below! </p>
+        <p> You do not have any Newspapers at this time. Make a new one below! </p>
     </div>
 {% else %}
     <div class="row">
@@ -23,7 +24,7 @@
                             <a href="/yourlanding/{{ landingname.landing_name }}">{{ landingname.landing_name }}</a>
                         </td>
                         <td>
-                            <strong>{{ landingname.topics | length }}</strong> topics
+                            <strong>{{ landingname.topics | length }}</strong> topic(s)
                         </td>
                         <td>
                             <a href="/yourlanding/{{ landingname.landing_name }}">view</a>
@@ -38,7 +39,7 @@
 <hr />
 
 <div class="row center-text">
-    <h4>Create a new newspaper</h4>
+    <h4>Create a new Newspaper</h4>
 </div>
 
 <div class="row">

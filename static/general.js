@@ -228,7 +228,8 @@ function createNewNewspaper(evt) {
         } else if (response['landing_name_needed'] === 'yes') {
             warn.html("Please name your newspaper before building its content");
         } else if (response['landing_name_used'] === 'no') {
-            warn.html('')
+            warn.html('');
+            input.attr('disabled',true);
             $('.create_new_newspaper_new_topic form input[name="landing_name"]').val(name);
             $('.create_new_newspaper_new_topic').removeClass('hidden');
         }
@@ -257,8 +258,10 @@ function createNewNewspaperAddTopic(evt) {
 
         if (response['status'] != "ok") {
             help.html('Sorry, that topic is unsupported right now');
-            return
+            return;
         }
+
+        help.html('');
 
         $('.create_new_newspaper_topics').removeClass('hidden');
 
@@ -454,7 +457,7 @@ $('#add_story_to_exhisting_landing').on('click', createNewStoryForm);
 function changeButton(response){
 
     $('#remove-'+ response['id_btn']).html("");
-    $('story_removed_flash').prepend("<p> The story " + response['title'] + " has been removed </p>");
+    $('#story_removed_flash').prepend("<p> The story " + response['title'] + " has been removed </p>");
 
 }
 function removeStoryFromSavedPages2(evt){
