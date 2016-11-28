@@ -14,7 +14,7 @@ function renderArticle(index,article) {
     return "<form action='/saved_pages_catch' method='POST'>"+
            "<image src=" + article.urlToImage + " height='125'    width='175'>" +
            "<input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
-           "<a href='" + article.url + "'onclick=\"window.open(' "+     article.url + "', 'newwindow', 'width=675, height=400')   ; return false;\"><p>" + article.title  + "</p></a>" +
+           "<a href='" + article.url + "' target='_blank'><p>" + article.title  + "</p></a>" +
            "<input type='hidden' name='title' value='" + article.title + "'>" +
            "<p> Author(s): </p>" +
            "<input type='hidden' name='author' value='"+ article.author +"' >"+
