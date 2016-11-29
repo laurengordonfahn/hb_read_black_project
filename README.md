@@ -91,6 +91,14 @@ $source secrets.sh
 * Javascript- Front end language
 * JQuery- Javascript Library
 
+## Future Build-Out:
+* Build-Out test suites in both Unittests, Jasmine, and Selenium.
+* Add NPR API for audio news option in XML feed.
+* Improve upon user access and flow including a delete individual search topic from a Newspaper. 
+* Improve profile page logic for deleting Newspapers already in existence so the user is asked to confirm before deletion.
+* Begin to build out using direct access to major newspaper's API's instead of using the third party NEWS API for greater API exposure. 
+
+
 ## Authors:
 * Lauren Gordon-Fahn
 
