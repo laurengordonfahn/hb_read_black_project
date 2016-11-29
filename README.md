@@ -1,32 +1,32 @@
 #READ&BLACK
 
-##Project Decription:
+##Project Description:
 
-Read&Black is a news article aggregator, which enables users to get news at their fingertips without having to scour the internet themselves. This site offers easy access to news from 70 + news sources from around the world. Source access is powered through a third party API, News API. Users can search for news by country, language and by major news topics, such as business, general, music, sports and gaming.  Features offered to the user are the ability to build out multiple newspapers allowing users to have specially grouped content. News sources for a  particular topic search can be changed dynamically at the click of a button. Articles of interest can be saved and deleted by choice. 
+Read&Black is a news article aggregator, which enables users to get news at their fingertips without having to scour the Internet themselves. This site offers easy access to news from 70 + news sources from around the world. Source access is powered through a third party API, News API. Users can search for news by country, language and by major news topics, such as business, general, music, sports and gaming.  Features offered to the user are the ability to build out multiple newspapers allowing users to have specially grouped content. News sources for a  particular topic search can be changed dynamically at the click of a button. Articles of interest can be saved and deleted by choice. 
 
 ## Getting Started:
 
-##Prerequesits:
-1) Pip install will enable installation of the project requriements
+##Prerequisites:
+1) Pip install will enable installation of the project requirements
 If you are uncertain if you have pip install visit the website : https://pip.pypa.io/en/stable/installing/
 
 2) Download the project in a directory of its own. Navigate into the new directory and type in the following command.  
 
     $ git clone https://github.com/laurengordonfahn/hb_read_black_project.git
-3) Create a virtual environment using virtualenv to house the required frameworks if you are unsure you have this capasity visit https://virtualenv.pypa.io/en/stable/: 
+3) Create a virtual environment using virtualenv to house the required frameworks if you are unsure you have this capacity visit https://virtualenv.pypa.io/en/stable/: 
 
 ```
 $ virtualenv env
 $ source env/bin/activate
 ```
 
-4) Make sure that the requirments.txt is in the first level of your newly created directory then  pip install the requirments:
+4) Make sure that the requirements.txt is in the first level of your newly created directory then  pip install the requirements:
 
 ```
 $ pip install -r requirements.txt
 ```
 
-Will install all project requriements
+Will install all project requirements
 
 5) These are the project requirements found in the requirements.txt file
 
@@ -56,13 +56,13 @@ Werkzeug==0.11.11
 
 ## Installing:
 1) Sign in to NEWS API: https://newsapi.org/  in order to sign-up to get your own API key
-        create your own top level file secretes.sh and place the code 
+        create your own top level file secrets.sh and place the code 
 ``` 
     export NEWSAPIKEY= "With your API Key here" 
 ```
-2) Source your newly created secretes file in the command line 
+2) Source your newly created secrets file in the command line 
 ```
-$source secretes.sh
+$source secrets.sh
 ```
 
 3) create a database using postgres and source the database
@@ -94,7 +94,7 @@ $source secretes.sh
 ## Authors:
 * Lauren Gordon-Fahn
 
-## Acknowledgements:
+## Acknowledgments:
 * Hackbright Instruction Team
 
 
