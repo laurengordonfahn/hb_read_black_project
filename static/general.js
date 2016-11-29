@@ -123,7 +123,7 @@ function stopSaveForm(evt){
 
     function alertUnsaved(response){
         $(find_this).html("");
-        $(find_this).html("<p> This Story has been removed from your saved stories page </p> <br> <input type='submit' class='save_btn_class'action='submit' value='Save Story'> </input>");
+        $(find_this).html("<p> This Story has been removed from your saved stories page </p> <br> <input type='submit' class='save_btn_class btn-default btn-sm' action='submit' value='Save Story'> </input>");
     }
 
     function unsaveStory(evt){
