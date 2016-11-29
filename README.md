@@ -83,19 +83,19 @@ $source secretes.sh
 ```
 
 ## Built With:
-*Python- Backend Language
-*Flask - Python web frame work
-*SqlAlchemy- Database Toolkit for python
-*PostgreSQL- Object Relational Database System
-*Unittest- Testing Framework
-*Javascript- Front end language
-*JQuery- Javascript Library
+* Python- Backend Language
+* Flask - Python web frame work
+* SqlAlchemy- Database Toolkit for python
+* PostgreSQL- Object Relational Database System
+* Unittest- Testing Framework
+* Javascript- Front end language
+* JQuery- Javascript Library
 
 ## Authors:
-*Lauren Gordon-Fahn
+* Lauren Gordon-Fahn
 
 ## Acknowledgements:
-*Hackbright Instruction Team
+* Hackbright Instruction Team
 
 
 
