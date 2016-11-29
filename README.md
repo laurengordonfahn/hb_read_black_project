@@ -78,7 +78,9 @@ $source secretes.sh
 ```
 
 ## Running the tests:
+```
    $ python test_server.py
+```
 
 ## Built With:
 *Python- Backend Language
