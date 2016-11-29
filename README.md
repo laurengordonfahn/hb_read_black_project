@@ -103,7 +103,7 @@ $source secrets.sh
 * Lauren Gordon-Fahn
 
 ## Acknowledgments:
-* Hackbright Instruction Team
+* Hackbright Instruction Team - A hearty and heartfelt thank you for sharing your knowledge and support.
 
 
 
