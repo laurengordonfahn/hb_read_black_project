@@ -14,15 +14,23 @@ If you are uncertain if you have pip install visit the website : https://pip.pyp
 
     $ git clone https://github.com/laurengordonfahn/hb_read_black_project.git
 3) Create a virtual environment using virtualenv to house the required frameworks if you are unsure you have this capasity visit https://virtualenv.pypa.io/en/stable/: 
-```$ virtualenv env
-```$ source env/bin/activate
 
-4) Make sure that the requirments.txt is in the first level of your newly created directory then  pip install the requirments: 
-```$ pip install -r requirements.txt
+```
+$ virtualenv env
+$ source env/bin/activate
+```
+
+4) Make sure that the requirments.txt is in the first level of your newly created directory then  pip install the requirments:
+
+```
+$ pip install -r requirements.txt
+```
+
 Will install all project requriements
 
 5) These are the project requirements found in the requirements.txt file
 
+```
 bcrypt==3.1.1
 blinker==1.3
 cffi==1.9.1
@@ -44,17 +52,22 @@ requests==2.11.1
 six==1.10.0
 SQLAlchemy==1.1.3
 Werkzeug==0.11.11
+```
 
 ## Installing:
     1) Sign in to NEWS API: https://newsapi.org/   in order to sign-up to get your own API key
         create your own top level file secretes.sh and place the code 
-            \\export NEWSAPIKEY= "With your API Key here"
+            ``` 
+            export NEWSAPIKEY= "With your API Key here" 
+            ```
     2) Source your newly created secretes file in the command line \\$source secretes.sh
     3) curious.py is the server file
     4) create a database using postgres and source the database
-        \\ $ createdb readandblack
-        \\ $ python model.py
-        \\ $ python seed.py 
+        ``` 
+            $ createdb readandblack
+            $ python model.py
+            $ python seed.py 
+        ```
 
 ## Running the tests:
    $ python test_server.py
