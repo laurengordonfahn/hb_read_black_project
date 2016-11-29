@@ -57,20 +57,25 @@ Werkzeug==0.11.11
 ## Installing:
 1) Sign in to NEWS API: https://newsapi.org/  in order to sign-up to get your own API key
         create your own top level file secretes.sh and place the code 
-    ``` 
+``` 
     export NEWSAPIKEY= "With your API Key here" 
-    ```
+```
 2) Source your newly created secretes file in the command line 
 ```
 $source secretes.sh
 ```
-3) curious.py is the server file
-4) create a database using postgres and source the database
-    ``` 
+
+3) create a database using postgres and source the database
+``` 
     $ createdb readandblack
     $ python model.py
     $ python seed.py 
-    ```
+```
+
+4) To run the server file curious.py :
+``` 
+    $ python curious.py
+```
 
 ## Running the tests:
    $ python test_server.py
