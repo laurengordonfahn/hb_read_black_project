@@ -24,8 +24,8 @@ function renderArticle(index,article) {
            "<input type='hidden' name='published_at' value='" +article.publishedAt +"'>"+
            "<p>" +article.publishedAt+ "</p>"+ 
            "<input type ='hidden' class='save_story_button_div-"+ index +"' name='index'   value='" + index + "''>" +
-           "<div id='save_story_button_div-"+ index +"' name='index' value='" + index + "'' </div></div>"+
-           "<input type='submit' class=\"btn btn-default btn-sm\"class='save_btn_class' action='submit' value='Save Story'>" +
+           "<div id='save_story_button_div-"+ index +"' name='index' value='" + index + "'' </div>"+
+           "<input type='submit' class=\"btn btn-default btn-sm save_btn_class\" action='submit' value='Save Story'>" +
            "</input> <br>" +
            "</div>"+
            "</form>" ;
@@ -98,18 +98,19 @@ function stopSaveForm(evt){
         // var values = form.find('div.save_story_button_div').val();
         // $('.save_story_button_div').html
 
-        console.log(find_this);
+        console.log("RIGHT HERE")
+        console.log($(find_this).html());
 
         if(response['ok']){
             console.log("AlertSaved line 78 running");
             $(find_this).html("");
             $(find_this).html(
                     "<p> Story Saved</p>" +
-                    "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
+                    "<input type='submit' class='unsave_btn_class btn-default btn-sm' value='Remove From Saved'> </input>");
         } else if(response['no']){
             $(find_this).html("");
             $(find_this).html("<p>This story is already in your saved folder. </p>" +
-                    "<input type='submit' class='unsave_btn_class' value='Remove From Saved'> </input>");
+                    "<input type='submit' class='unsave_btn_class btn-default btn-sm ' value='Remove From Saved'> </input>");
         }
 
         // This works here and makes the pop up come that says it deletes the story and it works
