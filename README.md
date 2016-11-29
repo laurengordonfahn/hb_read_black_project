@@ -8,14 +8,20 @@ Read&Black is a news article aggregator, which enables users to get news at thei
 
 ##Prerequesits:
 1) Pip install will enable installation of the project requriements
-If you are uncertain if you have this website can help : https://pip.pypa.io/en/stable/installing/
+If you are uncertain if you have pip install visit the website : https://pip.pypa.io/en/stable/installing/
 
-2) Download the project in a directory of its own, make sure that the requirments.txt is in the first level
+2) Download the project in a directory of its own. Navigate into the new directory and type in the following command.  
 
-3) Once you have pip install the Shell Command: pip install -r requirements.txt
+    $ git clone https://github.com/laurengordonfahn/hb_read_black_project.git
+3) Create a virtual environment using virtualenv to house the required frameworks if you are unsure you have this capasity visit https://virtualenv.pypa.io/en/stable/: 
+    $ virtualenv env
+    $ source env/bin/activate
+
+4) Make sure that the requirments.txt is in the first level of your newly created directory then  pip install the requirments: 
+    $ pip install -r requirements.txt
 Will install all project requriements
 
-4) These are the project requirements found in the requirements.txt file
+5) These are the project requirements found in the requirements.txt file
 
 bcrypt==3.1.1
 blinker==1.3
@@ -40,8 +46,18 @@ SQLAlchemy==1.1.3
 Werkzeug==0.11.11
 
 ## Installing:
+    1) Sign in to NEWS API: https://newsapi.org/   in order to sign-up to get your own API key
+        create your own top level file secretes.sh and place the code 
+            \\export NEWSAPIKEY= "With your API Key here"
+    2) Source your newly created secretes file in the command line \\$source secretes.sh
+    3) curious.py is the server file
+    4) create a database using postgres and source the database
+        \\ $ createdb readandblack
+        \\ $ python model.py
+        \\ $ python seed.py 
 
 ## Running the tests:
+   $ python test_server.py
 
 ## Built With:
 *Python- Backend Language
