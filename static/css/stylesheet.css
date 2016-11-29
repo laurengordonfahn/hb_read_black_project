@@ -71,8 +71,7 @@ input.chose_source_btn{
 .center_this {
     display: inline-block;
     float:left;
-    margin-top: 30px;
-    margin-right: 10px;
+    margin: 10px 10px 10px 10px;
     padding-left: 25px;
 }
 
@@ -86,5 +85,6 @@ body{
 }
 
 table {
-    background-color: #fcfcfc ;
+    background-color: white ;
+    
 }
