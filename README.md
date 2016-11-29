@@ -14,11 +14,11 @@ If you are uncertain if you have pip install visit the website : https://pip.pyp
 
     $ git clone https://github.com/laurengordonfahn/hb_read_black_project.git
 3) Create a virtual environment using virtualenv to house the required frameworks if you are unsure you have this capasity visit https://virtualenv.pypa.io/en/stable/: 
-    $ virtualenv env
-    $ source env/bin/activate
+```$ virtualenv env
+```$ source env/bin/activate
 
 4) Make sure that the requirments.txt is in the first level of your newly created directory then  pip install the requirments: 
-    $ pip install -r requirements.txt
+```$ pip install -r requirements.txt
 Will install all project requriements
 
 5) These are the project requirements found in the requirements.txt file
