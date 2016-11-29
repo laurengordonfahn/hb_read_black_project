@@ -294,29 +294,6 @@ $('#add_story').on('click', addToStoryCount);
 console.log("This is makeing sure javascript is running" + window.STORY_COUNT);
 
 /////////Function Logic for Deleting a Landing from the profile page/////////////
-function deleteLandingOnScreen(result){
-    var html_string =  "<p>Your Landing Pages: </p>" ;
-    var landingnames = result['landings'];
-    console.log(landingnames);
-
-    if(results.length === 0){
-        html_string += "You have no News Pages at this time, create a new one: <a  href='/new_landing/{{ current_user.username }}'><button>Add A New News Page</button></a>";
-        $('#update_your_landings').html(html_string);
-    } else {
-        for(var i=0; i < landingnames.length; i++){
-            console.log(landingnames[i]); console.log("xxxxx");
-            html_string += "<a href=\"/yourlanding/" + landingnames[i] + "\"><button>" + landingnames[i] + " </button> </a>" + 
-                // "<form action=\"/delete_catch\">" +
-                "<button> class=\"delete_landing_btn\" name=\"" + landingnames[i] +"\" type=\"submit\" value=\"Delete this Landing\" ></button> " 
-                //+ "</form>" 
-            $('#update_your_landings').html(html_string);
-        }
-    }
-    $('#update_your_landings').html(html_string);
-
-    $('.delete_landing_btn').on('click', deleteRequest);
-}
-
 function deleteRequest(evt){
     console.log(evt);
     evt.preventDefault();
@@ -330,9 +307,18 @@ function deleteRequest(evt){
         "landingname": name
     };
 
+    var handler = function(result) {
+        if(result === null || result.length == 0 ){
+            $('.no-landings-warning').removeClass('hidden');
+        } else {
+            var container = btn.closest('div.need_border');
+            container.remove();
+        }
+    }
+
     $.post("/delete_landing.json",
             formInputs,
-            deleteLandingOnScreen);
+            handler);
 }
 
 $('.delete_landing_btn').on('click', deleteRequest);
@@ -368,7 +354,7 @@ function addStoryHtmlOnLanding(response){
         ///// IS there a better more dynamic way to run this ?////// 
         console.log(response['landingname']);
         $('#add_new_story_refill_alert').html("");
-        $('#add_new_story_refill_options').html( "<p> Press refresh to add new topic </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button>Refresh With new topic</button></a> <br>"
+        $('#add_new_story_refill_options').html( "<div class='border_this_div'><p> Press refresh to add new topic </p><br><a href=\"/yourlanding/"+response['landingname']+"\" ><button class='submit_btn'>Refresh With new topic</button></a></div> <br>"
         );
 
     }      
@@ -385,7 +371,7 @@ function createNewStoryForm(evt){
     $('#add_new_story_refill_alert').html("");
     $('#add_new_story_refill_options').html("");
     $('#add_new_story_refill_options').html(
-        "<form>" + 
+        "<form class='border_this_div'>" + 
         "<p> Topic Category </p>" +
         "<select id='category-" + topic_count +"'name='category-"+ topic_count + "'>" +
         "<option value='business'> Business </option>" +
@@ -421,7 +407,7 @@ function createNewStoryForm(evt){
         "<p>Add this Topic</p>" +
         "<input id='hidden_story_count' type='hidden' name='story_count' value='"+ topic_count +"'>" + 
         "<input id='new_landing_name' type='hidden' name='new_landing_name' value= \""+ landingname +"\">" +      
-        "<input id='add_story_to_a_landing' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Topic'>"    +
+        "<input id='add_story_to_a_landing' class='submit_btn' type='submit' id='keyword_txt_btn' name='keyword_txt_btn' value='Add this Topic'>"    +
         "</form>" +
         "<br>"
     );

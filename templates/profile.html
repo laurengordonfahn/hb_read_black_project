@@ -97,12 +97,17 @@
 <!-- FINISHE THIS PEICE WHEN MORE THAN ONE LANDING NOT YET! -->
 <div id="update_your_landings">
     <h4>Your Landing Pages: </h4>
+
+    <p class="no-landings-warning hidden">
+        You do not have any saved News Pages at this time.
+    </p>
+
     {% if landingnames|length != 0 %}
         {% for landingname in landingnames %}
             <div class='need_border' <a href="/yourlanding/{{ landingname.landing_name }}"><button class='submit_btn'> {{   landingname.landing_name }} </button></a> &nbsp;&nbsp; <button class='submit_btn delete_landing_btn' name="{{ landingname.landing_name }}" type="submit" value='Delete this Landing'>Delete this News Page</button><br><br></div><br>
         {% endfor %}
     {% else %}
-            <p>You do not have any saved News Pages at this time. <a  href='/new_landing/{{ current_user.username }}'><button class='submit_btn' >Add A New News Page</button></a> </p>
+            <p>You do not have any saved News Pages at this time. </p>
     {% endif %}
 </div>
  

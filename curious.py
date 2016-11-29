@@ -225,7 +225,7 @@ def delete_landing():
     # return jsonify(response)
 
     #call a funciton that deletes a newspage and all topics in db and returns a dictionary of remaining newspage with value a list 
-    response = delete_a_newspapers(topic_rows, landingname)
+    response = delete_a_newspapers(topic_rows, landing_row)
     print response
     return jsonify(response)
 

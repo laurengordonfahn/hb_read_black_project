@@ -213,19 +213,21 @@ def delete_a_newspapers(topic_rows, landing_row):
     for row in topic_rows:
             
         db.session.delete(row)
-        db.session.commit()
+        #db.session.commit()
     
         #delte the landingname row in the landing table
-        db.session.delete(landing_row)
-        #commit all changes to the database
-        db.session.commit()
         # grab all the landing names that still exhist for this user as a list of names
-        landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+        
+    db.session.delete(landing_row)
+    #commit all changes to the database
+    db.session.commit()
     
-        response = {
-            'landings': landingnames
-        }
-        return response
+    landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
+
+    response = {
+        'landings': landingnames
+    }
+    return response
 
 ######## '/delete'
 
