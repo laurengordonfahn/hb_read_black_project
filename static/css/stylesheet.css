@@ -76,4 +76,15 @@ input.chose_source_btn{
     padding-left: 25px;
 }
 
+body{
+    background: url("/static/tex2res5.png");
+}
 
+.header_inline {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+table {
+    background-color: #fcfcfc ;
+}

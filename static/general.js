@@ -14,13 +14,13 @@ function renderArticle(index,article) {
     return "<form class='container-fluid' id='boarder_this_form' action='/saved_pages_catch' method='POST'> <div class='row'>"+
            "<div class='center_this' class='col-sm-12 col-md-3' class='image_div_news' > <image src=" + article.urlToImage + " height='155'   width='235'> </div>" +
            "<div class='col-sm-12 col-md-9' class='text_div_news'> <input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
-           "<a href='" + article.url + "' target='_blank'><p>" + article.title  + "</p></a>" +
+           "<h5> <span class='header_inline'>Link to Story:</span>  <a href='" + article.url + "' target='_blank'>" + article.title  + "</a></h5>" +
            "<input type='hidden' name='title' value='" + article.title + "'>" +
-           "<p> Author(s): </p>" +
+           "<p> <span class='header_inline'>Author(s): </span>  " + article.author +" </p>" +
            "<input type='hidden' name='author' value='"+ article.author +"' >"+
-           "<p>" + article.author + "</p>" + 
-           "<p> Description: </p>" +
-           "<p>" +article.description +"</p>" +
+          
+
+           "<p> <span class='header_inline'> Description:</span>  " +article.description +"</p>" +
            "<input type='hidden' name='published_at' value='" +article.publishedAt +"'>"+
            "<p>" +article.publishedAt+ "</p>"+ 
            "<input type ='hidden' class='save_story_button_div-"+ index +"' name='index'   value='" + index + "''>" +
