@@ -296,7 +296,7 @@ console.log("This is makeing sure javascript is running" + window.STORY_COUNT);
 /////////Function Logic for Deleting a Landing from the profile page/////////////
 function deleteLandingOnScreen(result){
     var html_string =  "<p>Your Landing Pages: </p>" ;
-    var landingnames = result.landings;
+    var landingnames = result['landings'];
     console.log(landingnames);
 
     if(results.length === 0){
