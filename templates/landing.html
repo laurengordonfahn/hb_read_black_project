@@ -11,8 +11,9 @@
 <br>
 {% for topic, story_info in story_dict.iteritems() %}
 
-    <form topic-id="{{ topic.topic_id }}">
-        <fieldset>
+    <form class='container' topic-id="{{ topic.topic_id }}">
+        <fieldset class='row'>
+            <div class='col-sm-8'>
             <legend>Choose your source for {{ story_info['category'].category_name }} from {{ story_info['country'].country_name }} in {{ story_info['language'].language_name }}:</legend>
                  
                 <select  class='source_name' name='sources'>
@@ -30,13 +31,15 @@
                 <option value='latest'> Latest </option>
                 <option value='popular'> Popular </option>
             </select>
-            <input class='chose_source_btn' class="btn btn-default btn-sm" type='submit' name='chose_source_btn' value= 'Submit'>     
+            <input class='chose_source_btn' class="btn btn-default btn-sm" type='submit' name='chose_source_btn' value= 'Submit'> 
+            </div>  
+            <div class='col-sm-4' class='logo' id='logo-{{topic.topic_id}}'></div>  
         </fieldset>
-    </form>
+    </form> 
             
         
     
-    <div class='logo' id='logo-{{topic.topic_id}}'></div>
+    
     <div class='results' id='topic-results-{{topic.topic_id}}'></div>
         
         

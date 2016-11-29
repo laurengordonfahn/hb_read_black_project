@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 function renderArticle(index,article) {
     return "<form class='container-fluid' id='boarder_this_form' action='/saved_pages_catch' method='POST'> <div class='row'>"+
-           "<div class='col-sm-12 col-md-3' class='image_div_news' > <image src=" + article.urlToImage + " height='125'    width='175'> </div>" +
+           "<div class='center_this' class='col-sm-12 col-md-3' class='image_div_news' > <image src=" + article.urlToImage + " height='155'   width='235'> </div>" +
            "<div class='col-sm-12 col-md-9' class='text_div_news'> <input type='hidden' name='url' value='" + article.url + "   ' height='35' width='35'>" +
            "<a href='" + article.url + "' target='_blank'><p>" + article.title  + "</p></a>" +
            "<input type='hidden' name='title' value='" + article.title + "'>" +
@@ -37,7 +37,7 @@ function showStories(topic_id, source_logo_url, response){
         $("#logo-" + topic_id).html("<p>" + response['never'] + "</p>")
     } else if('not ok' in response){
         $("#logo-" + topic_id).html("");
-        $("#logo-" + topic_id).html("<p>" + response['not ok'] + "</p><image src='" + source_logo_url + "' height='65'  width='65'>");
+        $("#logo-" + topic_id).html("<p>" + response['not ok'] + "</p><image src='" + source_logo_url + "' height='120'  width='120'>");
 
         var results_div = $("#topic-results-" + topic_id);
 
@@ -54,7 +54,7 @@ function showStories(topic_id, source_logo_url, response){
 
     } else{
         $("#logo-" + topic_id).html("");
-        $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='65'  width='65'>");
+        $("#logo-" + topic_id).html( "<image src='" + source_logo_url + "' height='120'  width='120'>");
 
         var results_div = $("#topic-results-" + topic_id);
 
