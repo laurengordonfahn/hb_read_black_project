@@ -65,9 +65,9 @@ Werkzeug==0.11.11
 $source secrets.sh
 ```
 
-3) create a database using postgres and source the database
+3) Create a database using postgres and source the database encoded with UTF-8
 ``` 
-    $ createdb readandblack
+    $ createdb createdb -E UTF8 -T template0 --locale=en_US.utf8 readandblack
     $ python model.py
     $ python seed.py 
 ```

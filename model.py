@@ -125,7 +125,7 @@ class Saved_story(db.Model):
     saved_story_id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('users.user_id'))
     story_url=db.Column(db.Text, nullable=False, unique=False)
-    story_title=db.Column(db.String(250), nullable=True, unique=False)
+    story_title=db.Column(db.String(500), nullable=True, unique=False)
     story_author=db.Column(db.String(700), nullable=True, unique=False)
     story_date=db.Column(db.DateTime)
 

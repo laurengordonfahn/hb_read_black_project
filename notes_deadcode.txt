@@ -1,0 +1,6 @@
+#Just to help me remember the difference move to db functions later
+    
+    #db session return a direct id
+    # landing_id= db.session(Landing.landing_id).filter(Landing.landing_name==landingname and Landing.user_id==session['current_user']).first()
+    #its a table queried with these parameters to get the object equal to it its OBJECT with all attributes/parameters
+    #landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
