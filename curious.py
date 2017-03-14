@@ -31,12 +31,11 @@ app.jinja_env.undefined = StrictUndefined
 #Fix server-side caching issues
 app.jinja_env.auto_reload = True
 
-#TODO age formula to increment age which means I need a datetime associated with the usercreation
+
 @app.route('/')
 def index():
     """ Render Sign-In page """
     return render_template('index.html', current_user=current_user())
-
 
 @app.route('/login', methods=['POST'])
 def login_catch():
@@ -86,8 +85,7 @@ def landing_options():
 @app.route('/sign_up', methods=['POST'])
 def sign_up_catch():
     """ Process the Sign-Up form from Sign-In page"""
-    #pull email from sign-up form
-    # pull email from sign-up form
+    
     email = request.form.get('email')
     sec_email = request.form.get('sec_email')
     # regex_email_check = re.search("^[a-zA-Z][\w_\-\.]*@\w+\.\w{2,3}$", email)
@@ -138,7 +136,7 @@ def register_catch():
     
     gender_code = db.session.query(Gender.gender_code).filter(Gender.gender_name==gender).first()
     academic_code = db.session.query(Academic_level.academic_code).filter(Academic_level.academic_name==academic).first()
-    print academic_code, "XXXXXXXX"
+    
     if not (age_check(age) or academic_check(academic_code) or gender_check(gender_code)):
         flash(add_register_db(user, int(age), academic_code, gender_code))
         return redirect('/landing/options')
@@ -164,11 +162,9 @@ def profile(username):
     academic_level = db.session.query(Academic_level.academic_name).filter(Academic_level.academic_code == user.academic_code).first()
     gender = db.session.query(Gender.gender_name).filter(Gender.gender_code == user.gender_code).first()
 
-
     landingnames=Landing.query.filter_by(user_id=session['current_user']).all()
     
     landingnames = rid_news_pages_with_no_topics(landingnames)
-
 
     return render_template('profile.html', username=username, email=email, age=age, academic_level=academic_level, gender=gender,landingnames=landingnames, current_user=current_user())
 
@@ -196,34 +192,13 @@ def profile_catch():
 def delete_landing():
     #get the landing name to be deleted from the jquery dictionary
     landingname = request.form.get('landingname')
-    print landingname, "XXXXXXX"
     
     #grab the object for the landing name from the landings table
     landing_row = Landing.query.filter_by(landing_name=landingname, user_id=session['current_user']).first()
-    print " $$$$$$$$$$$$$$", landing_row
+    
     #grab a list of objects of all the topics associated with the landing page to be delted
     topic_rows = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing_row.landing_id).all()
-    print topic_rows
-    # delete all topic rows associated with the removed landing recursively
-    # for row in topic_rows:
-    #     print "deleting topic", row
-    #     db.session.delete(row)
-    #     db.session.commit()
-
-    #     #delte the landingname row in the landing table
-    #     db.session.delete(landing_row)
-    #     #commit all changes to the database
-    #     db.session.commit()
-    #     # grab all the landing names that still exhist for this user as a list of names
-    #     landingnames=db.session.query(Landing.landing_name).filter(Landing.user_id==session['current_user']).all()
-
-    #     response = {
-    #         'landings': landingnames
-    #     }
-
-    #     print response
-    # return jsonify(response)
-
+    
     #call a funciton that deletes a newspage and all topics in db and returns a dictionary of remaining newspage with value a list 
     response = delete_a_newspapers(topic_rows, landing_row)
     print response
@@ -237,12 +212,6 @@ def landing(landingname):
         return redirect("/")
 
     user_id = session['current_user']
-    #Just to help me remember the difference move to db functions later
-    #WITH NEW LOGIC don't need lines below?
-    #db session return a direct id
-    # landing_id= db.session(Landing.landing_id).filter(Landing.landing_name==landingname and Landing.user_id==session['current_user']).first()
-    #its a table queried with these parameters to get the object equal to it its OBJECT with all attributes/parameters
-    #landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
 
     #This query returns an object with all attributes "dotable"
     landing = Landing.query.filter_by(landing_name=landingname,user_id=user_id).first()
@@ -259,7 +228,6 @@ def landing(landingname):
         Landing.query.filter_by(landing_id=landing.landing_id).delete()
         return redirect('/landing/options')
         
-
     # fetch the category row for this landing
     story_dict = {} 
     for topic in topics:
@@ -270,7 +238,7 @@ def landing(landingname):
             category = News_api_category.query.get(topic.category_code)
             country= News_api_country.query.get(topic.country_code)
             language=News_api_language.query.get(topic.language_code)
-            print "^^^^^^^^^^^^^^^^^^", category 
+        
             if category and country and language:
         # make the api call
                 response = news.newssourcesrequest(category.category_name,topic.language_code,topic.country_code)
@@ -296,10 +264,7 @@ def landing(landingname):
 
                     story_dict[topic] = {"category": category, "country": country, "language" : language, "all_sources_available": all_sources_available}
 
-                    print 
-                    print "(((((((((((((((((((((", story_dict[topic], story_dict[topic]['category'].category_name
-
-
+              
     return render_template('landing.html', landing_name=landing.landing_name, 
                                             current_user = current_user(),
                                             category=category.category_name,
@@ -308,13 +273,8 @@ def landing(landingname):
                                             all_sources_available=all_sources_available,
                                             source_id=source_id,
                                             story_dict=story_dict)
-                                            # story_url = article['url'], 
-                                            # story_author=article['author'], 
-                                            # story_title=article['title'], 
-                                            # story_description=article['description'],
-                                            # story_timestamp=article['publishedAt'] ,
-   
-#TODO BE AWARE ROUTE CHANGE with News added at start
+                                            
+
 @app.route('/news-landing.json')
 def news_landing():
     """ Get json from API call of text return json for ajax callback showStories(result) """
@@ -325,7 +285,6 @@ def news_landing():
     print "source_id", source_id
     print "sortby", sortby
 
-    #TODO GET THE SOURCE IMAGE INTO THIS SO WE HAVE IT
     if sortby=="top":
         headlines_response = news.newstextrequest(source_id, sortby)
         if headlines_response['status'] != 'ok':
@@ -337,8 +296,7 @@ def news_landing():
     if sortby != "top":
         headlines_response = news.newstextrequest(source_id, sortby)
         if headlines_response['status'] != 'ok':
-            # flash("Your request had to be processed using the sortby 'top'")
-            # sortby = "top"
+           
             headlines_response = news.newstextrequest(source_id, 'top')
             if headlines_response['status'] == "ok":
                 return jsonify({ "not ok" : "Your request had to be processed using the sortby 'top'", "ok": headlines_response})
@@ -357,8 +315,7 @@ def cautious_query_api():
     country=request.form.get('country')
     language=request.form.get('language')
     landing_name = request.form.get('new_landing_name')
-    print "##############", landing_name
-    print "PAYLOADPAYLOADPAYLOADPAYLOADPAYLOADPAYLOAD", media_type, category, country, language
+   
     if media_type != "text":
         die("landing type %s not supported (!= text)" % media_type)  
 
@@ -380,15 +337,14 @@ def cautious_query_api():
         category_code= db.session.query(News_api_category.category_code).filter(News_api_category.category_name == category).first()
         # add to database
         topic = News_api_user_topics(user_id=landing_add.user_id, landing_id=landing_add.landing_id, media_type=media_type, category_code=category_code, language_code=language, country_code=country) 
-        print "topic: ", topic
+        
         db.session.add(topic)
         db.session.commit()
             
         country = News_api_country.query.filter_by(country_code=country).first()
-        print "country: ", country
+        
         language = News_api_language.query.filter_by(language_code=language).first()
 
-        print "RRRRRRRRRRRRRRRRRR", country.country_name, response
         response_dict ={
             'status': response['status'],
             'category': category,
@@ -422,13 +378,12 @@ def check_landing_name():
 
     
     landing_name = request.form.get('new_landing_name')
-    print "##############", landing_name
 
     if landing_name and landing_name != "":
             
             #check if this landing name has already been used for this user
         check_landing_name = Landing.query.filter(Landing.user_id==session['current_user'], Landing.landing_name==landing_name).first()
-        print "$$$$$$$$$$$$$$$$$$$", check_landing_name
+    
         
           #if this landing name is taken tell them to change it otherwise save it
         if check_landing_name:
@@ -448,7 +403,7 @@ def check_landing_name():
             db.session.commit()  
     else:
         response={'landing_name_needed': 'yes'}
-    print "999999999999999999", response
+    
     return jsonify(response)
     # #TODO MAY HAVE A Flash if the sort by is done by top because other option not available.  
 
@@ -459,7 +414,7 @@ def saved_pages_catch():
     author = request.form.get('author')
     published_at =request.form.get('published_at')
     check_saved_redundancy = Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).first()
-    print "@@@@@@@@@@@@@@@@@@", author
+
     if not check_saved_redundancy:
         saved_story_add = Saved_story(user_id=session['current_user'], story_url=url, story_title=title, story_author=author, story_date=published_at)
         db.session.add(saved_story_add)
@@ -479,8 +434,6 @@ def unsave_pages_catch_two():
     db.session.commit()
     response = {'removed': "Story Removed", 'id': id_btn, "what_removed": url, 'title': title }
 
-    print response, "RESPONSE RESPONSE RESPONSE"
-
     return jsonify(response)
 
 @app.route('/unsaved_pages_catch', methods=['POST'])
@@ -494,8 +447,6 @@ def unsave_pages_catch():
     Saved_story.query.filter_by(user_id=session['current_user'], story_url=url).delete()
     db.session.commit()
     response = {'removed': "Story Removed"}
-
-    print response, "RESPONSE RESPONSE RESPONSE"
 
     return jsonify(response)
 

@@ -136,11 +136,11 @@ def rid_news_pages_with_no_topics(landingnames):
     """ Take the list argument of landingnames for a user from the database and delete from db any landings with no topics associated with it. Return landingnames  """
     for landing in landingnames:
         topics_obj_list = News_api_user_topics.query.filter_by(user_id=session['current_user'], landing_id=landing.landing_id).all()
-        print landingnames, "YYYYYYYYYYYYYYY"
+        
         if len(topics_obj_list)==0:
             Landing.query.filter_by(landing_id=landing.landing_id).delete()
             landingnames.remove(landing)
-    print landingnames
+   
     return landingnames
 
 ######## '/profile_catch' #######
@@ -213,11 +213,7 @@ def delete_a_newspapers(topic_rows, landing_row):
     for row in topic_rows:
             
         db.session.delete(row)
-        #db.session.commit()
-    
-        #delte the landingname row in the landing table
-        # grab all the landing names that still exhist for this user as a list of names
-        
+       
     db.session.delete(landing_row)
     #commit all changes to the database
     db.session.commit()
@@ -229,5 +225,5 @@ def delete_a_newspapers(topic_rows, landing_row):
     }
     return response
 
-######## '/delete'
+
 
